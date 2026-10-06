@@ -1342,6 +1342,8 @@ iter_declaration(struct tgsi_iterate_context *iter,
          ctx->inputs[i].type = get_type(ctx->key->vs.attrib_signed_int_bitmask,
                                         ctx->key->vs.attrib_unsigned_int_bitmask,
                                         decl->Range.First);
+         if (ctx->inputs[i].type != VEC_FLOAT)
+            ctx->shader_req_bits |= SHADER_REQ_INTS;
       }
       ctx->inputs[i].name = decl->Semantic.Name;
       ctx->inputs[i].sid = decl->Semantic.Index;
@@ -1748,6 +1750,8 @@ iter_declaration(struct tgsi_iterate_context *iter,
             ctx->outputs[i].type = get_type(ctx->key->fs.cbufs_signed_int_bitmask,
                                             ctx->key->fs.cbufs_unsigned_int_bitmask,
                                             ctx->outputs[i].sid);
+            if (ctx->outputs[i].type != VEC_FLOAT)
+               ctx->shader_req_bits |= SHADER_REQ_INTS;
             name_prefix = ctx->key->fs.logicop_enabled ? "fsout_tmp" : "fsout";
          } else {
             if (ctx->glsl_ver_required < 140) {

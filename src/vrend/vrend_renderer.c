@@ -7692,7 +7692,8 @@ static bool use_integer(void) {
       return true;
 
    const char * a = (const char *) glGetString(GL_VENDOR);
-   return a && !(strcmp(a, "ARM") && strcmp(a, "Google Inc. (Apple)"));
+   return a && !(strcmp(a, "ARM") && strcmp(a, "Google Inc. (Apple)") &&
+                 strcmp(a, "Apple"));
 }
 
 static bool vrend_use_gbm_layout_feature(UNUSED uint32_t flags)
