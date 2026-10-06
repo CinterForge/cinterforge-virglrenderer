@@ -6378,6 +6378,10 @@ static void emit_header(const struct dump_ctx *ctx, struct vrend_glsl_strbufs *g
          if (shader_req_table[i].key == SHADER_REQ_SAMPLER_RECT && ctx->glsl_ver_required >= 140)
             continue;
 
+         /* gl_InstanceID is core in GLSL 1.40+; macOS core GL omits ARB_draw_instanced. */
+         if (shader_req_table[i].key == SHADER_REQ_INSTANCE_ID && ctx->glsl_ver_required >= 140)
+            continue;
+
          if (ctx->shader_req_bits & shader_req_table[i].key) {
             emit_ext(glsl_strbufs, shader_req_table[i].string, "require");
          }
