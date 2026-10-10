@@ -30,6 +30,7 @@ struct npt_command_IDXGIFactory_EnumAdapters {
      * this field and inserts {_guest_id_ppAdapter -> *ppAdapter} in the
      * context object table. */
     uint64_t _guest_id_ppAdapter;
+    struct npt_wire_object_ref _ref_ppAdapter;
     HRESULT ret;
 };
 
@@ -67,7 +68,7 @@ npt_encode_IDXGIFactory_EnumAdapters_reply(struct npt_cs_encoder *enc,
         .cmd_return = (uint32_t)args->ret,
     };
     npt_cs_encoder_write(enc, sizeof(_reply), &_reply, sizeof(_reply));
-/* skip args->ppAdapter (guest-allocated id, registered host-side; not in reply) */
+npt_encode_npt_wire_object_ref(enc, &args->_ref_ppAdapter);
 }
 
 static inline void
@@ -136,13 +137,11 @@ npt_dispatch_IDXGIFactory_EnumAdapters(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
-    if (args.ppAdapter && *args.ppAdapter)
-        npt_cs_handle_register_guest_id(ctx, args._guest_id_ppAdapter, *args.ppAdapter, NPT_OBJECT_TYPE_IDXGIADAPTER);
-    else if (args.ppAdapter)
-        npt_cs_handle_register_failed_guest_id(ctx, args._guest_id_ppAdapter);
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
+    if (args.ppAdapter)
+        npt_cs_handle_register_canonical_guest_id(ctx, args._guest_id_ppAdapter, *args.ppAdapter, NPT_OBJECT_TYPE_IDXGIADAPTER, &args._ref_ppAdapter);
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -267,9 +266,9 @@ npt_dispatch_IDXGIFactory_MakeWindowAssociation(struct npt_dispatch_context *ctx
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -389,9 +388,9 @@ npt_dispatch_IDXGIFactory_GetWindowAssociation(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -542,9 +541,9 @@ npt_dispatch_IDXGIFactory_CreateSwapChain(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
     if (args.ppSwapChain && *args.ppSwapChain)
         npt_cs_handle_register_guest_id(ctx, args._guest_id_ppSwapChain, *args.ppSwapChain, NPT_OBJECT_TYPE_IDXGISWAPCHAIN);
     else if (args.ppSwapChain)
@@ -686,9 +685,9 @@ npt_dispatch_IDXGIFactory_CreateSoftwareAdapter(struct npt_dispatch_context *ctx
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
     if (args.ppAdapter && *args.ppAdapter)
         npt_cs_handle_register_guest_id(ctx, args._guest_id_ppAdapter, *args.ppAdapter, NPT_OBJECT_TYPE_IDXGIADAPTER);
     else if (args.ppAdapter)
@@ -719,6 +718,7 @@ struct npt_command_IDXGIFactory1_EnumAdapters1 {
      * this field and inserts {_guest_id_ppAdapter -> *ppAdapter} in the
      * context object table. */
     uint64_t _guest_id_ppAdapter;
+    struct npt_wire_object_ref _ref_ppAdapter;
     HRESULT ret;
 };
 
@@ -756,7 +756,7 @@ npt_encode_IDXGIFactory1_EnumAdapters1_reply(struct npt_cs_encoder *enc,
         .cmd_return = (uint32_t)args->ret,
     };
     npt_cs_encoder_write(enc, sizeof(_reply), &_reply, sizeof(_reply));
-/* skip args->ppAdapter (guest-allocated id, registered host-side; not in reply) */
+npt_encode_npt_wire_object_ref(enc, &args->_ref_ppAdapter);
 }
 
 static inline void
@@ -825,13 +825,11 @@ npt_dispatch_IDXGIFactory1_EnumAdapters1(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
-    if (args.ppAdapter && *args.ppAdapter)
-        npt_cs_handle_register_guest_id(ctx, args._guest_id_ppAdapter, *args.ppAdapter, NPT_OBJECT_TYPE_IDXGIADAPTER1);
-    else if (args.ppAdapter)
-        npt_cs_handle_register_failed_guest_id(ctx, args._guest_id_ppAdapter);
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
+    if (args.ppAdapter)
+        npt_cs_handle_register_canonical_guest_id(ctx, args._guest_id_ppAdapter, *args.ppAdapter, NPT_OBJECT_TYPE_IDXGIADAPTER1, &args._ref_ppAdapter);
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -945,9 +943,9 @@ npt_dispatch_IDXGIFactory1_IsCurrent(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -1061,9 +1059,9 @@ npt_dispatch_IDXGIFactory2_IsWindowedStereoEnabled(struct npt_dispatch_context *
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -1237,9 +1235,9 @@ npt_dispatch_IDXGIFactory2_CreateSwapChainForHwnd(struct npt_dispatch_context *c
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
     if (args.ppSwapChain && *args.ppSwapChain)
         npt_cs_handle_register_guest_id(ctx, args._guest_id_ppSwapChain, *args.ppSwapChain, NPT_OBJECT_TYPE_IDXGISWAPCHAIN1);
     else if (args.ppSwapChain)
@@ -1408,9 +1406,9 @@ npt_dispatch_IDXGIFactory2_CreateSwapChainForCoreWindow(struct npt_dispatch_cont
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
     if (args.ppSwapChain && *args.ppSwapChain)
         npt_cs_handle_register_guest_id(ctx, args._guest_id_ppSwapChain, *args.ppSwapChain, NPT_OBJECT_TYPE_IDXGISWAPCHAIN1);
     else if (args.ppSwapChain)
@@ -1543,9 +1541,9 @@ npt_dispatch_IDXGIFactory2_GetSharedResourceAdapterLuid(struct npt_dispatch_cont
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -1677,9 +1675,9 @@ npt_dispatch_IDXGIFactory2_RegisterStereoStatusWindow(struct npt_dispatch_contex
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -1808,9 +1806,9 @@ npt_dispatch_IDXGIFactory2_RegisterStereoStatusEvent(struct npt_dispatch_context
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -1926,9 +1924,9 @@ npt_dispatch_IDXGIFactory2_UnregisterStereoStatus(struct npt_dispatch_context *c
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -2060,9 +2058,9 @@ npt_dispatch_IDXGIFactory2_RegisterOcclusionStatusWindow(struct npt_dispatch_con
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -2191,9 +2189,9 @@ npt_dispatch_IDXGIFactory2_RegisterOcclusionStatusEvent(struct npt_dispatch_cont
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -2309,9 +2307,9 @@ npt_dispatch_IDXGIFactory2_UnregisterOcclusionStatus(struct npt_dispatch_context
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -2468,9 +2466,9 @@ npt_dispatch_IDXGIFactory2_CreateSwapChainForComposition(struct npt_dispatch_con
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
     if (args.ppSwapChain && *args.ppSwapChain)
         npt_cs_handle_register_guest_id(ctx, args._guest_id_ppSwapChain, *args.ppSwapChain, NPT_OBJECT_TYPE_IDXGISWAPCHAIN1);
     else if (args.ppSwapChain)
@@ -2588,9 +2586,9 @@ npt_dispatch_IDXGIFactory3_GetCreationFlags(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -2618,6 +2616,7 @@ struct npt_command_IDXGIFactory4_EnumAdapterByLuid {
      * this field and inserts {_guest_id_ppvAdapter -> *ppvAdapter} in the
      * context object table. */
     uint64_t _guest_id_ppvAdapter;
+    struct npt_wire_object_ref _ref_ppvAdapter;
     HRESULT ret;
 };
 
@@ -2665,7 +2664,7 @@ npt_encode_IDXGIFactory4_EnumAdapterByLuid_reply(struct npt_cs_encoder *enc,
         .cmd_return = (uint32_t)args->ret,
     };
     npt_cs_encoder_write(enc, sizeof(_reply), &_reply, sizeof(_reply));
-/* skip args->ppvAdapter (guest-allocated id, registered host-side; not in reply) */
+npt_encode_npt_wire_object_ref(enc, &args->_ref_ppvAdapter);
 }
 
 static inline void
@@ -2734,14 +2733,12 @@ npt_dispatch_IDXGIFactory4_EnumAdapterByLuid(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
-    if (args.ppvAdapter && *args.ppvAdapter)
-        npt_cs_handle_register_guest_id(ctx, args._guest_id_ppvAdapter, *args.ppvAdapter,
-            npt_object_type_from_iid(args.riid));
-    else if (args.ppvAdapter)
-        npt_cs_handle_register_failed_guest_id(ctx, args._guest_id_ppvAdapter);
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
+    if (args.ppvAdapter)
+        npt_cs_handle_register_canonical_guest_id(ctx, args._guest_id_ppvAdapter, *args.ppvAdapter,
+            npt_object_type_from_iid(args.riid), &args._ref_ppvAdapter);
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -2768,6 +2765,7 @@ struct npt_command_IDXGIFactory4_EnumWarpAdapter {
      * this field and inserts {_guest_id_ppvAdapter -> *ppvAdapter} in the
      * context object table. */
     uint64_t _guest_id_ppvAdapter;
+    struct npt_wire_object_ref _ref_ppvAdapter;
     HRESULT ret;
 };
 
@@ -2813,7 +2811,7 @@ npt_encode_IDXGIFactory4_EnumWarpAdapter_reply(struct npt_cs_encoder *enc,
         .cmd_return = (uint32_t)args->ret,
     };
     npt_cs_encoder_write(enc, sizeof(_reply), &_reply, sizeof(_reply));
-/* skip args->ppvAdapter (guest-allocated id, registered host-side; not in reply) */
+npt_encode_npt_wire_object_ref(enc, &args->_ref_ppvAdapter);
 }
 
 static inline void
@@ -2882,14 +2880,12 @@ npt_dispatch_IDXGIFactory4_EnumWarpAdapter(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
-    if (args.ppvAdapter && *args.ppvAdapter)
-        npt_cs_handle_register_guest_id(ctx, args._guest_id_ppvAdapter, *args.ppvAdapter,
-            npt_object_type_from_iid(args.riid));
-    else if (args.ppvAdapter)
-        npt_cs_handle_register_failed_guest_id(ctx, args._guest_id_ppvAdapter);
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
+    if (args.ppvAdapter)
+        npt_cs_handle_register_canonical_guest_id(ctx, args._guest_id_ppvAdapter, *args.ppvAdapter,
+            npt_object_type_from_iid(args.riid), &args._ref_ppvAdapter);
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -3027,9 +3023,9 @@ npt_dispatch_IDXGIFactory5_CheckFeatureSupport(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -3058,6 +3054,7 @@ struct npt_command_IDXGIFactory6_EnumAdapterByGpuPreference {
      * this field and inserts {_guest_id_ppvAdapter -> *ppvAdapter} in the
      * context object table. */
     uint64_t _guest_id_ppvAdapter;
+    struct npt_wire_object_ref _ref_ppvAdapter;
     HRESULT ret;
 };
 
@@ -3107,7 +3104,7 @@ npt_encode_IDXGIFactory6_EnumAdapterByGpuPreference_reply(struct npt_cs_encoder 
         .cmd_return = (uint32_t)args->ret,
     };
     npt_cs_encoder_write(enc, sizeof(_reply), &_reply, sizeof(_reply));
-/* skip args->ppvAdapter (guest-allocated id, registered host-side; not in reply) */
+npt_encode_npt_wire_object_ref(enc, &args->_ref_ppvAdapter);
 }
 
 static inline void
@@ -3176,14 +3173,12 @@ npt_dispatch_IDXGIFactory6_EnumAdapterByGpuPreference(struct npt_dispatch_contex
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
-    if (args.ppvAdapter && *args.ppvAdapter)
-        npt_cs_handle_register_guest_id(ctx, args._guest_id_ppvAdapter, *args.ppvAdapter,
-            npt_object_type_from_iid(args.riid));
-    else if (args.ppvAdapter)
-        npt_cs_handle_register_failed_guest_id(ctx, args._guest_id_ppvAdapter);
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
+    if (args.ppvAdapter)
+        npt_cs_handle_register_canonical_guest_id(ctx, args._guest_id_ppvAdapter, *args.ppvAdapter,
+            npt_object_type_from_iid(args.riid), &args._ref_ppvAdapter);
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -3312,9 +3307,9 @@ npt_dispatch_IDXGIFactory7_RegisterAdaptersChangedEvent(struct npt_dispatch_cont
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -3431,9 +3426,9 @@ npt_dispatch_IDXGIFactory7_UnregisterAdaptersChangedEvent(struct npt_dispatch_co
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {

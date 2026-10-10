@@ -123,9 +123,9 @@ npt_dispatch_IDXGIOutputDuplication_GetDesc(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -153,6 +153,7 @@ struct npt_command_IDXGIOutputDuplication_AcquireNextFrame {
      * this field and inserts {_guest_id_ppDesktopResource -> *ppDesktopResource} in the
      * context object table. */
     uint64_t _guest_id_ppDesktopResource;
+    struct npt_wire_object_ref _ref_ppDesktopResource;
     HRESULT ret;
 };
 
@@ -196,7 +197,7 @@ npt_encode_IDXGIOutputDuplication_AcquireNextFrame_reply(struct npt_cs_encoder *
     npt_cs_encoder_write(enc, sizeof(_reply), &_reply, sizeof(_reply));
     if (npt_encode_simple_pointer(enc, args->pFrameInfo))
         npt_encode_DXGI_OUTDUPL_FRAME_INFO(enc, args->pFrameInfo);
-/* skip args->ppDesktopResource (guest-allocated id, registered host-side; not in reply) */
+npt_encode_npt_wire_object_ref(enc, &args->_ref_ppDesktopResource);
 }
 
 static inline void
@@ -265,13 +266,11 @@ npt_dispatch_IDXGIOutputDuplication_AcquireNextFrame(struct npt_dispatch_context
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
-    if (args.ppDesktopResource && *args.ppDesktopResource)
-        npt_cs_handle_register_guest_id(ctx, args._guest_id_ppDesktopResource, *args.ppDesktopResource, NPT_OBJECT_TYPE_IDXGIRESOURCE);
-    else if (args.ppDesktopResource)
-        npt_cs_handle_register_failed_guest_id(ctx, args._guest_id_ppDesktopResource);
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
+    if (args.ppDesktopResource)
+        npt_cs_handle_register_canonical_guest_id(ctx, args._guest_id_ppDesktopResource, *args.ppDesktopResource, NPT_OBJECT_TYPE_IDXGIRESOURCE, &args._ref_ppDesktopResource);
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -417,9 +416,9 @@ npt_dispatch_IDXGIOutputDuplication_GetFrameDirtyRects(struct npt_dispatch_conte
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -565,9 +564,9 @@ npt_dispatch_IDXGIOutputDuplication_GetFrameMoveRects(struct npt_dispatch_contex
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -720,9 +719,9 @@ npt_dispatch_IDXGIOutputDuplication_GetFramePointerShape(struct npt_dispatch_con
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -843,9 +842,9 @@ npt_dispatch_IDXGIOutputDuplication_MapDesktopSurface(struct npt_dispatch_contex
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -959,9 +958,9 @@ npt_dispatch_IDXGIOutputDuplication_UnMapDesktopSurface(struct npt_dispatch_cont
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -1075,9 +1074,9 @@ npt_dispatch_IDXGIOutputDuplication_ReleaseFrame(struct npt_dispatch_context *ct
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {

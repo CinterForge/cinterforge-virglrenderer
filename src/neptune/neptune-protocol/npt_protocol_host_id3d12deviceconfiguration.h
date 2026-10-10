@@ -120,9 +120,9 @@ npt_dispatch_ID3D12DeviceConfiguration_GetDesc(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -255,9 +255,9 @@ npt_dispatch_ID3D12DeviceConfiguration_GetEnabledExperimentalFeatures(struct npt
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -285,11 +285,13 @@ struct npt_command_ID3D12DeviceConfiguration_SerializeVersionedRootSignature {
      * this field and inserts {_guest_id_ppResult -> *ppResult} in the
      * context object table. */
     uint64_t _guest_id_ppResult;
+    struct npt_wire_object_ref _ref_ppResult;
     /* Shadow: the guest-allocated id for ppError arrives in the command
      * body (no reply round-trip).  The post-dispatch register pass reads
      * this field and inserts {_guest_id_ppError -> *ppError} in the
      * context object table. */
     uint64_t _guest_id_ppError;
+    struct npt_wire_object_ref _ref_ppError;
     HRESULT ret;
 };
 
@@ -344,8 +346,8 @@ npt_encode_ID3D12DeviceConfiguration_SerializeVersionedRootSignature_reply(struc
         .cmd_return = (uint32_t)args->ret,
     };
     npt_cs_encoder_write(enc, sizeof(_reply), &_reply, sizeof(_reply));
-/* skip args->ppResult (guest-allocated id, registered host-side; not in reply) */
-/* skip args->ppError (guest-allocated id, registered host-side; not in reply) */
+npt_encode_npt_wire_object_ref(enc, &args->_ref_ppResult);
+npt_encode_npt_wire_object_ref(enc, &args->_ref_ppError);
 }
 
 static inline void
@@ -416,17 +418,13 @@ npt_dispatch_ID3D12DeviceConfiguration_SerializeVersionedRootSignature(struct np
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
-    if (args.ppResult && *args.ppResult)
-        npt_cs_handle_register_guest_id(ctx, args._guest_id_ppResult, *args.ppResult, NPT_OBJECT_TYPE_ID3D10BLOB);
-    else if (args.ppResult)
-        npt_cs_handle_register_failed_guest_id(ctx, args._guest_id_ppResult);
-    if (args.ppError && *args.ppError)
-        npt_cs_handle_register_guest_id(ctx, args._guest_id_ppError, *args.ppError, NPT_OBJECT_TYPE_ID3D10BLOB);
-    else if (args.ppError)
-        npt_cs_handle_register_failed_guest_id(ctx, args._guest_id_ppError);
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
+    if (args.ppResult)
+        npt_cs_handle_register_canonical_guest_id(ctx, args._guest_id_ppResult, *args.ppResult, NPT_OBJECT_TYPE_ID3D10BLOB, &args._ref_ppResult);
+    if (args.ppError)
+        npt_cs_handle_register_canonical_guest_id(ctx, args._guest_id_ppError, *args.ppError, NPT_OBJECT_TYPE_ID3D10BLOB, &args._ref_ppError);
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -582,9 +580,9 @@ npt_dispatch_ID3D12DeviceConfiguration_CreateVersionedRootSignatureDeserializer(
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
     if (args.ppvDeserializer && *args.ppvDeserializer)
         npt_cs_handle_register_guest_id(ctx, args._guest_id_ppvDeserializer, *args.ppvDeserializer,
             npt_object_type_from_iid(args.riid));
@@ -757,9 +755,9 @@ npt_dispatch_ID3D12DeviceConfiguration1_CreateVersionedRootSignatureDeserializer
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
     if (args.ppvDeserializer && *args.ppvDeserializer)
         npt_cs_handle_register_guest_id(ctx, args._guest_id_ppvDeserializer, *args.ppvDeserializer,
             npt_object_type_from_iid(args.riid));

@@ -156,15 +156,136 @@ npt_context_init_dispatch(struct npt_context *ctx)
    d->id3d12fence_dispatch_overrides = &npt_id3d12fence_overrides;
 }
 
-/* `id` is the guest-allocated handle; `host_ptr` is the host-library
- * pointer.  One host pointer can appear under multiple ids (each
- * QueryInterface mints a new id), and each id's COM_RELEASE drops
- * exactly one host-library ref. */
+/* `id` is the guest-minted handle; `host_ptr` the host-library pointer
+ * for the interface the id was registered as; `identity` the object
+ * itself (its IUnknown), shared by every id registered for it.  `regs`
+ * counts the registrations the id stands for -- its first, plus one per
+ * canonical answer that named it again -- each holding one host-library
+ * ref and each dropped by one COM_RELEASE.  A failed Create's record
+ * has no host_ptr and no identity. */
 struct npt_object {
    uint64_t id;
    npt_object_type type;
    void *host_ptr;
+   void *identity;
+   uint32_t regs;
 };
+
+/* Every id registered for one host object, keyed by its IUnknown.  The
+ * primary is the id QueryInterface(IID_IUnknown) answers with: the
+ * object's first registration while it lives, then the oldest left. */
+struct npt_identity {
+   void *unknown;
+   uint64_t primary_id;
+   uint64_t *ids;
+   uint32_t count;
+   uint32_t cap;
+};
+
+/* The object behind an interface pointer, as COM defines it. */
+static void *
+npt_object_identity_of(void *obj)
+{
+   void *unknown = NULL;
+   if (NPT_FAILED(npt_com_query_interface(obj, &NPT_IID_IUnknown, &unknown)) ||
+       !unknown)
+      return obj;
+   npt_com_release(unknown);
+   return unknown;
+}
+
+/* Caller holds object_mutex. */
+static struct npt_identity *
+npt_identity_find_locked(struct npt_context *ctx, void *unknown)
+{
+   struct hash_entry *entry =
+      _mesa_hash_table_search(ctx->identity_table, unknown);
+   return entry ? entry->data : NULL;
+}
+
+/* Caller holds object_mutex.  Records `id` as a registration of the
+ * object `unknown`; the first one becomes the primary. */
+static void
+npt_identity_add_locked(struct npt_context *ctx, void *unknown, uint64_t id)
+{
+   struct npt_identity *ident = npt_identity_find_locked(ctx, unknown);
+   if (!ident) {
+      ident = calloc(1, sizeof(*ident));
+      if (!ident)
+         return;
+      ident->unknown = unknown;
+      ident->primary_id = id;
+      _mesa_hash_table_insert(ctx->identity_table, ident->unknown, ident);
+   }
+   if (ident->count == ident->cap) {
+      const uint32_t cap = ident->cap ? ident->cap * 2 : 4;
+      uint64_t *ids = realloc(ident->ids, cap * sizeof(*ids));
+      if (!ids)
+         return;
+      ident->ids = ids;
+      ident->cap = cap;
+   }
+   ident->ids[ident->count++] = id;
+}
+
+/* Caller holds object_mutex.  Forgets `id` as a registration of its
+ * object; the primary moves to the oldest remaining id. */
+static void
+npt_identity_remove_locked(struct npt_context *ctx, const struct npt_object *e)
+{
+   if (!e->identity)
+      return;
+   struct npt_identity *ident = npt_identity_find_locked(ctx, e->identity);
+   if (!ident)
+      return;
+   for (uint32_t i = 0; i < ident->count; i++) {
+      if (ident->ids[i] != e->id)
+         continue;
+      memmove(&ident->ids[i], &ident->ids[i + 1],
+              (ident->count - i - 1) * sizeof(ident->ids[0]));
+      ident->count--;
+      break;
+   }
+   if (ident->count == 0) {
+      struct hash_entry *entry =
+         _mesa_hash_table_search(ctx->identity_table, ident->unknown);
+      if (entry)
+         _mesa_hash_table_remove(ctx->identity_table, entry);
+      free(ident->ids);
+      free(ident);
+      return;
+   }
+   if (ident->primary_id == e->id)
+      ident->primary_id = ident->ids[0];
+}
+
+static uint64_t
+npt_identity_primary_locked(struct npt_context *ctx, const struct npt_object *e)
+{
+   struct npt_identity *ident =
+      e->identity ? npt_identity_find_locked(ctx, e->identity) : NULL;
+   return ident ? ident->primary_id : e->id;
+}
+
+static bool
+npt_object_type_same_family(npt_object_type a, npt_object_type b)
+{
+   return a > 0 && b > 0 && a < NPT_OBJECT_TYPE_COUNT &&
+          b < NPT_OBJECT_TYPE_COUNT &&
+          npt_object_type_family[a] == npt_object_type_family[b];
+}
+
+/* Steps from `t` to the root of its inheritance chain. */
+static uint32_t
+npt_object_type_depth(npt_object_type t)
+{
+   uint32_t depth = 0;
+   while (t > 0 && t < NPT_OBJECT_TYPE_COUNT && depth < NPT_OBJECT_TYPE_COUNT) {
+      t = npt_object_type_parent[t];
+      depth++;
+   }
+   return depth;
+}
 
 /* Bounded by NPT_OBJECT_TYPE_COUNT so a malformed parent table can't
  * loop. */
@@ -192,6 +313,50 @@ npt_lookup_cache_slot(uint64_t id)
                      (64u - NPT_CS_LOOKUP_CACHE_BITS));
 }
 
+/* Caller holds object_mutex.  Raises an entry's type to `type` when
+ * that is more derived (COM objects share one pointer across the tiers
+ * of an interface, so a QI or getter can confirm a higher one). */
+static void
+npt_object_upgrade_type_locked(struct npt_context *ctx, struct npt_object *e,
+                               npt_object_type type)
+{
+   if (e->type == type)
+      return;
+   if (e->type == NPT_OBJECT_TYPE_IUNKNOWN ||
+       npt_object_type_has_ancestor(type, e->type)) {
+      e->type = type;
+      atomic_fetch_add_explicit(&ctx->object_gen[npt_lookup_cache_slot(e->id)],
+                                1, memory_order_release);
+   } else if (type != NPT_OBJECT_TYPE_IUNKNOWN &&
+              !npt_object_type_has_ancestor(e->type, type)) {
+      npt_log("object table: id 0x%016" PRIx64
+              " re-registered with unrelated type %u (was %u)",
+              e->id, (unsigned)type, (unsigned)e->type);
+   }
+}
+
+/* Caller holds object_mutex.  Inserts a new id for `obj`. */
+static struct npt_object *
+npt_object_insert_locked(struct npt_context *ctx, uint64_t id, void *obj,
+                         void *identity, npt_object_type type)
+{
+   struct npt_object *e = calloc(1, sizeof(*e));
+   if (!e)
+      return NULL;
+   e->id = id;
+   e->type = type;
+   e->host_ptr = obj;
+   e->identity = identity;
+   e->regs = 1;
+
+   /* Key points into e->id so the hash key stays valid for e's lifetime. */
+   _mesa_hash_table_insert(ctx->object_table, &e->id, e);
+   npt_identity_add_locked(ctx, identity, id);
+   if (ctx->object_waiters)
+      cnd_broadcast(&ctx->object_cond);
+   return e;
+}
+
 void
 npt_context_register_object(struct npt_context *ctx,
                             uint64_t id,
@@ -201,48 +366,114 @@ npt_context_register_object(struct npt_context *ctx,
    if (!id || !obj || !type || !ctx || !ctx->object_table)
       return;
 
+   void *identity = npt_object_identity_of(obj);
+
    mtx_lock(&ctx->object_mutex);
-
    struct hash_entry *entry = _mesa_hash_table_search(ctx->object_table, &id);
-   if (entry) {
-      struct npt_object *existing = entry->data;
-      /* COM objects share one physical pointer across version-
-       * compatible interfaces, so QI re-registration with a different
-       * type is routine.  Replace IUNKNOWN or upgrade to a derived
-       * type; unrelated types log and keep the existing entry (helps
-       * catch wrapper-lifetime bugs). */
-      if (existing->type != type) {
-         if (existing->type == NPT_OBJECT_TYPE_IUNKNOWN ||
-             npt_object_type_has_ancestor(type, existing->type)) {
-            existing->type = type;
-            atomic_fetch_add_explicit(
-               &ctx->object_gen[npt_lookup_cache_slot(id)], 1,
-               memory_order_release);
-         } else if (type != NPT_OBJECT_TYPE_IUNKNOWN &&
-                    !npt_object_type_has_ancestor(existing->type, type)) {
-            npt_log("object table: id 0x%016" PRIx64
-                    " re-registered with unrelated type %u (was %u)",
-                    id, (unsigned)type, (unsigned)existing->type);
-         }
-      }
-      mtx_unlock(&ctx->object_mutex);
-      return;
-   }
-
-   struct npt_object *e = calloc(1, sizeof(*e));
-   if (!e) {
-      mtx_unlock(&ctx->object_mutex);
-      return;
-   }
-   e->id = id;
-   e->type = type;
-   e->host_ptr = obj;
-
-   /* Key points into e->id so the hash key stays valid for e's lifetime. */
-   _mesa_hash_table_insert(ctx->object_table, &e->id, e);
-   if (ctx->object_waiters)
-      cnd_broadcast(&ctx->object_cond);
+   if (entry)
+      npt_object_upgrade_type_locked(ctx, entry->data, type);
+   else
+      npt_object_insert_locked(ctx, id, obj, identity, type);
    mtx_unlock(&ctx->object_mutex);
+}
+
+/* Caller holds object_mutex.  The id already registered for `ident`'s
+ * object that can stand in for a `type` interface: one whose type is
+ * in `type`'s family (the same interface at some version) or derives
+ * from `type` (the object's own wrapper serves a base interface).  The
+ * most derived wins, the primary on a tie; `IUNKNOWN` asks for the
+ * primary itself.  NULL when no registered id qualifies. */
+static struct npt_object *
+npt_identity_pick_locked(struct npt_context *ctx,
+                         const struct npt_identity *ident,
+                         npt_object_type type)
+{
+   struct npt_object *best = NULL;
+   uint32_t best_depth = 0;
+   for (uint32_t i = 0; i < ident->count; i++) {
+      struct hash_entry *entry =
+         _mesa_hash_table_search(ctx->object_table, &ident->ids[i]);
+      if (!entry)
+         continue;
+      struct npt_object *e = entry->data;
+      if (!e->host_ptr)
+         continue;
+      if (type == NPT_OBJECT_TYPE_IUNKNOWN) {
+         if (e->id == ident->primary_id)
+            return e;
+         continue;
+      }
+      if (!npt_object_type_same_family(e->type, type) &&
+          !npt_object_type_has_ancestor(e->type, type))
+         continue;
+      const uint32_t depth = npt_object_type_depth(e->type);
+      if (!best || depth > best_depth ||
+          (depth == best_depth && e->id == ident->primary_id)) {
+         best = e;
+         best_depth = depth;
+      }
+   }
+   return best;
+}
+
+/* `identity` is the object `obj` belongs to; NULL asks the pointer. */
+static void
+npt_context_register_canonical_as(struct npt_context *ctx,
+                                  uint64_t id,
+                                  void *obj,
+                                  void *identity,
+                                  npt_object_type type,
+                                  struct npt_wire_object_ref *ref)
+{
+   memset(ref, 0, sizeof(*ref));
+   if (!obj)
+      return;
+   if (!id || !type || !ctx || !ctx->object_table) {
+      npt_com_release(obj);
+      return;
+   }
+
+   if (!identity)
+      identity = npt_object_identity_of(obj);
+
+   mtx_lock(&ctx->object_mutex);
+   struct hash_entry *entry = _mesa_hash_table_search(ctx->object_table, &id);
+   struct npt_object *e = entry ? entry->data : NULL;
+   if (e) {
+      /* The guest reused an id it still holds: another registration of
+       * it. */
+      npt_object_upgrade_type_locked(ctx, e, type);
+      e->regs++;
+   } else {
+      struct npt_identity *ident = npt_identity_find_locked(ctx, identity);
+      e = ident ? npt_identity_pick_locked(ctx, ident, type) : NULL;
+      if (e) {
+         if (npt_object_type_same_family(e->type, type))
+            npt_object_upgrade_type_locked(ctx, e, type);
+         e->regs++;
+      } else {
+         e = npt_object_insert_locked(ctx, id, obj, identity, type);
+      }
+   }
+   if (e) {
+      ref->id = e->id;
+      ref->primary_id = npt_identity_primary_locked(ctx, e);
+      ref->type = (uint32_t)e->type;
+   }
+   mtx_unlock(&ctx->object_mutex);
+
+   if (!e)
+      npt_com_release(obj);
+}
+
+void
+npt_context_register_canonical_object(struct npt_context *ctx,
+                                      uint64_t id,
+                                      void *obj,
+                                      npt_object_type type,
+                                      struct npt_wire_object_ref *ref)
+{
+   npt_context_register_canonical_as(ctx, id, obj, NULL, type, ref);
 }
 
 void
@@ -310,6 +541,21 @@ npt_context_await_object_locked(struct npt_context *ctx, uint64_t id)
    }
 }
 
+/* Caller holds object_mutex. */
+static void
+npt_context_unregister_locked(struct npt_context *ctx, struct hash_entry *entry)
+{
+   struct npt_object *e = entry->data;
+   const uint64_t id = e->id;
+   npt_identity_remove_locked(ctx, e);
+   free(e);
+   _mesa_hash_table_remove(ctx->object_table, entry);
+   /* Invalidate this id's slot in every decoder's lookup cache before
+    * the id can be reused by a new object. */
+   atomic_fetch_add_explicit(&ctx->object_gen[npt_lookup_cache_slot(id)],
+                             1, memory_order_release);
+}
+
 void
 npt_context_unregister_object(struct npt_context *ctx, uint64_t id)
 {
@@ -318,14 +564,8 @@ npt_context_unregister_object(struct npt_context *ctx, uint64_t id)
 
    mtx_lock(&ctx->object_mutex);
    struct hash_entry *entry = _mesa_hash_table_search(ctx->object_table, &id);
-   if (entry) {
-      free(entry->data);
-      _mesa_hash_table_remove(ctx->object_table, entry);
-      /* Invalidate this id's slot in every decoder's lookup cache before
-       * the id can be reused by a new object. */
-      atomic_fetch_add_explicit(&ctx->object_gen[npt_lookup_cache_slot(id)],
-                                1, memory_order_release);
-   }
+   if (entry)
+      npt_context_unregister_locked(ctx, entry);
    mtx_unlock(&ctx->object_mutex);
 }
 
@@ -477,20 +717,38 @@ npt_context_lookup_object(struct npt_context *ctx,
 void
 npt_context_release_object(struct npt_context *ctx, uint64_t guest_id)
 {
-   if (!guest_id)
+   if (!guest_id || !ctx || !ctx->object_table)
       return;
 
    /* Permissive: stray RELEASE on an unregistered id (e.g. racing a
     * host-failed QI) is silent; the guest-side wrapper dtor emits
     * COM_RELEASE unconditionally. */
-   void *obj = npt_context_lookup_object(ctx, NULL, guest_id,
-                                         NPT_OBJECT_TYPE_IUNKNOWN);
+   mtx_lock(&ctx->object_mutex);
+   struct hash_entry *entry =
+      _mesa_hash_table_search(ctx->object_table, &guest_id);
+   if (!entry) {
+      mtx_unlock(&ctx->object_mutex);
+      return;
+   }
+   struct npt_object *e = entry->data;
+   void *obj = e->host_ptr;
+   if (obj && e->regs > 1) {
+      /* A surplus registration: the id stays, with the state keyed by
+       * it (feedback, heap pins), and only its host-library ref goes. */
+      e->regs--;
+      mtx_unlock(&ctx->object_mutex);
+      npt_com_release(obj);
+      return;
+   }
+   /* The id leaves the table under the lock, so no canonical answer can
+    * name it again on its way out. */
+   npt_context_unregister_locked(ctx, entry);
+   mtx_unlock(&ctx->object_mutex);
 
    /* Order: feedback_unregister BEFORE IUnknown::Release, otherwise a
     * between-commands poll could call GetData / GetCompletedValue on
     * a freed pointer. */
    npt_feedback_unregister(ctx, guest_id);
-   npt_context_unregister_object(ctx, guest_id);
 
    if (!obj)
       return;
@@ -506,30 +764,40 @@ HRESULT
 npt_context_query_interface(struct npt_context *ctx,
                             uint64_t src_guest_id,
                             const GUID *riid,
-                            uint64_t new_guest_id)
+                            uint64_t new_guest_id,
+                            struct npt_wire_object_ref *ref)
 {
-   void *src = npt_context_lookup_object(ctx, NULL, src_guest_id,
-                                         NPT_OBJECT_TYPE_IUNKNOWN);
-   if (!src && src_guest_id && npt_ring_current()) {
-      /* The source may have been created on another ring whose
-       * decoder has not reached the Create yet; IUnknown lookups are
-       * permissive, so wait for it explicitly. */
-      mtx_lock(&ctx->object_mutex);
-      const struct npt_object *obj =
-         npt_context_await_object_locked(ctx, src_guest_id);
-      src = obj ? obj->host_ptr : NULL;
-      mtx_unlock(&ctx->object_mutex);
+   memset(ref, 0, sizeof(*ref));
+   /* The source may have been created on another ring whose decoder
+    * has not reached the Create yet, so wait for it explicitly. */
+   void *src = NULL;
+   void *identity = NULL;
+   mtx_lock(&ctx->object_mutex);
+   struct hash_entry *entry =
+      _mesa_hash_table_search(ctx->object_table, &src_guest_id);
+   const struct npt_object *obj = entry ? entry->data : NULL;
+   if (!obj && src_guest_id && npt_ring_current())
+      obj = npt_context_await_object_locked(ctx, src_guest_id);
+   if (obj) {
+      src = obj->host_ptr;
+      identity = obj->identity;
    }
+   mtx_unlock(&ctx->object_mutex);
    if (!src || !new_guest_id)
       return NPT_E_NOINTERFACE;
 
    void *out = NULL;
    HRESULT hr = npt_com_query_interface(src, riid, &out);
-   /* Resolve via IID table so later lookups validate exactly; unknown
-    * IIDs fall back to IUNKNOWN. */
+   /* An interface QueryInterface hands out belongs to the object it was
+    * asked of, by COM's rule, so the result joins the source's identity
+    * whatever the backend's own IUnknown says (a backend whose DXGI view
+    * of a device answers IUnknown with another pointer would otherwise
+    * split the object in two).  Resolve the type via the IID table so
+    * later lookups validate exactly; unknown IIDs fall back to IUNKNOWN,
+    * which answers the object's primary. */
    if (NPT_SUCCEEDED(hr) && out)
-      npt_context_register_object(ctx, new_guest_id, out,
-                                  npt_object_type_from_iid(riid));
+      npt_context_register_canonical_as(ctx, new_guest_id, out, identity,
+                                        npt_object_type_from_iid(riid), ref);
    return hr;
 }
 
@@ -561,6 +829,17 @@ npt_cs_handle_register_guest_id(struct npt_dispatch_context *dispatch,
       return;
    struct npt_context *ctx = npt_context_from_dispatch(dispatch);
    npt_context_register_object(ctx, guest_id, obj, type);
+}
+
+void
+npt_cs_handle_register_canonical_guest_id(struct npt_dispatch_context *dispatch,
+                                          uint64_t guest_id,
+                                          void *obj,
+                                          npt_object_type type,
+                                          struct npt_wire_object_ref *ref)
+{
+   struct npt_context *ctx = npt_context_from_dispatch(dispatch);
+   npt_context_register_canonical_object(ctx, guest_id, obj, type, ref);
 }
 
 void
@@ -736,6 +1015,9 @@ npt_context_create(uint32_t ctx_id,
       _mesa_hash_table_create(NULL, hash_uint64, equal_uint64);
    if (!ctx->object_table)
       goto err_object_table;
+   ctx->identity_table = _mesa_pointer_hash_table_create(NULL);
+   if (!ctx->identity_table)
+      goto err_identity_table;
 
    if (npt_cs_encoder_init(&ctx->encoder, &ctx->cs_fatal_error))
       goto err_encoder;
@@ -757,6 +1039,8 @@ npt_context_create(uint32_t ctx_id,
 err_decoder:
    npt_cs_encoder_fini(&ctx->encoder);
 err_encoder:
+   _mesa_hash_table_destroy(ctx->identity_table, NULL);
+err_identity_table:
    _mesa_hash_table_destroy(ctx->object_table, NULL);
 err_object_table:
    mtx_destroy(&ctx->deferred_mutex);
@@ -836,6 +1120,12 @@ npt_context_destroy(struct npt_context *ctx)
       free(entry->data);
    }
    _mesa_hash_table_destroy(ctx->object_table, NULL);
+   hash_table_foreach(ctx->identity_table, entry) {
+      struct npt_identity *ident = entry->data;
+      free(ident->ids);
+      free(ident);
+   }
+   _mesa_hash_table_destroy(ctx->identity_table, NULL);
    cnd_destroy(&ctx->object_cond);
    mtx_destroy(&ctx->object_mutex);
 

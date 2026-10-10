@@ -146,9 +146,9 @@ npt_dispatch_ID3D11DeviceContext_VSSetConstantBuffers(struct npt_dispatch_contex
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -291,9 +291,9 @@ npt_dispatch_ID3D11DeviceContext_PSSetShaderResources(struct npt_dispatch_contex
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -441,9 +441,9 @@ npt_dispatch_ID3D11DeviceContext_PSSetShader(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -586,9 +586,9 @@ npt_dispatch_ID3D11DeviceContext_PSSetSamplers(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -736,9 +736,9 @@ npt_dispatch_ID3D11DeviceContext_VSSetShader(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -860,9 +860,9 @@ npt_dispatch_ID3D11DeviceContext_DrawIndexed(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -981,9 +981,9 @@ npt_dispatch_ID3D11DeviceContext_Draw(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -1121,9 +1121,9 @@ npt_dispatch_ID3D11DeviceContext_Map(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -1247,9 +1247,9 @@ npt_dispatch_ID3D11DeviceContext_Unmap(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -1392,9 +1392,9 @@ npt_dispatch_ID3D11DeviceContext_PSSetConstantBuffers(struct npt_dispatch_contex
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -1515,9 +1515,9 @@ npt_dispatch_ID3D11DeviceContext_IASetInputLayout(struct npt_dispatch_context *c
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -1688,9 +1688,9 @@ npt_dispatch_ID3D11DeviceContext_IASetVertexBuffers(struct npt_dispatch_context 
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -1817,9 +1817,9 @@ npt_dispatch_ID3D11DeviceContext_IASetIndexBuffer(struct npt_dispatch_context *c
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -1947,9 +1947,9 @@ npt_dispatch_ID3D11DeviceContext_DrawIndexedInstanced(struct npt_dispatch_contex
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -2074,9 +2074,9 @@ npt_dispatch_ID3D11DeviceContext_DrawInstanced(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -2219,9 +2219,9 @@ npt_dispatch_ID3D11DeviceContext_GSSetConstantBuffers(struct npt_dispatch_contex
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -2369,9 +2369,9 @@ npt_dispatch_ID3D11DeviceContext_GSSetShader(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -2487,9 +2487,9 @@ npt_dispatch_ID3D11DeviceContext_IASetPrimitiveTopology(struct npt_dispatch_cont
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -2632,9 +2632,9 @@ npt_dispatch_ID3D11DeviceContext_VSSetShaderResources(struct npt_dispatch_contex
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -2777,9 +2777,9 @@ npt_dispatch_ID3D11DeviceContext_VSSetSamplers(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -2900,9 +2900,9 @@ npt_dispatch_ID3D11DeviceContext_Begin(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -3023,9 +3023,9 @@ npt_dispatch_ID3D11DeviceContext_End(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -3168,9 +3168,9 @@ npt_dispatch_ID3D11DeviceContext_GetData(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -3294,9 +3294,9 @@ npt_dispatch_ID3D11DeviceContext_SetPredication(struct npt_dispatch_context *ctx
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -3439,9 +3439,9 @@ npt_dispatch_ID3D11DeviceContext_GSSetShaderResources(struct npt_dispatch_contex
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -3584,9 +3584,9 @@ npt_dispatch_ID3D11DeviceContext_GSSetSamplers(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -3734,9 +3734,9 @@ npt_dispatch_ID3D11DeviceContext_OMSetRenderTargets(struct npt_dispatch_context 
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -3927,9 +3927,9 @@ npt_dispatch_ID3D11DeviceContext_OMSetRenderTargetsAndUnorderedAccessViews(struc
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -4066,9 +4066,9 @@ npt_dispatch_ID3D11DeviceContext_OMSetBlendState(struct npt_dispatch_context *ct
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -4192,9 +4192,9 @@ npt_dispatch_ID3D11DeviceContext_OMSetDepthStencilState(struct npt_dispatch_cont
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -4348,9 +4348,9 @@ npt_dispatch_ID3D11DeviceContext_SOSetTargets(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -4463,9 +4463,9 @@ npt_dispatch_ID3D11DeviceContext_DrawAuto(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -4589,9 +4589,9 @@ npt_dispatch_ID3D11DeviceContext_DrawIndexedInstancedIndirect(struct npt_dispatc
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -4715,9 +4715,9 @@ npt_dispatch_ID3D11DeviceContext_DrawInstancedIndirect(struct npt_dispatch_conte
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -4839,9 +4839,9 @@ npt_dispatch_ID3D11DeviceContext_Dispatch(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -4965,9 +4965,9 @@ npt_dispatch_ID3D11DeviceContext_DispatchIndirect(struct npt_dispatch_context *c
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -5088,9 +5088,9 @@ npt_dispatch_ID3D11DeviceContext_RSSetState(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -5222,9 +5222,9 @@ npt_dispatch_ID3D11DeviceContext_RSSetViewports(struct npt_dispatch_context *ctx
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -5356,9 +5356,9 @@ npt_dispatch_ID3D11DeviceContext_RSSetScissorRects(struct npt_dispatch_context *
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -5511,9 +5511,9 @@ npt_dispatch_ID3D11DeviceContext_CopySubresourceRegion(struct npt_dispatch_conte
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -5642,9 +5642,9 @@ npt_dispatch_ID3D11DeviceContext_CopyResource(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -5787,9 +5787,9 @@ npt_dispatch_ID3D11DeviceContext_UpdateSubresource(struct npt_dispatch_context *
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -5921,9 +5921,9 @@ npt_dispatch_ID3D11DeviceContext_CopyStructureCount(struct npt_dispatch_context 
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -6050,9 +6050,9 @@ npt_dispatch_ID3D11DeviceContext_ClearRenderTargetView(struct npt_dispatch_conte
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -6179,9 +6179,9 @@ npt_dispatch_ID3D11DeviceContext_ClearUnorderedAccessViewUint(struct npt_dispatc
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -6308,9 +6308,9 @@ npt_dispatch_ID3D11DeviceContext_ClearUnorderedAccessViewFloat(struct npt_dispat
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -6440,9 +6440,9 @@ npt_dispatch_ID3D11DeviceContext_ClearDepthStencilView(struct npt_dispatch_conte
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -6563,9 +6563,9 @@ npt_dispatch_ID3D11DeviceContext_GenerateMips(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -6689,9 +6689,9 @@ npt_dispatch_ID3D11DeviceContext_SetResourceMinLOD(struct npt_dispatch_context *
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -6813,9 +6813,9 @@ npt_dispatch_ID3D11DeviceContext_GetResourceMinLOD(struct npt_dispatch_context *
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -6953,9 +6953,9 @@ npt_dispatch_ID3D11DeviceContext_ResolveSubresource(struct npt_dispatch_context 
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -7079,9 +7079,9 @@ npt_dispatch_ID3D11DeviceContext_ExecuteCommandList(struct npt_dispatch_context 
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -7224,9 +7224,9 @@ npt_dispatch_ID3D11DeviceContext_HSSetShaderResources(struct npt_dispatch_contex
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -7374,9 +7374,9 @@ npt_dispatch_ID3D11DeviceContext_HSSetShader(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -7519,9 +7519,9 @@ npt_dispatch_ID3D11DeviceContext_HSSetSamplers(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -7664,9 +7664,9 @@ npt_dispatch_ID3D11DeviceContext_HSSetConstantBuffers(struct npt_dispatch_contex
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -7809,9 +7809,9 @@ npt_dispatch_ID3D11DeviceContext_DSSetShaderResources(struct npt_dispatch_contex
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -7959,9 +7959,9 @@ npt_dispatch_ID3D11DeviceContext_DSSetShader(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -8104,9 +8104,9 @@ npt_dispatch_ID3D11DeviceContext_DSSetSamplers(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -8249,9 +8249,9 @@ npt_dispatch_ID3D11DeviceContext_DSSetConstantBuffers(struct npt_dispatch_contex
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -8394,9 +8394,9 @@ npt_dispatch_ID3D11DeviceContext_CSSetShaderResources(struct npt_dispatch_contex
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -8553,9 +8553,9 @@ npt_dispatch_ID3D11DeviceContext_CSSetUnorderedAccessViews(struct npt_dispatch_c
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -8703,9 +8703,9 @@ npt_dispatch_ID3D11DeviceContext_CSSetShader(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -8848,9 +8848,9 @@ npt_dispatch_ID3D11DeviceContext_CSSetSamplers(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -8993,9 +8993,9 @@ npt_dispatch_ID3D11DeviceContext_CSSetConstantBuffers(struct npt_dispatch_contex
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -9023,6 +9023,7 @@ struct npt_command_ID3D11DeviceContext_VSGetConstantBuffers {
      * that decodes the wire ids. */
     uint64_t *_guest_ids_ppConstantBuffers;
     uint32_t _guest_id_count_ppConstantBuffers;
+    struct npt_wire_object_ref *_refs_ppConstantBuffers;
 };
 
 static inline void
@@ -9039,6 +9040,9 @@ npt_decode_ID3D11DeviceContext_VSGetConstantBuffers_args_temp(struct npt_cs_deco
         args->_guest_id_count_ppConstantBuffers = (uint32_t)_cnt;
         if (_cnt && (!args->ppConstantBuffers || !args->_guest_ids_ppConstantBuffers)) return;
         if (_cnt) memset(args->ppConstantBuffers, 0, sizeof(void *) * _cnt);
+        args->_refs_ppConstantBuffers = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
+        if (_cnt && !args->_refs_ppConstantBuffers) return;
+        if (_cnt) memset(args->_refs_ppConstantBuffers, 0, sizeof(struct npt_wire_object_ref) * _cnt);
         for (uint64_t _i = 0; _i < _cnt; _i++) {
             uint64_t _gid;
             npt_decode_uint64_t(dec, &_gid);
@@ -9066,7 +9070,12 @@ npt_encode_ID3D11DeviceContext_VSGetConstantBuffers_reply(struct npt_cs_encoder 
         .cmd_return = 0,
     };
     npt_cs_encoder_write(enc, sizeof(_reply), &_reply, sizeof(_reply));
-/* skip args->ppConstantBuffers (guest-allocated id, registered host-side; not in reply) */
+{
+    const uint32_t _n = args->_guest_id_count_ppConstantBuffers;
+    npt_encode_array_count(enc, _n);
+    for (uint32_t _i = 0; _i < _n; _i++)
+        npt_encode_npt_wire_object_ref(enc, &args->_refs_ppConstantBuffers[_i]);
+}
 }
 
 static inline void
@@ -9135,14 +9144,14 @@ npt_dispatch_ID3D11DeviceContext_VSGetConstantBuffers(struct npt_dispatch_contex
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
     if (args.ppConstantBuffers && args._guest_ids_ppConstantBuffers) {
         const uint32_t _n = args._guest_id_count_ppConstantBuffers;
         for (uint32_t _i = 0; _i < _n; _i++)
-            npt_cs_handle_register_guest_id(ctx,
-                args._guest_ids_ppConstantBuffers[_i], args.ppConstantBuffers[_i], NPT_OBJECT_TYPE_ID3D11BUFFER);
+            npt_cs_handle_register_canonical_guest_id(ctx,
+                args._guest_ids_ppConstantBuffers[_i], args.ppConstantBuffers[_i], NPT_OBJECT_TYPE_ID3D11BUFFER, &args._refs_ppConstantBuffers[_i]);
     }
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
@@ -9171,6 +9180,7 @@ struct npt_command_ID3D11DeviceContext_PSGetShaderResources {
      * that decodes the wire ids. */
     uint64_t *_guest_ids_ppShaderResourceViews;
     uint32_t _guest_id_count_ppShaderResourceViews;
+    struct npt_wire_object_ref *_refs_ppShaderResourceViews;
 };
 
 static inline void
@@ -9187,6 +9197,9 @@ npt_decode_ID3D11DeviceContext_PSGetShaderResources_args_temp(struct npt_cs_deco
         args->_guest_id_count_ppShaderResourceViews = (uint32_t)_cnt;
         if (_cnt && (!args->ppShaderResourceViews || !args->_guest_ids_ppShaderResourceViews)) return;
         if (_cnt) memset(args->ppShaderResourceViews, 0, sizeof(void *) * _cnt);
+        args->_refs_ppShaderResourceViews = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
+        if (_cnt && !args->_refs_ppShaderResourceViews) return;
+        if (_cnt) memset(args->_refs_ppShaderResourceViews, 0, sizeof(struct npt_wire_object_ref) * _cnt);
         for (uint64_t _i = 0; _i < _cnt; _i++) {
             uint64_t _gid;
             npt_decode_uint64_t(dec, &_gid);
@@ -9214,7 +9227,12 @@ npt_encode_ID3D11DeviceContext_PSGetShaderResources_reply(struct npt_cs_encoder 
         .cmd_return = 0,
     };
     npt_cs_encoder_write(enc, sizeof(_reply), &_reply, sizeof(_reply));
-/* skip args->ppShaderResourceViews (guest-allocated id, registered host-side; not in reply) */
+{
+    const uint32_t _n = args->_guest_id_count_ppShaderResourceViews;
+    npt_encode_array_count(enc, _n);
+    for (uint32_t _i = 0; _i < _n; _i++)
+        npt_encode_npt_wire_object_ref(enc, &args->_refs_ppShaderResourceViews[_i]);
+}
 }
 
 static inline void
@@ -9283,14 +9301,14 @@ npt_dispatch_ID3D11DeviceContext_PSGetShaderResources(struct npt_dispatch_contex
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
     if (args.ppShaderResourceViews && args._guest_ids_ppShaderResourceViews) {
         const uint32_t _n = args._guest_id_count_ppShaderResourceViews;
         for (uint32_t _i = 0; _i < _n; _i++)
-            npt_cs_handle_register_guest_id(ctx,
-                args._guest_ids_ppShaderResourceViews[_i], args.ppShaderResourceViews[_i], NPT_OBJECT_TYPE_ID3D11SHADERRESOURCEVIEW);
+            npt_cs_handle_register_canonical_guest_id(ctx,
+                args._guest_ids_ppShaderResourceViews[_i], args.ppShaderResourceViews[_i], NPT_OBJECT_TYPE_ID3D11SHADERRESOURCEVIEW, &args._refs_ppShaderResourceViews[_i]);
     }
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
@@ -9319,11 +9337,13 @@ struct npt_command_ID3D11DeviceContext_PSGetShader {
      * this field and inserts {_guest_id_ppPixelShader -> *ppPixelShader} in the
      * context object table. */
     uint64_t _guest_id_ppPixelShader;
+    struct npt_wire_object_ref _ref_ppPixelShader;
     /* Shadow: per-element guest-allocated ids for ppClassInstances.  Array and
      * count are temp-allocated from the decoder pool in the same pass
      * that decodes the wire ids. */
     uint64_t *_guest_ids_ppClassInstances;
     uint32_t _guest_id_count_ppClassInstances;
+    struct npt_wire_object_ref *_refs_ppClassInstances;
 };
 
 static inline void
@@ -9346,6 +9366,9 @@ npt_decode_ID3D11DeviceContext_PSGetShader_args_temp(struct npt_cs_decoder *dec,
         args->_guest_id_count_ppClassInstances = (uint32_t)_cnt;
         if (_cnt && (!args->ppClassInstances || !args->_guest_ids_ppClassInstances)) return;
         if (_cnt) memset(args->ppClassInstances, 0, sizeof(void *) * _cnt);
+        args->_refs_ppClassInstances = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
+        if (_cnt && !args->_refs_ppClassInstances) return;
+        if (_cnt) memset(args->_refs_ppClassInstances, 0, sizeof(struct npt_wire_object_ref) * _cnt);
         for (uint64_t _i = 0; _i < _cnt; _i++) {
             uint64_t _gid;
             npt_decode_uint64_t(dec, &_gid);
@@ -9380,8 +9403,13 @@ npt_encode_ID3D11DeviceContext_PSGetShader_reply(struct npt_cs_encoder *enc,
         .cmd_return = 0,
     };
     npt_cs_encoder_write(enc, sizeof(_reply), &_reply, sizeof(_reply));
-/* skip args->ppPixelShader (guest-allocated id, registered host-side; not in reply) */
-/* skip args->ppClassInstances (guest-allocated id, registered host-side; not in reply) */
+npt_encode_npt_wire_object_ref(enc, &args->_ref_ppPixelShader);
+{
+    const uint32_t _n = args->_guest_id_count_ppClassInstances;
+    npt_encode_array_count(enc, _n);
+    for (uint32_t _i = 0; _i < _n; _i++)
+        npt_encode_npt_wire_object_ref(enc, &args->_refs_ppClassInstances[_i]);
+}
     if (npt_encode_simple_pointer(enc, args->pNumClassInstances))
         npt_encode_UINT(enc, args->pNumClassInstances);
 }
@@ -9452,18 +9480,16 @@ npt_dispatch_ID3D11DeviceContext_PSGetShader(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
-    if (args.ppPixelShader && *args.ppPixelShader)
-        npt_cs_handle_register_guest_id(ctx, args._guest_id_ppPixelShader, *args.ppPixelShader, NPT_OBJECT_TYPE_ID3D11PIXELSHADER);
-    else if (args.ppPixelShader)
-        npt_cs_handle_register_failed_guest_id(ctx, args._guest_id_ppPixelShader);
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
+    if (args.ppPixelShader)
+        npt_cs_handle_register_canonical_guest_id(ctx, args._guest_id_ppPixelShader, *args.ppPixelShader, NPT_OBJECT_TYPE_ID3D11PIXELSHADER, &args._ref_ppPixelShader);
     if (args.ppClassInstances && args._guest_ids_ppClassInstances) {
         const uint32_t _n = args._guest_id_count_ppClassInstances;
         for (uint32_t _i = 0; _i < _n; _i++)
-            npt_cs_handle_register_guest_id(ctx,
-                args._guest_ids_ppClassInstances[_i], args.ppClassInstances[_i], NPT_OBJECT_TYPE_ID3D11CLASSINSTANCE);
+            npt_cs_handle_register_canonical_guest_id(ctx,
+                args._guest_ids_ppClassInstances[_i], args.ppClassInstances[_i], NPT_OBJECT_TYPE_ID3D11CLASSINSTANCE, &args._refs_ppClassInstances[_i]);
     }
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
@@ -9492,6 +9518,7 @@ struct npt_command_ID3D11DeviceContext_PSGetSamplers {
      * that decodes the wire ids. */
     uint64_t *_guest_ids_ppSamplers;
     uint32_t _guest_id_count_ppSamplers;
+    struct npt_wire_object_ref *_refs_ppSamplers;
 };
 
 static inline void
@@ -9508,6 +9535,9 @@ npt_decode_ID3D11DeviceContext_PSGetSamplers_args_temp(struct npt_cs_decoder *de
         args->_guest_id_count_ppSamplers = (uint32_t)_cnt;
         if (_cnt && (!args->ppSamplers || !args->_guest_ids_ppSamplers)) return;
         if (_cnt) memset(args->ppSamplers, 0, sizeof(void *) * _cnt);
+        args->_refs_ppSamplers = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
+        if (_cnt && !args->_refs_ppSamplers) return;
+        if (_cnt) memset(args->_refs_ppSamplers, 0, sizeof(struct npt_wire_object_ref) * _cnt);
         for (uint64_t _i = 0; _i < _cnt; _i++) {
             uint64_t _gid;
             npt_decode_uint64_t(dec, &_gid);
@@ -9535,7 +9565,12 @@ npt_encode_ID3D11DeviceContext_PSGetSamplers_reply(struct npt_cs_encoder *enc,
         .cmd_return = 0,
     };
     npt_cs_encoder_write(enc, sizeof(_reply), &_reply, sizeof(_reply));
-/* skip args->ppSamplers (guest-allocated id, registered host-side; not in reply) */
+{
+    const uint32_t _n = args->_guest_id_count_ppSamplers;
+    npt_encode_array_count(enc, _n);
+    for (uint32_t _i = 0; _i < _n; _i++)
+        npt_encode_npt_wire_object_ref(enc, &args->_refs_ppSamplers[_i]);
+}
 }
 
 static inline void
@@ -9604,14 +9639,14 @@ npt_dispatch_ID3D11DeviceContext_PSGetSamplers(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
     if (args.ppSamplers && args._guest_ids_ppSamplers) {
         const uint32_t _n = args._guest_id_count_ppSamplers;
         for (uint32_t _i = 0; _i < _n; _i++)
-            npt_cs_handle_register_guest_id(ctx,
-                args._guest_ids_ppSamplers[_i], args.ppSamplers[_i], NPT_OBJECT_TYPE_ID3D11SAMPLERSTATE);
+            npt_cs_handle_register_canonical_guest_id(ctx,
+                args._guest_ids_ppSamplers[_i], args.ppSamplers[_i], NPT_OBJECT_TYPE_ID3D11SAMPLERSTATE, &args._refs_ppSamplers[_i]);
     }
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
@@ -9640,11 +9675,13 @@ struct npt_command_ID3D11DeviceContext_VSGetShader {
      * this field and inserts {_guest_id_ppVertexShader -> *ppVertexShader} in the
      * context object table. */
     uint64_t _guest_id_ppVertexShader;
+    struct npt_wire_object_ref _ref_ppVertexShader;
     /* Shadow: per-element guest-allocated ids for ppClassInstances.  Array and
      * count are temp-allocated from the decoder pool in the same pass
      * that decodes the wire ids. */
     uint64_t *_guest_ids_ppClassInstances;
     uint32_t _guest_id_count_ppClassInstances;
+    struct npt_wire_object_ref *_refs_ppClassInstances;
 };
 
 static inline void
@@ -9667,6 +9704,9 @@ npt_decode_ID3D11DeviceContext_VSGetShader_args_temp(struct npt_cs_decoder *dec,
         args->_guest_id_count_ppClassInstances = (uint32_t)_cnt;
         if (_cnt && (!args->ppClassInstances || !args->_guest_ids_ppClassInstances)) return;
         if (_cnt) memset(args->ppClassInstances, 0, sizeof(void *) * _cnt);
+        args->_refs_ppClassInstances = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
+        if (_cnt && !args->_refs_ppClassInstances) return;
+        if (_cnt) memset(args->_refs_ppClassInstances, 0, sizeof(struct npt_wire_object_ref) * _cnt);
         for (uint64_t _i = 0; _i < _cnt; _i++) {
             uint64_t _gid;
             npt_decode_uint64_t(dec, &_gid);
@@ -9701,8 +9741,13 @@ npt_encode_ID3D11DeviceContext_VSGetShader_reply(struct npt_cs_encoder *enc,
         .cmd_return = 0,
     };
     npt_cs_encoder_write(enc, sizeof(_reply), &_reply, sizeof(_reply));
-/* skip args->ppVertexShader (guest-allocated id, registered host-side; not in reply) */
-/* skip args->ppClassInstances (guest-allocated id, registered host-side; not in reply) */
+npt_encode_npt_wire_object_ref(enc, &args->_ref_ppVertexShader);
+{
+    const uint32_t _n = args->_guest_id_count_ppClassInstances;
+    npt_encode_array_count(enc, _n);
+    for (uint32_t _i = 0; _i < _n; _i++)
+        npt_encode_npt_wire_object_ref(enc, &args->_refs_ppClassInstances[_i]);
+}
     if (npt_encode_simple_pointer(enc, args->pNumClassInstances))
         npt_encode_UINT(enc, args->pNumClassInstances);
 }
@@ -9773,18 +9818,16 @@ npt_dispatch_ID3D11DeviceContext_VSGetShader(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
-    if (args.ppVertexShader && *args.ppVertexShader)
-        npt_cs_handle_register_guest_id(ctx, args._guest_id_ppVertexShader, *args.ppVertexShader, NPT_OBJECT_TYPE_ID3D11VERTEXSHADER);
-    else if (args.ppVertexShader)
-        npt_cs_handle_register_failed_guest_id(ctx, args._guest_id_ppVertexShader);
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
+    if (args.ppVertexShader)
+        npt_cs_handle_register_canonical_guest_id(ctx, args._guest_id_ppVertexShader, *args.ppVertexShader, NPT_OBJECT_TYPE_ID3D11VERTEXSHADER, &args._ref_ppVertexShader);
     if (args.ppClassInstances && args._guest_ids_ppClassInstances) {
         const uint32_t _n = args._guest_id_count_ppClassInstances;
         for (uint32_t _i = 0; _i < _n; _i++)
-            npt_cs_handle_register_guest_id(ctx,
-                args._guest_ids_ppClassInstances[_i], args.ppClassInstances[_i], NPT_OBJECT_TYPE_ID3D11CLASSINSTANCE);
+            npt_cs_handle_register_canonical_guest_id(ctx,
+                args._guest_ids_ppClassInstances[_i], args.ppClassInstances[_i], NPT_OBJECT_TYPE_ID3D11CLASSINSTANCE, &args._refs_ppClassInstances[_i]);
     }
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
@@ -9813,6 +9856,7 @@ struct npt_command_ID3D11DeviceContext_PSGetConstantBuffers {
      * that decodes the wire ids. */
     uint64_t *_guest_ids_ppConstantBuffers;
     uint32_t _guest_id_count_ppConstantBuffers;
+    struct npt_wire_object_ref *_refs_ppConstantBuffers;
 };
 
 static inline void
@@ -9829,6 +9873,9 @@ npt_decode_ID3D11DeviceContext_PSGetConstantBuffers_args_temp(struct npt_cs_deco
         args->_guest_id_count_ppConstantBuffers = (uint32_t)_cnt;
         if (_cnt && (!args->ppConstantBuffers || !args->_guest_ids_ppConstantBuffers)) return;
         if (_cnt) memset(args->ppConstantBuffers, 0, sizeof(void *) * _cnt);
+        args->_refs_ppConstantBuffers = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
+        if (_cnt && !args->_refs_ppConstantBuffers) return;
+        if (_cnt) memset(args->_refs_ppConstantBuffers, 0, sizeof(struct npt_wire_object_ref) * _cnt);
         for (uint64_t _i = 0; _i < _cnt; _i++) {
             uint64_t _gid;
             npt_decode_uint64_t(dec, &_gid);
@@ -9856,7 +9903,12 @@ npt_encode_ID3D11DeviceContext_PSGetConstantBuffers_reply(struct npt_cs_encoder 
         .cmd_return = 0,
     };
     npt_cs_encoder_write(enc, sizeof(_reply), &_reply, sizeof(_reply));
-/* skip args->ppConstantBuffers (guest-allocated id, registered host-side; not in reply) */
+{
+    const uint32_t _n = args->_guest_id_count_ppConstantBuffers;
+    npt_encode_array_count(enc, _n);
+    for (uint32_t _i = 0; _i < _n; _i++)
+        npt_encode_npt_wire_object_ref(enc, &args->_refs_ppConstantBuffers[_i]);
+}
 }
 
 static inline void
@@ -9925,14 +9977,14 @@ npt_dispatch_ID3D11DeviceContext_PSGetConstantBuffers(struct npt_dispatch_contex
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
     if (args.ppConstantBuffers && args._guest_ids_ppConstantBuffers) {
         const uint32_t _n = args._guest_id_count_ppConstantBuffers;
         for (uint32_t _i = 0; _i < _n; _i++)
-            npt_cs_handle_register_guest_id(ctx,
-                args._guest_ids_ppConstantBuffers[_i], args.ppConstantBuffers[_i], NPT_OBJECT_TYPE_ID3D11BUFFER);
+            npt_cs_handle_register_canonical_guest_id(ctx,
+                args._guest_ids_ppConstantBuffers[_i], args.ppConstantBuffers[_i], NPT_OBJECT_TYPE_ID3D11BUFFER, &args._refs_ppConstantBuffers[_i]);
     }
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
@@ -9959,6 +10011,7 @@ struct npt_command_ID3D11DeviceContext_IAGetInputLayout {
      * this field and inserts {_guest_id_ppInputLayout -> *ppInputLayout} in the
      * context object table. */
     uint64_t _guest_id_ppInputLayout;
+    struct npt_wire_object_ref _ref_ppInputLayout;
 };
 
 static inline void
@@ -9993,7 +10046,7 @@ npt_encode_ID3D11DeviceContext_IAGetInputLayout_reply(struct npt_cs_encoder *enc
         .cmd_return = 0,
     };
     npt_cs_encoder_write(enc, sizeof(_reply), &_reply, sizeof(_reply));
-/* skip args->ppInputLayout (guest-allocated id, registered host-side; not in reply) */
+npt_encode_npt_wire_object_ref(enc, &args->_ref_ppInputLayout);
 }
 
 static inline void
@@ -10062,13 +10115,11 @@ npt_dispatch_ID3D11DeviceContext_IAGetInputLayout(struct npt_dispatch_context *c
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
-    if (args.ppInputLayout && *args.ppInputLayout)
-        npt_cs_handle_register_guest_id(ctx, args._guest_id_ppInputLayout, *args.ppInputLayout, NPT_OBJECT_TYPE_ID3D11INPUTLAYOUT);
-    else if (args.ppInputLayout)
-        npt_cs_handle_register_failed_guest_id(ctx, args._guest_id_ppInputLayout);
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
+    if (args.ppInputLayout)
+        npt_cs_handle_register_canonical_guest_id(ctx, args._guest_id_ppInputLayout, *args.ppInputLayout, NPT_OBJECT_TYPE_ID3D11INPUTLAYOUT, &args._ref_ppInputLayout);
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -10098,6 +10149,7 @@ struct npt_command_ID3D11DeviceContext_IAGetVertexBuffers {
      * that decodes the wire ids. */
     uint64_t *_guest_ids_ppVertexBuffers;
     uint32_t _guest_id_count_ppVertexBuffers;
+    struct npt_wire_object_ref *_refs_ppVertexBuffers;
 };
 
 static inline void
@@ -10114,6 +10166,9 @@ npt_decode_ID3D11DeviceContext_IAGetVertexBuffers_args_temp(struct npt_cs_decode
         args->_guest_id_count_ppVertexBuffers = (uint32_t)_cnt;
         if (_cnt && (!args->ppVertexBuffers || !args->_guest_ids_ppVertexBuffers)) return;
         if (_cnt) memset(args->ppVertexBuffers, 0, sizeof(void *) * _cnt);
+        args->_refs_ppVertexBuffers = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
+        if (_cnt && !args->_refs_ppVertexBuffers) return;
+        if (_cnt) memset(args->_refs_ppVertexBuffers, 0, sizeof(struct npt_wire_object_ref) * _cnt);
         for (uint64_t _i = 0; _i < _cnt; _i++) {
             uint64_t _gid;
             npt_decode_uint64_t(dec, &_gid);
@@ -10157,7 +10212,12 @@ npt_encode_ID3D11DeviceContext_IAGetVertexBuffers_reply(struct npt_cs_encoder *e
         .cmd_return = 0,
     };
     npt_cs_encoder_write(enc, sizeof(_reply), &_reply, sizeof(_reply));
-/* skip args->ppVertexBuffers (guest-allocated id, registered host-side; not in reply) */
+{
+    const uint32_t _n = args->_guest_id_count_ppVertexBuffers;
+    npt_encode_array_count(enc, _n);
+    for (uint32_t _i = 0; _i < _n; _i++)
+        npt_encode_npt_wire_object_ref(enc, &args->_refs_ppVertexBuffers[_i]);
+}
     if (args->pStrides) {
         npt_encode_array_count(enc, args->NumBuffers);
         npt_encode_UINT_array(enc, args->pStrides, args->NumBuffers);
@@ -10238,14 +10298,14 @@ npt_dispatch_ID3D11DeviceContext_IAGetVertexBuffers(struct npt_dispatch_context 
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
     if (args.ppVertexBuffers && args._guest_ids_ppVertexBuffers) {
         const uint32_t _n = args._guest_id_count_ppVertexBuffers;
         for (uint32_t _i = 0; _i < _n; _i++)
-            npt_cs_handle_register_guest_id(ctx,
-                args._guest_ids_ppVertexBuffers[_i], args.ppVertexBuffers[_i], NPT_OBJECT_TYPE_ID3D11BUFFER);
+            npt_cs_handle_register_canonical_guest_id(ctx,
+                args._guest_ids_ppVertexBuffers[_i], args.ppVertexBuffers[_i], NPT_OBJECT_TYPE_ID3D11BUFFER, &args._refs_ppVertexBuffers[_i]);
     }
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
@@ -10274,6 +10334,7 @@ struct npt_command_ID3D11DeviceContext_IAGetIndexBuffer {
      * this field and inserts {_guest_id_pIndexBuffer -> *pIndexBuffer} in the
      * context object table. */
     uint64_t _guest_id_pIndexBuffer;
+    struct npt_wire_object_ref _ref_pIndexBuffer;
 };
 
 static inline void
@@ -10316,7 +10377,7 @@ npt_encode_ID3D11DeviceContext_IAGetIndexBuffer_reply(struct npt_cs_encoder *enc
         .cmd_return = 0,
     };
     npt_cs_encoder_write(enc, sizeof(_reply), &_reply, sizeof(_reply));
-/* skip args->pIndexBuffer (guest-allocated id, registered host-side; not in reply) */
+npt_encode_npt_wire_object_ref(enc, &args->_ref_pIndexBuffer);
     if (npt_encode_simple_pointer(enc, args->Format))
         npt_encode_DXGI_FORMAT(enc, args->Format);
     if (npt_encode_simple_pointer(enc, args->Offset))
@@ -10389,13 +10450,11 @@ npt_dispatch_ID3D11DeviceContext_IAGetIndexBuffer(struct npt_dispatch_context *c
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
-    if (args.pIndexBuffer && *args.pIndexBuffer)
-        npt_cs_handle_register_guest_id(ctx, args._guest_id_pIndexBuffer, *args.pIndexBuffer, NPT_OBJECT_TYPE_ID3D11BUFFER);
-    else if (args.pIndexBuffer)
-        npt_cs_handle_register_failed_guest_id(ctx, args._guest_id_pIndexBuffer);
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
+    if (args.pIndexBuffer)
+        npt_cs_handle_register_canonical_guest_id(ctx, args._guest_id_pIndexBuffer, *args.pIndexBuffer, NPT_OBJECT_TYPE_ID3D11BUFFER, &args._ref_pIndexBuffer);
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -10423,6 +10482,7 @@ struct npt_command_ID3D11DeviceContext_GSGetConstantBuffers {
      * that decodes the wire ids. */
     uint64_t *_guest_ids_ppConstantBuffers;
     uint32_t _guest_id_count_ppConstantBuffers;
+    struct npt_wire_object_ref *_refs_ppConstantBuffers;
 };
 
 static inline void
@@ -10439,6 +10499,9 @@ npt_decode_ID3D11DeviceContext_GSGetConstantBuffers_args_temp(struct npt_cs_deco
         args->_guest_id_count_ppConstantBuffers = (uint32_t)_cnt;
         if (_cnt && (!args->ppConstantBuffers || !args->_guest_ids_ppConstantBuffers)) return;
         if (_cnt) memset(args->ppConstantBuffers, 0, sizeof(void *) * _cnt);
+        args->_refs_ppConstantBuffers = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
+        if (_cnt && !args->_refs_ppConstantBuffers) return;
+        if (_cnt) memset(args->_refs_ppConstantBuffers, 0, sizeof(struct npt_wire_object_ref) * _cnt);
         for (uint64_t _i = 0; _i < _cnt; _i++) {
             uint64_t _gid;
             npt_decode_uint64_t(dec, &_gid);
@@ -10466,7 +10529,12 @@ npt_encode_ID3D11DeviceContext_GSGetConstantBuffers_reply(struct npt_cs_encoder 
         .cmd_return = 0,
     };
     npt_cs_encoder_write(enc, sizeof(_reply), &_reply, sizeof(_reply));
-/* skip args->ppConstantBuffers (guest-allocated id, registered host-side; not in reply) */
+{
+    const uint32_t _n = args->_guest_id_count_ppConstantBuffers;
+    npt_encode_array_count(enc, _n);
+    for (uint32_t _i = 0; _i < _n; _i++)
+        npt_encode_npt_wire_object_ref(enc, &args->_refs_ppConstantBuffers[_i]);
+}
 }
 
 static inline void
@@ -10535,14 +10603,14 @@ npt_dispatch_ID3D11DeviceContext_GSGetConstantBuffers(struct npt_dispatch_contex
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
     if (args.ppConstantBuffers && args._guest_ids_ppConstantBuffers) {
         const uint32_t _n = args._guest_id_count_ppConstantBuffers;
         for (uint32_t _i = 0; _i < _n; _i++)
-            npt_cs_handle_register_guest_id(ctx,
-                args._guest_ids_ppConstantBuffers[_i], args.ppConstantBuffers[_i], NPT_OBJECT_TYPE_ID3D11BUFFER);
+            npt_cs_handle_register_canonical_guest_id(ctx,
+                args._guest_ids_ppConstantBuffers[_i], args.ppConstantBuffers[_i], NPT_OBJECT_TYPE_ID3D11BUFFER, &args._refs_ppConstantBuffers[_i]);
     }
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
@@ -10571,11 +10639,13 @@ struct npt_command_ID3D11DeviceContext_GSGetShader {
      * this field and inserts {_guest_id_ppGeometryShader -> *ppGeometryShader} in the
      * context object table. */
     uint64_t _guest_id_ppGeometryShader;
+    struct npt_wire_object_ref _ref_ppGeometryShader;
     /* Shadow: per-element guest-allocated ids for ppClassInstances.  Array and
      * count are temp-allocated from the decoder pool in the same pass
      * that decodes the wire ids. */
     uint64_t *_guest_ids_ppClassInstances;
     uint32_t _guest_id_count_ppClassInstances;
+    struct npt_wire_object_ref *_refs_ppClassInstances;
 };
 
 static inline void
@@ -10598,6 +10668,9 @@ npt_decode_ID3D11DeviceContext_GSGetShader_args_temp(struct npt_cs_decoder *dec,
         args->_guest_id_count_ppClassInstances = (uint32_t)_cnt;
         if (_cnt && (!args->ppClassInstances || !args->_guest_ids_ppClassInstances)) return;
         if (_cnt) memset(args->ppClassInstances, 0, sizeof(void *) * _cnt);
+        args->_refs_ppClassInstances = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
+        if (_cnt && !args->_refs_ppClassInstances) return;
+        if (_cnt) memset(args->_refs_ppClassInstances, 0, sizeof(struct npt_wire_object_ref) * _cnt);
         for (uint64_t _i = 0; _i < _cnt; _i++) {
             uint64_t _gid;
             npt_decode_uint64_t(dec, &_gid);
@@ -10632,8 +10705,13 @@ npt_encode_ID3D11DeviceContext_GSGetShader_reply(struct npt_cs_encoder *enc,
         .cmd_return = 0,
     };
     npt_cs_encoder_write(enc, sizeof(_reply), &_reply, sizeof(_reply));
-/* skip args->ppGeometryShader (guest-allocated id, registered host-side; not in reply) */
-/* skip args->ppClassInstances (guest-allocated id, registered host-side; not in reply) */
+npt_encode_npt_wire_object_ref(enc, &args->_ref_ppGeometryShader);
+{
+    const uint32_t _n = args->_guest_id_count_ppClassInstances;
+    npt_encode_array_count(enc, _n);
+    for (uint32_t _i = 0; _i < _n; _i++)
+        npt_encode_npt_wire_object_ref(enc, &args->_refs_ppClassInstances[_i]);
+}
     if (npt_encode_simple_pointer(enc, args->pNumClassInstances))
         npt_encode_UINT(enc, args->pNumClassInstances);
 }
@@ -10704,18 +10782,16 @@ npt_dispatch_ID3D11DeviceContext_GSGetShader(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
-    if (args.ppGeometryShader && *args.ppGeometryShader)
-        npt_cs_handle_register_guest_id(ctx, args._guest_id_ppGeometryShader, *args.ppGeometryShader, NPT_OBJECT_TYPE_ID3D11GEOMETRYSHADER);
-    else if (args.ppGeometryShader)
-        npt_cs_handle_register_failed_guest_id(ctx, args._guest_id_ppGeometryShader);
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
+    if (args.ppGeometryShader)
+        npt_cs_handle_register_canonical_guest_id(ctx, args._guest_id_ppGeometryShader, *args.ppGeometryShader, NPT_OBJECT_TYPE_ID3D11GEOMETRYSHADER, &args._ref_ppGeometryShader);
     if (args.ppClassInstances && args._guest_ids_ppClassInstances) {
         const uint32_t _n = args._guest_id_count_ppClassInstances;
         for (uint32_t _i = 0; _i < _n; _i++)
-            npt_cs_handle_register_guest_id(ctx,
-                args._guest_ids_ppClassInstances[_i], args.ppClassInstances[_i], NPT_OBJECT_TYPE_ID3D11CLASSINSTANCE);
+            npt_cs_handle_register_canonical_guest_id(ctx,
+                args._guest_ids_ppClassInstances[_i], args.ppClassInstances[_i], NPT_OBJECT_TYPE_ID3D11CLASSINSTANCE, &args._refs_ppClassInstances[_i]);
     }
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
@@ -10836,9 +10912,9 @@ npt_dispatch_ID3D11DeviceContext_IAGetPrimitiveTopology(struct npt_dispatch_cont
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -10866,6 +10942,7 @@ struct npt_command_ID3D11DeviceContext_VSGetShaderResources {
      * that decodes the wire ids. */
     uint64_t *_guest_ids_ppShaderResourceViews;
     uint32_t _guest_id_count_ppShaderResourceViews;
+    struct npt_wire_object_ref *_refs_ppShaderResourceViews;
 };
 
 static inline void
@@ -10882,6 +10959,9 @@ npt_decode_ID3D11DeviceContext_VSGetShaderResources_args_temp(struct npt_cs_deco
         args->_guest_id_count_ppShaderResourceViews = (uint32_t)_cnt;
         if (_cnt && (!args->ppShaderResourceViews || !args->_guest_ids_ppShaderResourceViews)) return;
         if (_cnt) memset(args->ppShaderResourceViews, 0, sizeof(void *) * _cnt);
+        args->_refs_ppShaderResourceViews = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
+        if (_cnt && !args->_refs_ppShaderResourceViews) return;
+        if (_cnt) memset(args->_refs_ppShaderResourceViews, 0, sizeof(struct npt_wire_object_ref) * _cnt);
         for (uint64_t _i = 0; _i < _cnt; _i++) {
             uint64_t _gid;
             npt_decode_uint64_t(dec, &_gid);
@@ -10909,7 +10989,12 @@ npt_encode_ID3D11DeviceContext_VSGetShaderResources_reply(struct npt_cs_encoder 
         .cmd_return = 0,
     };
     npt_cs_encoder_write(enc, sizeof(_reply), &_reply, sizeof(_reply));
-/* skip args->ppShaderResourceViews (guest-allocated id, registered host-side; not in reply) */
+{
+    const uint32_t _n = args->_guest_id_count_ppShaderResourceViews;
+    npt_encode_array_count(enc, _n);
+    for (uint32_t _i = 0; _i < _n; _i++)
+        npt_encode_npt_wire_object_ref(enc, &args->_refs_ppShaderResourceViews[_i]);
+}
 }
 
 static inline void
@@ -10978,14 +11063,14 @@ npt_dispatch_ID3D11DeviceContext_VSGetShaderResources(struct npt_dispatch_contex
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
     if (args.ppShaderResourceViews && args._guest_ids_ppShaderResourceViews) {
         const uint32_t _n = args._guest_id_count_ppShaderResourceViews;
         for (uint32_t _i = 0; _i < _n; _i++)
-            npt_cs_handle_register_guest_id(ctx,
-                args._guest_ids_ppShaderResourceViews[_i], args.ppShaderResourceViews[_i], NPT_OBJECT_TYPE_ID3D11SHADERRESOURCEVIEW);
+            npt_cs_handle_register_canonical_guest_id(ctx,
+                args._guest_ids_ppShaderResourceViews[_i], args.ppShaderResourceViews[_i], NPT_OBJECT_TYPE_ID3D11SHADERRESOURCEVIEW, &args._refs_ppShaderResourceViews[_i]);
     }
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
@@ -11014,6 +11099,7 @@ struct npt_command_ID3D11DeviceContext_VSGetSamplers {
      * that decodes the wire ids. */
     uint64_t *_guest_ids_ppSamplers;
     uint32_t _guest_id_count_ppSamplers;
+    struct npt_wire_object_ref *_refs_ppSamplers;
 };
 
 static inline void
@@ -11030,6 +11116,9 @@ npt_decode_ID3D11DeviceContext_VSGetSamplers_args_temp(struct npt_cs_decoder *de
         args->_guest_id_count_ppSamplers = (uint32_t)_cnt;
         if (_cnt && (!args->ppSamplers || !args->_guest_ids_ppSamplers)) return;
         if (_cnt) memset(args->ppSamplers, 0, sizeof(void *) * _cnt);
+        args->_refs_ppSamplers = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
+        if (_cnt && !args->_refs_ppSamplers) return;
+        if (_cnt) memset(args->_refs_ppSamplers, 0, sizeof(struct npt_wire_object_ref) * _cnt);
         for (uint64_t _i = 0; _i < _cnt; _i++) {
             uint64_t _gid;
             npt_decode_uint64_t(dec, &_gid);
@@ -11057,7 +11146,12 @@ npt_encode_ID3D11DeviceContext_VSGetSamplers_reply(struct npt_cs_encoder *enc,
         .cmd_return = 0,
     };
     npt_cs_encoder_write(enc, sizeof(_reply), &_reply, sizeof(_reply));
-/* skip args->ppSamplers (guest-allocated id, registered host-side; not in reply) */
+{
+    const uint32_t _n = args->_guest_id_count_ppSamplers;
+    npt_encode_array_count(enc, _n);
+    for (uint32_t _i = 0; _i < _n; _i++)
+        npt_encode_npt_wire_object_ref(enc, &args->_refs_ppSamplers[_i]);
+}
 }
 
 static inline void
@@ -11126,14 +11220,14 @@ npt_dispatch_ID3D11DeviceContext_VSGetSamplers(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
     if (args.ppSamplers && args._guest_ids_ppSamplers) {
         const uint32_t _n = args._guest_id_count_ppSamplers;
         for (uint32_t _i = 0; _i < _n; _i++)
-            npt_cs_handle_register_guest_id(ctx,
-                args._guest_ids_ppSamplers[_i], args.ppSamplers[_i], NPT_OBJECT_TYPE_ID3D11SAMPLERSTATE);
+            npt_cs_handle_register_canonical_guest_id(ctx,
+                args._guest_ids_ppSamplers[_i], args.ppSamplers[_i], NPT_OBJECT_TYPE_ID3D11SAMPLERSTATE, &args._refs_ppSamplers[_i]);
     }
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
@@ -11161,6 +11255,7 @@ struct npt_command_ID3D11DeviceContext_GetPredication {
      * this field and inserts {_guest_id_ppPredicate -> *ppPredicate} in the
      * context object table. */
     uint64_t _guest_id_ppPredicate;
+    struct npt_wire_object_ref _ref_ppPredicate;
 };
 
 static inline void
@@ -11199,7 +11294,7 @@ npt_encode_ID3D11DeviceContext_GetPredication_reply(struct npt_cs_encoder *enc,
         .cmd_return = 0,
     };
     npt_cs_encoder_write(enc, sizeof(_reply), &_reply, sizeof(_reply));
-/* skip args->ppPredicate (guest-allocated id, registered host-side; not in reply) */
+npt_encode_npt_wire_object_ref(enc, &args->_ref_ppPredicate);
     if (npt_encode_simple_pointer(enc, args->pPredicateValue))
         npt_encode_BOOL(enc, args->pPredicateValue);
 }
@@ -11270,13 +11365,11 @@ npt_dispatch_ID3D11DeviceContext_GetPredication(struct npt_dispatch_context *ctx
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
-    if (args.ppPredicate && *args.ppPredicate)
-        npt_cs_handle_register_guest_id(ctx, args._guest_id_ppPredicate, *args.ppPredicate, NPT_OBJECT_TYPE_ID3D11PREDICATE);
-    else if (args.ppPredicate)
-        npt_cs_handle_register_failed_guest_id(ctx, args._guest_id_ppPredicate);
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
+    if (args.ppPredicate)
+        npt_cs_handle_register_canonical_guest_id(ctx, args._guest_id_ppPredicate, *args.ppPredicate, NPT_OBJECT_TYPE_ID3D11PREDICATE, &args._ref_ppPredicate);
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -11304,6 +11397,7 @@ struct npt_command_ID3D11DeviceContext_GSGetShaderResources {
      * that decodes the wire ids. */
     uint64_t *_guest_ids_ppShaderResourceViews;
     uint32_t _guest_id_count_ppShaderResourceViews;
+    struct npt_wire_object_ref *_refs_ppShaderResourceViews;
 };
 
 static inline void
@@ -11320,6 +11414,9 @@ npt_decode_ID3D11DeviceContext_GSGetShaderResources_args_temp(struct npt_cs_deco
         args->_guest_id_count_ppShaderResourceViews = (uint32_t)_cnt;
         if (_cnt && (!args->ppShaderResourceViews || !args->_guest_ids_ppShaderResourceViews)) return;
         if (_cnt) memset(args->ppShaderResourceViews, 0, sizeof(void *) * _cnt);
+        args->_refs_ppShaderResourceViews = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
+        if (_cnt && !args->_refs_ppShaderResourceViews) return;
+        if (_cnt) memset(args->_refs_ppShaderResourceViews, 0, sizeof(struct npt_wire_object_ref) * _cnt);
         for (uint64_t _i = 0; _i < _cnt; _i++) {
             uint64_t _gid;
             npt_decode_uint64_t(dec, &_gid);
@@ -11347,7 +11444,12 @@ npt_encode_ID3D11DeviceContext_GSGetShaderResources_reply(struct npt_cs_encoder 
         .cmd_return = 0,
     };
     npt_cs_encoder_write(enc, sizeof(_reply), &_reply, sizeof(_reply));
-/* skip args->ppShaderResourceViews (guest-allocated id, registered host-side; not in reply) */
+{
+    const uint32_t _n = args->_guest_id_count_ppShaderResourceViews;
+    npt_encode_array_count(enc, _n);
+    for (uint32_t _i = 0; _i < _n; _i++)
+        npt_encode_npt_wire_object_ref(enc, &args->_refs_ppShaderResourceViews[_i]);
+}
 }
 
 static inline void
@@ -11416,14 +11518,14 @@ npt_dispatch_ID3D11DeviceContext_GSGetShaderResources(struct npt_dispatch_contex
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
     if (args.ppShaderResourceViews && args._guest_ids_ppShaderResourceViews) {
         const uint32_t _n = args._guest_id_count_ppShaderResourceViews;
         for (uint32_t _i = 0; _i < _n; _i++)
-            npt_cs_handle_register_guest_id(ctx,
-                args._guest_ids_ppShaderResourceViews[_i], args.ppShaderResourceViews[_i], NPT_OBJECT_TYPE_ID3D11SHADERRESOURCEVIEW);
+            npt_cs_handle_register_canonical_guest_id(ctx,
+                args._guest_ids_ppShaderResourceViews[_i], args.ppShaderResourceViews[_i], NPT_OBJECT_TYPE_ID3D11SHADERRESOURCEVIEW, &args._refs_ppShaderResourceViews[_i]);
     }
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
@@ -11452,6 +11554,7 @@ struct npt_command_ID3D11DeviceContext_GSGetSamplers {
      * that decodes the wire ids. */
     uint64_t *_guest_ids_ppSamplers;
     uint32_t _guest_id_count_ppSamplers;
+    struct npt_wire_object_ref *_refs_ppSamplers;
 };
 
 static inline void
@@ -11468,6 +11571,9 @@ npt_decode_ID3D11DeviceContext_GSGetSamplers_args_temp(struct npt_cs_decoder *de
         args->_guest_id_count_ppSamplers = (uint32_t)_cnt;
         if (_cnt && (!args->ppSamplers || !args->_guest_ids_ppSamplers)) return;
         if (_cnt) memset(args->ppSamplers, 0, sizeof(void *) * _cnt);
+        args->_refs_ppSamplers = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
+        if (_cnt && !args->_refs_ppSamplers) return;
+        if (_cnt) memset(args->_refs_ppSamplers, 0, sizeof(struct npt_wire_object_ref) * _cnt);
         for (uint64_t _i = 0; _i < _cnt; _i++) {
             uint64_t _gid;
             npt_decode_uint64_t(dec, &_gid);
@@ -11495,7 +11601,12 @@ npt_encode_ID3D11DeviceContext_GSGetSamplers_reply(struct npt_cs_encoder *enc,
         .cmd_return = 0,
     };
     npt_cs_encoder_write(enc, sizeof(_reply), &_reply, sizeof(_reply));
-/* skip args->ppSamplers (guest-allocated id, registered host-side; not in reply) */
+{
+    const uint32_t _n = args->_guest_id_count_ppSamplers;
+    npt_encode_array_count(enc, _n);
+    for (uint32_t _i = 0; _i < _n; _i++)
+        npt_encode_npt_wire_object_ref(enc, &args->_refs_ppSamplers[_i]);
+}
 }
 
 static inline void
@@ -11564,14 +11675,14 @@ npt_dispatch_ID3D11DeviceContext_GSGetSamplers(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
     if (args.ppSamplers && args._guest_ids_ppSamplers) {
         const uint32_t _n = args._guest_id_count_ppSamplers;
         for (uint32_t _i = 0; _i < _n; _i++)
-            npt_cs_handle_register_guest_id(ctx,
-                args._guest_ids_ppSamplers[_i], args.ppSamplers[_i], NPT_OBJECT_TYPE_ID3D11SAMPLERSTATE);
+            npt_cs_handle_register_canonical_guest_id(ctx,
+                args._guest_ids_ppSamplers[_i], args.ppSamplers[_i], NPT_OBJECT_TYPE_ID3D11SAMPLERSTATE, &args._refs_ppSamplers[_i]);
     }
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
@@ -11600,11 +11711,13 @@ struct npt_command_ID3D11DeviceContext_OMGetRenderTargets {
      * that decodes the wire ids. */
     uint64_t *_guest_ids_ppRenderTargetViews;
     uint32_t _guest_id_count_ppRenderTargetViews;
+    struct npt_wire_object_ref *_refs_ppRenderTargetViews;
     /* Shadow: the guest-allocated id for ppDepthStencilView arrives in the command
      * body (no reply round-trip).  The post-dispatch register pass reads
      * this field and inserts {_guest_id_ppDepthStencilView -> *ppDepthStencilView} in the
      * context object table. */
     uint64_t _guest_id_ppDepthStencilView;
+    struct npt_wire_object_ref _ref_ppDepthStencilView;
 };
 
 static inline void
@@ -11620,6 +11733,9 @@ npt_decode_ID3D11DeviceContext_OMGetRenderTargets_args_temp(struct npt_cs_decode
         args->_guest_id_count_ppRenderTargetViews = (uint32_t)_cnt;
         if (_cnt && (!args->ppRenderTargetViews || !args->_guest_ids_ppRenderTargetViews)) return;
         if (_cnt) memset(args->ppRenderTargetViews, 0, sizeof(void *) * _cnt);
+        args->_refs_ppRenderTargetViews = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
+        if (_cnt && !args->_refs_ppRenderTargetViews) return;
+        if (_cnt) memset(args->_refs_ppRenderTargetViews, 0, sizeof(struct npt_wire_object_ref) * _cnt);
         for (uint64_t _i = 0; _i < _cnt; _i++) {
             uint64_t _gid;
             npt_decode_uint64_t(dec, &_gid);
@@ -11655,8 +11771,13 @@ npt_encode_ID3D11DeviceContext_OMGetRenderTargets_reply(struct npt_cs_encoder *e
         .cmd_return = 0,
     };
     npt_cs_encoder_write(enc, sizeof(_reply), &_reply, sizeof(_reply));
-/* skip args->ppRenderTargetViews (guest-allocated id, registered host-side; not in reply) */
-/* skip args->ppDepthStencilView (guest-allocated id, registered host-side; not in reply) */
+{
+    const uint32_t _n = args->_guest_id_count_ppRenderTargetViews;
+    npt_encode_array_count(enc, _n);
+    for (uint32_t _i = 0; _i < _n; _i++)
+        npt_encode_npt_wire_object_ref(enc, &args->_refs_ppRenderTargetViews[_i]);
+}
+npt_encode_npt_wire_object_ref(enc, &args->_ref_ppDepthStencilView);
 }
 
 static inline void
@@ -11725,19 +11846,17 @@ npt_dispatch_ID3D11DeviceContext_OMGetRenderTargets(struct npt_dispatch_context 
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
     if (args.ppRenderTargetViews && args._guest_ids_ppRenderTargetViews) {
         const uint32_t _n = args._guest_id_count_ppRenderTargetViews;
         for (uint32_t _i = 0; _i < _n; _i++)
-            npt_cs_handle_register_guest_id(ctx,
-                args._guest_ids_ppRenderTargetViews[_i], args.ppRenderTargetViews[_i], NPT_OBJECT_TYPE_ID3D11RENDERTARGETVIEW);
+            npt_cs_handle_register_canonical_guest_id(ctx,
+                args._guest_ids_ppRenderTargetViews[_i], args.ppRenderTargetViews[_i], NPT_OBJECT_TYPE_ID3D11RENDERTARGETVIEW, &args._refs_ppRenderTargetViews[_i]);
     }
-    if (args.ppDepthStencilView && *args.ppDepthStencilView)
-        npt_cs_handle_register_guest_id(ctx, args._guest_id_ppDepthStencilView, *args.ppDepthStencilView, NPT_OBJECT_TYPE_ID3D11DEPTHSTENCILVIEW);
-    else if (args.ppDepthStencilView)
-        npt_cs_handle_register_failed_guest_id(ctx, args._guest_id_ppDepthStencilView);
+    if (args.ppDepthStencilView)
+        npt_cs_handle_register_canonical_guest_id(ctx, args._guest_id_ppDepthStencilView, *args.ppDepthStencilView, NPT_OBJECT_TYPE_ID3D11DEPTHSTENCILVIEW, &args._ref_ppDepthStencilView);
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -11768,16 +11887,19 @@ struct npt_command_ID3D11DeviceContext_OMGetRenderTargetsAndUnorderedAccessViews
      * that decodes the wire ids. */
     uint64_t *_guest_ids_ppRenderTargetViews;
     uint32_t _guest_id_count_ppRenderTargetViews;
+    struct npt_wire_object_ref *_refs_ppRenderTargetViews;
     /* Shadow: the guest-allocated id for ppDepthStencilView arrives in the command
      * body (no reply round-trip).  The post-dispatch register pass reads
      * this field and inserts {_guest_id_ppDepthStencilView -> *ppDepthStencilView} in the
      * context object table. */
     uint64_t _guest_id_ppDepthStencilView;
+    struct npt_wire_object_ref _ref_ppDepthStencilView;
     /* Shadow: per-element guest-allocated ids for ppUnorderedAccessViews.  Array and
      * count are temp-allocated from the decoder pool in the same pass
      * that decodes the wire ids. */
     uint64_t *_guest_ids_ppUnorderedAccessViews;
     uint32_t _guest_id_count_ppUnorderedAccessViews;
+    struct npt_wire_object_ref *_refs_ppUnorderedAccessViews;
 };
 
 static inline void
@@ -11793,6 +11915,9 @@ npt_decode_ID3D11DeviceContext_OMGetRenderTargetsAndUnorderedAccessViews_args_te
         args->_guest_id_count_ppRenderTargetViews = (uint32_t)_cnt;
         if (_cnt && (!args->ppRenderTargetViews || !args->_guest_ids_ppRenderTargetViews)) return;
         if (_cnt) memset(args->ppRenderTargetViews, 0, sizeof(void *) * _cnt);
+        args->_refs_ppRenderTargetViews = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
+        if (_cnt && !args->_refs_ppRenderTargetViews) return;
+        if (_cnt) memset(args->_refs_ppRenderTargetViews, 0, sizeof(struct npt_wire_object_ref) * _cnt);
         for (uint64_t _i = 0; _i < _cnt; _i++) {
             uint64_t _gid;
             npt_decode_uint64_t(dec, &_gid);
@@ -11816,6 +11941,9 @@ npt_decode_ID3D11DeviceContext_OMGetRenderTargetsAndUnorderedAccessViews_args_te
         args->_guest_id_count_ppUnorderedAccessViews = (uint32_t)_cnt;
         if (_cnt && (!args->ppUnorderedAccessViews || !args->_guest_ids_ppUnorderedAccessViews)) return;
         if (_cnt) memset(args->ppUnorderedAccessViews, 0, sizeof(void *) * _cnt);
+        args->_refs_ppUnorderedAccessViews = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
+        if (_cnt && !args->_refs_ppUnorderedAccessViews) return;
+        if (_cnt) memset(args->_refs_ppUnorderedAccessViews, 0, sizeof(struct npt_wire_object_ref) * _cnt);
         for (uint64_t _i = 0; _i < _cnt; _i++) {
             uint64_t _gid;
             npt_decode_uint64_t(dec, &_gid);
@@ -11846,9 +11974,19 @@ npt_encode_ID3D11DeviceContext_OMGetRenderTargetsAndUnorderedAccessViews_reply(s
         .cmd_return = 0,
     };
     npt_cs_encoder_write(enc, sizeof(_reply), &_reply, sizeof(_reply));
-/* skip args->ppRenderTargetViews (guest-allocated id, registered host-side; not in reply) */
-/* skip args->ppDepthStencilView (guest-allocated id, registered host-side; not in reply) */
-/* skip args->ppUnorderedAccessViews (guest-allocated id, registered host-side; not in reply) */
+{
+    const uint32_t _n = args->_guest_id_count_ppRenderTargetViews;
+    npt_encode_array_count(enc, _n);
+    for (uint32_t _i = 0; _i < _n; _i++)
+        npt_encode_npt_wire_object_ref(enc, &args->_refs_ppRenderTargetViews[_i]);
+}
+npt_encode_npt_wire_object_ref(enc, &args->_ref_ppDepthStencilView);
+{
+    const uint32_t _n = args->_guest_id_count_ppUnorderedAccessViews;
+    npt_encode_array_count(enc, _n);
+    for (uint32_t _i = 0; _i < _n; _i++)
+        npt_encode_npt_wire_object_ref(enc, &args->_refs_ppUnorderedAccessViews[_i]);
+}
 }
 
 static inline void
@@ -11917,24 +12055,22 @@ npt_dispatch_ID3D11DeviceContext_OMGetRenderTargetsAndUnorderedAccessViews(struc
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
     if (args.ppRenderTargetViews && args._guest_ids_ppRenderTargetViews) {
         const uint32_t _n = args._guest_id_count_ppRenderTargetViews;
         for (uint32_t _i = 0; _i < _n; _i++)
-            npt_cs_handle_register_guest_id(ctx,
-                args._guest_ids_ppRenderTargetViews[_i], args.ppRenderTargetViews[_i], NPT_OBJECT_TYPE_ID3D11RENDERTARGETVIEW);
+            npt_cs_handle_register_canonical_guest_id(ctx,
+                args._guest_ids_ppRenderTargetViews[_i], args.ppRenderTargetViews[_i], NPT_OBJECT_TYPE_ID3D11RENDERTARGETVIEW, &args._refs_ppRenderTargetViews[_i]);
     }
-    if (args.ppDepthStencilView && *args.ppDepthStencilView)
-        npt_cs_handle_register_guest_id(ctx, args._guest_id_ppDepthStencilView, *args.ppDepthStencilView, NPT_OBJECT_TYPE_ID3D11DEPTHSTENCILVIEW);
-    else if (args.ppDepthStencilView)
-        npt_cs_handle_register_failed_guest_id(ctx, args._guest_id_ppDepthStencilView);
+    if (args.ppDepthStencilView)
+        npt_cs_handle_register_canonical_guest_id(ctx, args._guest_id_ppDepthStencilView, *args.ppDepthStencilView, NPT_OBJECT_TYPE_ID3D11DEPTHSTENCILVIEW, &args._ref_ppDepthStencilView);
     if (args.ppUnorderedAccessViews && args._guest_ids_ppUnorderedAccessViews) {
         const uint32_t _n = args._guest_id_count_ppUnorderedAccessViews;
         for (uint32_t _i = 0; _i < _n; _i++)
-            npt_cs_handle_register_guest_id(ctx,
-                args._guest_ids_ppUnorderedAccessViews[_i], args.ppUnorderedAccessViews[_i], NPT_OBJECT_TYPE_ID3D11UNORDEREDACCESSVIEW);
+            npt_cs_handle_register_canonical_guest_id(ctx,
+                args._guest_ids_ppUnorderedAccessViews[_i], args.ppUnorderedAccessViews[_i], NPT_OBJECT_TYPE_ID3D11UNORDEREDACCESSVIEW, &args._refs_ppUnorderedAccessViews[_i]);
     }
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
@@ -11963,6 +12099,7 @@ struct npt_command_ID3D11DeviceContext_OMGetBlendState {
      * this field and inserts {_guest_id_ppBlendState -> *ppBlendState} in the
      * context object table. */
     uint64_t _guest_id_ppBlendState;
+    struct npt_wire_object_ref _ref_ppBlendState;
 };
 
 static inline void
@@ -12005,7 +12142,7 @@ npt_encode_ID3D11DeviceContext_OMGetBlendState_reply(struct npt_cs_encoder *enc,
         .cmd_return = 0,
     };
     npt_cs_encoder_write(enc, sizeof(_reply), &_reply, sizeof(_reply));
-/* skip args->ppBlendState (guest-allocated id, registered host-side; not in reply) */
+npt_encode_npt_wire_object_ref(enc, &args->_ref_ppBlendState);
     if (args->BlendFactor) {
         npt_encode_array_count(enc, 4);
         npt_encode_FLOAT_array(enc, (const FLOAT *)args->BlendFactor, 4);
@@ -12082,13 +12219,11 @@ npt_dispatch_ID3D11DeviceContext_OMGetBlendState(struct npt_dispatch_context *ct
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
-    if (args.ppBlendState && *args.ppBlendState)
-        npt_cs_handle_register_guest_id(ctx, args._guest_id_ppBlendState, *args.ppBlendState, NPT_OBJECT_TYPE_ID3D11BLENDSTATE);
-    else if (args.ppBlendState)
-        npt_cs_handle_register_failed_guest_id(ctx, args._guest_id_ppBlendState);
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
+    if (args.ppBlendState)
+        npt_cs_handle_register_canonical_guest_id(ctx, args._guest_id_ppBlendState, *args.ppBlendState, NPT_OBJECT_TYPE_ID3D11BLENDSTATE, &args._ref_ppBlendState);
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -12115,6 +12250,7 @@ struct npt_command_ID3D11DeviceContext_OMGetDepthStencilState {
      * this field and inserts {_guest_id_ppDepthStencilState -> *ppDepthStencilState} in the
      * context object table. */
     uint64_t _guest_id_ppDepthStencilState;
+    struct npt_wire_object_ref _ref_ppDepthStencilState;
 };
 
 static inline void
@@ -12153,7 +12289,7 @@ npt_encode_ID3D11DeviceContext_OMGetDepthStencilState_reply(struct npt_cs_encode
         .cmd_return = 0,
     };
     npt_cs_encoder_write(enc, sizeof(_reply), &_reply, sizeof(_reply));
-/* skip args->ppDepthStencilState (guest-allocated id, registered host-side; not in reply) */
+npt_encode_npt_wire_object_ref(enc, &args->_ref_ppDepthStencilState);
     if (npt_encode_simple_pointer(enc, args->pStencilRef))
         npt_encode_UINT(enc, args->pStencilRef);
 }
@@ -12224,13 +12360,11 @@ npt_dispatch_ID3D11DeviceContext_OMGetDepthStencilState(struct npt_dispatch_cont
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
-    if (args.ppDepthStencilState && *args.ppDepthStencilState)
-        npt_cs_handle_register_guest_id(ctx, args._guest_id_ppDepthStencilState, *args.ppDepthStencilState, NPT_OBJECT_TYPE_ID3D11DEPTHSTENCILSTATE);
-    else if (args.ppDepthStencilState)
-        npt_cs_handle_register_failed_guest_id(ctx, args._guest_id_ppDepthStencilState);
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
+    if (args.ppDepthStencilState)
+        npt_cs_handle_register_canonical_guest_id(ctx, args._guest_id_ppDepthStencilState, *args.ppDepthStencilState, NPT_OBJECT_TYPE_ID3D11DEPTHSTENCILSTATE, &args._ref_ppDepthStencilState);
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -12257,6 +12391,7 @@ struct npt_command_ID3D11DeviceContext_SOGetTargets {
      * that decodes the wire ids. */
     uint64_t *_guest_ids_ppSOTargets;
     uint32_t _guest_id_count_ppSOTargets;
+    struct npt_wire_object_ref *_refs_ppSOTargets;
 };
 
 static inline void
@@ -12272,6 +12407,9 @@ npt_decode_ID3D11DeviceContext_SOGetTargets_args_temp(struct npt_cs_decoder *dec
         args->_guest_id_count_ppSOTargets = (uint32_t)_cnt;
         if (_cnt && (!args->ppSOTargets || !args->_guest_ids_ppSOTargets)) return;
         if (_cnt) memset(args->ppSOTargets, 0, sizeof(void *) * _cnt);
+        args->_refs_ppSOTargets = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
+        if (_cnt && !args->_refs_ppSOTargets) return;
+        if (_cnt) memset(args->_refs_ppSOTargets, 0, sizeof(struct npt_wire_object_ref) * _cnt);
         for (uint64_t _i = 0; _i < _cnt; _i++) {
             uint64_t _gid;
             npt_decode_uint64_t(dec, &_gid);
@@ -12298,7 +12436,12 @@ npt_encode_ID3D11DeviceContext_SOGetTargets_reply(struct npt_cs_encoder *enc,
         .cmd_return = 0,
     };
     npt_cs_encoder_write(enc, sizeof(_reply), &_reply, sizeof(_reply));
-/* skip args->ppSOTargets (guest-allocated id, registered host-side; not in reply) */
+{
+    const uint32_t _n = args->_guest_id_count_ppSOTargets;
+    npt_encode_array_count(enc, _n);
+    for (uint32_t _i = 0; _i < _n; _i++)
+        npt_encode_npt_wire_object_ref(enc, &args->_refs_ppSOTargets[_i]);
+}
 }
 
 static inline void
@@ -12367,14 +12510,14 @@ npt_dispatch_ID3D11DeviceContext_SOGetTargets(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
     if (args.ppSOTargets && args._guest_ids_ppSOTargets) {
         const uint32_t _n = args._guest_id_count_ppSOTargets;
         for (uint32_t _i = 0; _i < _n; _i++)
-            npt_cs_handle_register_guest_id(ctx,
-                args._guest_ids_ppSOTargets[_i], args.ppSOTargets[_i], NPT_OBJECT_TYPE_ID3D11BUFFER);
+            npt_cs_handle_register_canonical_guest_id(ctx,
+                args._guest_ids_ppSOTargets[_i], args.ppSOTargets[_i], NPT_OBJECT_TYPE_ID3D11BUFFER, &args._refs_ppSOTargets[_i]);
     }
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
@@ -12401,6 +12544,7 @@ struct npt_command_ID3D11DeviceContext_RSGetState {
      * this field and inserts {_guest_id_ppRasterizerState -> *ppRasterizerState} in the
      * context object table. */
     uint64_t _guest_id_ppRasterizerState;
+    struct npt_wire_object_ref _ref_ppRasterizerState;
 };
 
 static inline void
@@ -12435,7 +12579,7 @@ npt_encode_ID3D11DeviceContext_RSGetState_reply(struct npt_cs_encoder *enc,
         .cmd_return = 0,
     };
     npt_cs_encoder_write(enc, sizeof(_reply), &_reply, sizeof(_reply));
-/* skip args->ppRasterizerState (guest-allocated id, registered host-side; not in reply) */
+npt_encode_npt_wire_object_ref(enc, &args->_ref_ppRasterizerState);
 }
 
 static inline void
@@ -12504,13 +12648,11 @@ npt_dispatch_ID3D11DeviceContext_RSGetState(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
-    if (args.ppRasterizerState && *args.ppRasterizerState)
-        npt_cs_handle_register_guest_id(ctx, args._guest_id_ppRasterizerState, *args.ppRasterizerState, NPT_OBJECT_TYPE_ID3D11RASTERIZERSTATE);
-    else if (args.ppRasterizerState)
-        npt_cs_handle_register_failed_guest_id(ctx, args._guest_id_ppRasterizerState);
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
+    if (args.ppRasterizerState)
+        npt_cs_handle_register_canonical_guest_id(ctx, args._guest_id_ppRasterizerState, *args.ppRasterizerState, NPT_OBJECT_TYPE_ID3D11RASTERIZERSTATE, &args._ref_ppRasterizerState);
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -12652,9 +12794,9 @@ npt_dispatch_ID3D11DeviceContext_RSGetViewports(struct npt_dispatch_context *ctx
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -12796,9 +12938,9 @@ npt_dispatch_ID3D11DeviceContext_RSGetScissorRects(struct npt_dispatch_context *
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -12826,6 +12968,7 @@ struct npt_command_ID3D11DeviceContext_HSGetShaderResources {
      * that decodes the wire ids. */
     uint64_t *_guest_ids_ppShaderResourceViews;
     uint32_t _guest_id_count_ppShaderResourceViews;
+    struct npt_wire_object_ref *_refs_ppShaderResourceViews;
 };
 
 static inline void
@@ -12842,6 +12985,9 @@ npt_decode_ID3D11DeviceContext_HSGetShaderResources_args_temp(struct npt_cs_deco
         args->_guest_id_count_ppShaderResourceViews = (uint32_t)_cnt;
         if (_cnt && (!args->ppShaderResourceViews || !args->_guest_ids_ppShaderResourceViews)) return;
         if (_cnt) memset(args->ppShaderResourceViews, 0, sizeof(void *) * _cnt);
+        args->_refs_ppShaderResourceViews = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
+        if (_cnt && !args->_refs_ppShaderResourceViews) return;
+        if (_cnt) memset(args->_refs_ppShaderResourceViews, 0, sizeof(struct npt_wire_object_ref) * _cnt);
         for (uint64_t _i = 0; _i < _cnt; _i++) {
             uint64_t _gid;
             npt_decode_uint64_t(dec, &_gid);
@@ -12869,7 +13015,12 @@ npt_encode_ID3D11DeviceContext_HSGetShaderResources_reply(struct npt_cs_encoder 
         .cmd_return = 0,
     };
     npt_cs_encoder_write(enc, sizeof(_reply), &_reply, sizeof(_reply));
-/* skip args->ppShaderResourceViews (guest-allocated id, registered host-side; not in reply) */
+{
+    const uint32_t _n = args->_guest_id_count_ppShaderResourceViews;
+    npt_encode_array_count(enc, _n);
+    for (uint32_t _i = 0; _i < _n; _i++)
+        npt_encode_npt_wire_object_ref(enc, &args->_refs_ppShaderResourceViews[_i]);
+}
 }
 
 static inline void
@@ -12938,14 +13089,14 @@ npt_dispatch_ID3D11DeviceContext_HSGetShaderResources(struct npt_dispatch_contex
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
     if (args.ppShaderResourceViews && args._guest_ids_ppShaderResourceViews) {
         const uint32_t _n = args._guest_id_count_ppShaderResourceViews;
         for (uint32_t _i = 0; _i < _n; _i++)
-            npt_cs_handle_register_guest_id(ctx,
-                args._guest_ids_ppShaderResourceViews[_i], args.ppShaderResourceViews[_i], NPT_OBJECT_TYPE_ID3D11SHADERRESOURCEVIEW);
+            npt_cs_handle_register_canonical_guest_id(ctx,
+                args._guest_ids_ppShaderResourceViews[_i], args.ppShaderResourceViews[_i], NPT_OBJECT_TYPE_ID3D11SHADERRESOURCEVIEW, &args._refs_ppShaderResourceViews[_i]);
     }
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
@@ -12974,11 +13125,13 @@ struct npt_command_ID3D11DeviceContext_HSGetShader {
      * this field and inserts {_guest_id_ppHullShader -> *ppHullShader} in the
      * context object table. */
     uint64_t _guest_id_ppHullShader;
+    struct npt_wire_object_ref _ref_ppHullShader;
     /* Shadow: per-element guest-allocated ids for ppClassInstances.  Array and
      * count are temp-allocated from the decoder pool in the same pass
      * that decodes the wire ids. */
     uint64_t *_guest_ids_ppClassInstances;
     uint32_t _guest_id_count_ppClassInstances;
+    struct npt_wire_object_ref *_refs_ppClassInstances;
 };
 
 static inline void
@@ -13001,6 +13154,9 @@ npt_decode_ID3D11DeviceContext_HSGetShader_args_temp(struct npt_cs_decoder *dec,
         args->_guest_id_count_ppClassInstances = (uint32_t)_cnt;
         if (_cnt && (!args->ppClassInstances || !args->_guest_ids_ppClassInstances)) return;
         if (_cnt) memset(args->ppClassInstances, 0, sizeof(void *) * _cnt);
+        args->_refs_ppClassInstances = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
+        if (_cnt && !args->_refs_ppClassInstances) return;
+        if (_cnt) memset(args->_refs_ppClassInstances, 0, sizeof(struct npt_wire_object_ref) * _cnt);
         for (uint64_t _i = 0; _i < _cnt; _i++) {
             uint64_t _gid;
             npt_decode_uint64_t(dec, &_gid);
@@ -13035,8 +13191,13 @@ npt_encode_ID3D11DeviceContext_HSGetShader_reply(struct npt_cs_encoder *enc,
         .cmd_return = 0,
     };
     npt_cs_encoder_write(enc, sizeof(_reply), &_reply, sizeof(_reply));
-/* skip args->ppHullShader (guest-allocated id, registered host-side; not in reply) */
-/* skip args->ppClassInstances (guest-allocated id, registered host-side; not in reply) */
+npt_encode_npt_wire_object_ref(enc, &args->_ref_ppHullShader);
+{
+    const uint32_t _n = args->_guest_id_count_ppClassInstances;
+    npt_encode_array_count(enc, _n);
+    for (uint32_t _i = 0; _i < _n; _i++)
+        npt_encode_npt_wire_object_ref(enc, &args->_refs_ppClassInstances[_i]);
+}
     if (npt_encode_simple_pointer(enc, args->pNumClassInstances))
         npt_encode_UINT(enc, args->pNumClassInstances);
 }
@@ -13107,18 +13268,16 @@ npt_dispatch_ID3D11DeviceContext_HSGetShader(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
-    if (args.ppHullShader && *args.ppHullShader)
-        npt_cs_handle_register_guest_id(ctx, args._guest_id_ppHullShader, *args.ppHullShader, NPT_OBJECT_TYPE_ID3D11HULLSHADER);
-    else if (args.ppHullShader)
-        npt_cs_handle_register_failed_guest_id(ctx, args._guest_id_ppHullShader);
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
+    if (args.ppHullShader)
+        npt_cs_handle_register_canonical_guest_id(ctx, args._guest_id_ppHullShader, *args.ppHullShader, NPT_OBJECT_TYPE_ID3D11HULLSHADER, &args._ref_ppHullShader);
     if (args.ppClassInstances && args._guest_ids_ppClassInstances) {
         const uint32_t _n = args._guest_id_count_ppClassInstances;
         for (uint32_t _i = 0; _i < _n; _i++)
-            npt_cs_handle_register_guest_id(ctx,
-                args._guest_ids_ppClassInstances[_i], args.ppClassInstances[_i], NPT_OBJECT_TYPE_ID3D11CLASSINSTANCE);
+            npt_cs_handle_register_canonical_guest_id(ctx,
+                args._guest_ids_ppClassInstances[_i], args.ppClassInstances[_i], NPT_OBJECT_TYPE_ID3D11CLASSINSTANCE, &args._refs_ppClassInstances[_i]);
     }
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
@@ -13147,6 +13306,7 @@ struct npt_command_ID3D11DeviceContext_HSGetSamplers {
      * that decodes the wire ids. */
     uint64_t *_guest_ids_ppSamplers;
     uint32_t _guest_id_count_ppSamplers;
+    struct npt_wire_object_ref *_refs_ppSamplers;
 };
 
 static inline void
@@ -13163,6 +13323,9 @@ npt_decode_ID3D11DeviceContext_HSGetSamplers_args_temp(struct npt_cs_decoder *de
         args->_guest_id_count_ppSamplers = (uint32_t)_cnt;
         if (_cnt && (!args->ppSamplers || !args->_guest_ids_ppSamplers)) return;
         if (_cnt) memset(args->ppSamplers, 0, sizeof(void *) * _cnt);
+        args->_refs_ppSamplers = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
+        if (_cnt && !args->_refs_ppSamplers) return;
+        if (_cnt) memset(args->_refs_ppSamplers, 0, sizeof(struct npt_wire_object_ref) * _cnt);
         for (uint64_t _i = 0; _i < _cnt; _i++) {
             uint64_t _gid;
             npt_decode_uint64_t(dec, &_gid);
@@ -13190,7 +13353,12 @@ npt_encode_ID3D11DeviceContext_HSGetSamplers_reply(struct npt_cs_encoder *enc,
         .cmd_return = 0,
     };
     npt_cs_encoder_write(enc, sizeof(_reply), &_reply, sizeof(_reply));
-/* skip args->ppSamplers (guest-allocated id, registered host-side; not in reply) */
+{
+    const uint32_t _n = args->_guest_id_count_ppSamplers;
+    npt_encode_array_count(enc, _n);
+    for (uint32_t _i = 0; _i < _n; _i++)
+        npt_encode_npt_wire_object_ref(enc, &args->_refs_ppSamplers[_i]);
+}
 }
 
 static inline void
@@ -13259,14 +13427,14 @@ npt_dispatch_ID3D11DeviceContext_HSGetSamplers(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
     if (args.ppSamplers && args._guest_ids_ppSamplers) {
         const uint32_t _n = args._guest_id_count_ppSamplers;
         for (uint32_t _i = 0; _i < _n; _i++)
-            npt_cs_handle_register_guest_id(ctx,
-                args._guest_ids_ppSamplers[_i], args.ppSamplers[_i], NPT_OBJECT_TYPE_ID3D11SAMPLERSTATE);
+            npt_cs_handle_register_canonical_guest_id(ctx,
+                args._guest_ids_ppSamplers[_i], args.ppSamplers[_i], NPT_OBJECT_TYPE_ID3D11SAMPLERSTATE, &args._refs_ppSamplers[_i]);
     }
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
@@ -13295,6 +13463,7 @@ struct npt_command_ID3D11DeviceContext_HSGetConstantBuffers {
      * that decodes the wire ids. */
     uint64_t *_guest_ids_ppConstantBuffers;
     uint32_t _guest_id_count_ppConstantBuffers;
+    struct npt_wire_object_ref *_refs_ppConstantBuffers;
 };
 
 static inline void
@@ -13311,6 +13480,9 @@ npt_decode_ID3D11DeviceContext_HSGetConstantBuffers_args_temp(struct npt_cs_deco
         args->_guest_id_count_ppConstantBuffers = (uint32_t)_cnt;
         if (_cnt && (!args->ppConstantBuffers || !args->_guest_ids_ppConstantBuffers)) return;
         if (_cnt) memset(args->ppConstantBuffers, 0, sizeof(void *) * _cnt);
+        args->_refs_ppConstantBuffers = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
+        if (_cnt && !args->_refs_ppConstantBuffers) return;
+        if (_cnt) memset(args->_refs_ppConstantBuffers, 0, sizeof(struct npt_wire_object_ref) * _cnt);
         for (uint64_t _i = 0; _i < _cnt; _i++) {
             uint64_t _gid;
             npt_decode_uint64_t(dec, &_gid);
@@ -13338,7 +13510,12 @@ npt_encode_ID3D11DeviceContext_HSGetConstantBuffers_reply(struct npt_cs_encoder 
         .cmd_return = 0,
     };
     npt_cs_encoder_write(enc, sizeof(_reply), &_reply, sizeof(_reply));
-/* skip args->ppConstantBuffers (guest-allocated id, registered host-side; not in reply) */
+{
+    const uint32_t _n = args->_guest_id_count_ppConstantBuffers;
+    npt_encode_array_count(enc, _n);
+    for (uint32_t _i = 0; _i < _n; _i++)
+        npt_encode_npt_wire_object_ref(enc, &args->_refs_ppConstantBuffers[_i]);
+}
 }
 
 static inline void
@@ -13407,14 +13584,14 @@ npt_dispatch_ID3D11DeviceContext_HSGetConstantBuffers(struct npt_dispatch_contex
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
     if (args.ppConstantBuffers && args._guest_ids_ppConstantBuffers) {
         const uint32_t _n = args._guest_id_count_ppConstantBuffers;
         for (uint32_t _i = 0; _i < _n; _i++)
-            npt_cs_handle_register_guest_id(ctx,
-                args._guest_ids_ppConstantBuffers[_i], args.ppConstantBuffers[_i], NPT_OBJECT_TYPE_ID3D11BUFFER);
+            npt_cs_handle_register_canonical_guest_id(ctx,
+                args._guest_ids_ppConstantBuffers[_i], args.ppConstantBuffers[_i], NPT_OBJECT_TYPE_ID3D11BUFFER, &args._refs_ppConstantBuffers[_i]);
     }
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
@@ -13443,6 +13620,7 @@ struct npt_command_ID3D11DeviceContext_DSGetShaderResources {
      * that decodes the wire ids. */
     uint64_t *_guest_ids_ppShaderResourceViews;
     uint32_t _guest_id_count_ppShaderResourceViews;
+    struct npt_wire_object_ref *_refs_ppShaderResourceViews;
 };
 
 static inline void
@@ -13459,6 +13637,9 @@ npt_decode_ID3D11DeviceContext_DSGetShaderResources_args_temp(struct npt_cs_deco
         args->_guest_id_count_ppShaderResourceViews = (uint32_t)_cnt;
         if (_cnt && (!args->ppShaderResourceViews || !args->_guest_ids_ppShaderResourceViews)) return;
         if (_cnt) memset(args->ppShaderResourceViews, 0, sizeof(void *) * _cnt);
+        args->_refs_ppShaderResourceViews = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
+        if (_cnt && !args->_refs_ppShaderResourceViews) return;
+        if (_cnt) memset(args->_refs_ppShaderResourceViews, 0, sizeof(struct npt_wire_object_ref) * _cnt);
         for (uint64_t _i = 0; _i < _cnt; _i++) {
             uint64_t _gid;
             npt_decode_uint64_t(dec, &_gid);
@@ -13486,7 +13667,12 @@ npt_encode_ID3D11DeviceContext_DSGetShaderResources_reply(struct npt_cs_encoder 
         .cmd_return = 0,
     };
     npt_cs_encoder_write(enc, sizeof(_reply), &_reply, sizeof(_reply));
-/* skip args->ppShaderResourceViews (guest-allocated id, registered host-side; not in reply) */
+{
+    const uint32_t _n = args->_guest_id_count_ppShaderResourceViews;
+    npt_encode_array_count(enc, _n);
+    for (uint32_t _i = 0; _i < _n; _i++)
+        npt_encode_npt_wire_object_ref(enc, &args->_refs_ppShaderResourceViews[_i]);
+}
 }
 
 static inline void
@@ -13555,14 +13741,14 @@ npt_dispatch_ID3D11DeviceContext_DSGetShaderResources(struct npt_dispatch_contex
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
     if (args.ppShaderResourceViews && args._guest_ids_ppShaderResourceViews) {
         const uint32_t _n = args._guest_id_count_ppShaderResourceViews;
         for (uint32_t _i = 0; _i < _n; _i++)
-            npt_cs_handle_register_guest_id(ctx,
-                args._guest_ids_ppShaderResourceViews[_i], args.ppShaderResourceViews[_i], NPT_OBJECT_TYPE_ID3D11SHADERRESOURCEVIEW);
+            npt_cs_handle_register_canonical_guest_id(ctx,
+                args._guest_ids_ppShaderResourceViews[_i], args.ppShaderResourceViews[_i], NPT_OBJECT_TYPE_ID3D11SHADERRESOURCEVIEW, &args._refs_ppShaderResourceViews[_i]);
     }
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
@@ -13591,11 +13777,13 @@ struct npt_command_ID3D11DeviceContext_DSGetShader {
      * this field and inserts {_guest_id_ppDomainShader -> *ppDomainShader} in the
      * context object table. */
     uint64_t _guest_id_ppDomainShader;
+    struct npt_wire_object_ref _ref_ppDomainShader;
     /* Shadow: per-element guest-allocated ids for ppClassInstances.  Array and
      * count are temp-allocated from the decoder pool in the same pass
      * that decodes the wire ids. */
     uint64_t *_guest_ids_ppClassInstances;
     uint32_t _guest_id_count_ppClassInstances;
+    struct npt_wire_object_ref *_refs_ppClassInstances;
 };
 
 static inline void
@@ -13618,6 +13806,9 @@ npt_decode_ID3D11DeviceContext_DSGetShader_args_temp(struct npt_cs_decoder *dec,
         args->_guest_id_count_ppClassInstances = (uint32_t)_cnt;
         if (_cnt && (!args->ppClassInstances || !args->_guest_ids_ppClassInstances)) return;
         if (_cnt) memset(args->ppClassInstances, 0, sizeof(void *) * _cnt);
+        args->_refs_ppClassInstances = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
+        if (_cnt && !args->_refs_ppClassInstances) return;
+        if (_cnt) memset(args->_refs_ppClassInstances, 0, sizeof(struct npt_wire_object_ref) * _cnt);
         for (uint64_t _i = 0; _i < _cnt; _i++) {
             uint64_t _gid;
             npt_decode_uint64_t(dec, &_gid);
@@ -13652,8 +13843,13 @@ npt_encode_ID3D11DeviceContext_DSGetShader_reply(struct npt_cs_encoder *enc,
         .cmd_return = 0,
     };
     npt_cs_encoder_write(enc, sizeof(_reply), &_reply, sizeof(_reply));
-/* skip args->ppDomainShader (guest-allocated id, registered host-side; not in reply) */
-/* skip args->ppClassInstances (guest-allocated id, registered host-side; not in reply) */
+npt_encode_npt_wire_object_ref(enc, &args->_ref_ppDomainShader);
+{
+    const uint32_t _n = args->_guest_id_count_ppClassInstances;
+    npt_encode_array_count(enc, _n);
+    for (uint32_t _i = 0; _i < _n; _i++)
+        npt_encode_npt_wire_object_ref(enc, &args->_refs_ppClassInstances[_i]);
+}
     if (npt_encode_simple_pointer(enc, args->pNumClassInstances))
         npt_encode_UINT(enc, args->pNumClassInstances);
 }
@@ -13724,18 +13920,16 @@ npt_dispatch_ID3D11DeviceContext_DSGetShader(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
-    if (args.ppDomainShader && *args.ppDomainShader)
-        npt_cs_handle_register_guest_id(ctx, args._guest_id_ppDomainShader, *args.ppDomainShader, NPT_OBJECT_TYPE_ID3D11DOMAINSHADER);
-    else if (args.ppDomainShader)
-        npt_cs_handle_register_failed_guest_id(ctx, args._guest_id_ppDomainShader);
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
+    if (args.ppDomainShader)
+        npt_cs_handle_register_canonical_guest_id(ctx, args._guest_id_ppDomainShader, *args.ppDomainShader, NPT_OBJECT_TYPE_ID3D11DOMAINSHADER, &args._ref_ppDomainShader);
     if (args.ppClassInstances && args._guest_ids_ppClassInstances) {
         const uint32_t _n = args._guest_id_count_ppClassInstances;
         for (uint32_t _i = 0; _i < _n; _i++)
-            npt_cs_handle_register_guest_id(ctx,
-                args._guest_ids_ppClassInstances[_i], args.ppClassInstances[_i], NPT_OBJECT_TYPE_ID3D11CLASSINSTANCE);
+            npt_cs_handle_register_canonical_guest_id(ctx,
+                args._guest_ids_ppClassInstances[_i], args.ppClassInstances[_i], NPT_OBJECT_TYPE_ID3D11CLASSINSTANCE, &args._refs_ppClassInstances[_i]);
     }
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
@@ -13764,6 +13958,7 @@ struct npt_command_ID3D11DeviceContext_DSGetSamplers {
      * that decodes the wire ids. */
     uint64_t *_guest_ids_ppSamplers;
     uint32_t _guest_id_count_ppSamplers;
+    struct npt_wire_object_ref *_refs_ppSamplers;
 };
 
 static inline void
@@ -13780,6 +13975,9 @@ npt_decode_ID3D11DeviceContext_DSGetSamplers_args_temp(struct npt_cs_decoder *de
         args->_guest_id_count_ppSamplers = (uint32_t)_cnt;
         if (_cnt && (!args->ppSamplers || !args->_guest_ids_ppSamplers)) return;
         if (_cnt) memset(args->ppSamplers, 0, sizeof(void *) * _cnt);
+        args->_refs_ppSamplers = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
+        if (_cnt && !args->_refs_ppSamplers) return;
+        if (_cnt) memset(args->_refs_ppSamplers, 0, sizeof(struct npt_wire_object_ref) * _cnt);
         for (uint64_t _i = 0; _i < _cnt; _i++) {
             uint64_t _gid;
             npt_decode_uint64_t(dec, &_gid);
@@ -13807,7 +14005,12 @@ npt_encode_ID3D11DeviceContext_DSGetSamplers_reply(struct npt_cs_encoder *enc,
         .cmd_return = 0,
     };
     npt_cs_encoder_write(enc, sizeof(_reply), &_reply, sizeof(_reply));
-/* skip args->ppSamplers (guest-allocated id, registered host-side; not in reply) */
+{
+    const uint32_t _n = args->_guest_id_count_ppSamplers;
+    npt_encode_array_count(enc, _n);
+    for (uint32_t _i = 0; _i < _n; _i++)
+        npt_encode_npt_wire_object_ref(enc, &args->_refs_ppSamplers[_i]);
+}
 }
 
 static inline void
@@ -13876,14 +14079,14 @@ npt_dispatch_ID3D11DeviceContext_DSGetSamplers(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
     if (args.ppSamplers && args._guest_ids_ppSamplers) {
         const uint32_t _n = args._guest_id_count_ppSamplers;
         for (uint32_t _i = 0; _i < _n; _i++)
-            npt_cs_handle_register_guest_id(ctx,
-                args._guest_ids_ppSamplers[_i], args.ppSamplers[_i], NPT_OBJECT_TYPE_ID3D11SAMPLERSTATE);
+            npt_cs_handle_register_canonical_guest_id(ctx,
+                args._guest_ids_ppSamplers[_i], args.ppSamplers[_i], NPT_OBJECT_TYPE_ID3D11SAMPLERSTATE, &args._refs_ppSamplers[_i]);
     }
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
@@ -13912,6 +14115,7 @@ struct npt_command_ID3D11DeviceContext_DSGetConstantBuffers {
      * that decodes the wire ids. */
     uint64_t *_guest_ids_ppConstantBuffers;
     uint32_t _guest_id_count_ppConstantBuffers;
+    struct npt_wire_object_ref *_refs_ppConstantBuffers;
 };
 
 static inline void
@@ -13928,6 +14132,9 @@ npt_decode_ID3D11DeviceContext_DSGetConstantBuffers_args_temp(struct npt_cs_deco
         args->_guest_id_count_ppConstantBuffers = (uint32_t)_cnt;
         if (_cnt && (!args->ppConstantBuffers || !args->_guest_ids_ppConstantBuffers)) return;
         if (_cnt) memset(args->ppConstantBuffers, 0, sizeof(void *) * _cnt);
+        args->_refs_ppConstantBuffers = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
+        if (_cnt && !args->_refs_ppConstantBuffers) return;
+        if (_cnt) memset(args->_refs_ppConstantBuffers, 0, sizeof(struct npt_wire_object_ref) * _cnt);
         for (uint64_t _i = 0; _i < _cnt; _i++) {
             uint64_t _gid;
             npt_decode_uint64_t(dec, &_gid);
@@ -13955,7 +14162,12 @@ npt_encode_ID3D11DeviceContext_DSGetConstantBuffers_reply(struct npt_cs_encoder 
         .cmd_return = 0,
     };
     npt_cs_encoder_write(enc, sizeof(_reply), &_reply, sizeof(_reply));
-/* skip args->ppConstantBuffers (guest-allocated id, registered host-side; not in reply) */
+{
+    const uint32_t _n = args->_guest_id_count_ppConstantBuffers;
+    npt_encode_array_count(enc, _n);
+    for (uint32_t _i = 0; _i < _n; _i++)
+        npt_encode_npt_wire_object_ref(enc, &args->_refs_ppConstantBuffers[_i]);
+}
 }
 
 static inline void
@@ -14024,14 +14236,14 @@ npt_dispatch_ID3D11DeviceContext_DSGetConstantBuffers(struct npt_dispatch_contex
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
     if (args.ppConstantBuffers && args._guest_ids_ppConstantBuffers) {
         const uint32_t _n = args._guest_id_count_ppConstantBuffers;
         for (uint32_t _i = 0; _i < _n; _i++)
-            npt_cs_handle_register_guest_id(ctx,
-                args._guest_ids_ppConstantBuffers[_i], args.ppConstantBuffers[_i], NPT_OBJECT_TYPE_ID3D11BUFFER);
+            npt_cs_handle_register_canonical_guest_id(ctx,
+                args._guest_ids_ppConstantBuffers[_i], args.ppConstantBuffers[_i], NPT_OBJECT_TYPE_ID3D11BUFFER, &args._refs_ppConstantBuffers[_i]);
     }
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
@@ -14060,6 +14272,7 @@ struct npt_command_ID3D11DeviceContext_CSGetShaderResources {
      * that decodes the wire ids. */
     uint64_t *_guest_ids_ppShaderResourceViews;
     uint32_t _guest_id_count_ppShaderResourceViews;
+    struct npt_wire_object_ref *_refs_ppShaderResourceViews;
 };
 
 static inline void
@@ -14076,6 +14289,9 @@ npt_decode_ID3D11DeviceContext_CSGetShaderResources_args_temp(struct npt_cs_deco
         args->_guest_id_count_ppShaderResourceViews = (uint32_t)_cnt;
         if (_cnt && (!args->ppShaderResourceViews || !args->_guest_ids_ppShaderResourceViews)) return;
         if (_cnt) memset(args->ppShaderResourceViews, 0, sizeof(void *) * _cnt);
+        args->_refs_ppShaderResourceViews = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
+        if (_cnt && !args->_refs_ppShaderResourceViews) return;
+        if (_cnt) memset(args->_refs_ppShaderResourceViews, 0, sizeof(struct npt_wire_object_ref) * _cnt);
         for (uint64_t _i = 0; _i < _cnt; _i++) {
             uint64_t _gid;
             npt_decode_uint64_t(dec, &_gid);
@@ -14103,7 +14319,12 @@ npt_encode_ID3D11DeviceContext_CSGetShaderResources_reply(struct npt_cs_encoder 
         .cmd_return = 0,
     };
     npt_cs_encoder_write(enc, sizeof(_reply), &_reply, sizeof(_reply));
-/* skip args->ppShaderResourceViews (guest-allocated id, registered host-side; not in reply) */
+{
+    const uint32_t _n = args->_guest_id_count_ppShaderResourceViews;
+    npt_encode_array_count(enc, _n);
+    for (uint32_t _i = 0; _i < _n; _i++)
+        npt_encode_npt_wire_object_ref(enc, &args->_refs_ppShaderResourceViews[_i]);
+}
 }
 
 static inline void
@@ -14172,14 +14393,14 @@ npt_dispatch_ID3D11DeviceContext_CSGetShaderResources(struct npt_dispatch_contex
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
     if (args.ppShaderResourceViews && args._guest_ids_ppShaderResourceViews) {
         const uint32_t _n = args._guest_id_count_ppShaderResourceViews;
         for (uint32_t _i = 0; _i < _n; _i++)
-            npt_cs_handle_register_guest_id(ctx,
-                args._guest_ids_ppShaderResourceViews[_i], args.ppShaderResourceViews[_i], NPT_OBJECT_TYPE_ID3D11SHADERRESOURCEVIEW);
+            npt_cs_handle_register_canonical_guest_id(ctx,
+                args._guest_ids_ppShaderResourceViews[_i], args.ppShaderResourceViews[_i], NPT_OBJECT_TYPE_ID3D11SHADERRESOURCEVIEW, &args._refs_ppShaderResourceViews[_i]);
     }
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
@@ -14208,6 +14429,7 @@ struct npt_command_ID3D11DeviceContext_CSGetUnorderedAccessViews {
      * that decodes the wire ids. */
     uint64_t *_guest_ids_ppUnorderedAccessViews;
     uint32_t _guest_id_count_ppUnorderedAccessViews;
+    struct npt_wire_object_ref *_refs_ppUnorderedAccessViews;
 };
 
 static inline void
@@ -14224,6 +14446,9 @@ npt_decode_ID3D11DeviceContext_CSGetUnorderedAccessViews_args_temp(struct npt_cs
         args->_guest_id_count_ppUnorderedAccessViews = (uint32_t)_cnt;
         if (_cnt && (!args->ppUnorderedAccessViews || !args->_guest_ids_ppUnorderedAccessViews)) return;
         if (_cnt) memset(args->ppUnorderedAccessViews, 0, sizeof(void *) * _cnt);
+        args->_refs_ppUnorderedAccessViews = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
+        if (_cnt && !args->_refs_ppUnorderedAccessViews) return;
+        if (_cnt) memset(args->_refs_ppUnorderedAccessViews, 0, sizeof(struct npt_wire_object_ref) * _cnt);
         for (uint64_t _i = 0; _i < _cnt; _i++) {
             uint64_t _gid;
             npt_decode_uint64_t(dec, &_gid);
@@ -14251,7 +14476,12 @@ npt_encode_ID3D11DeviceContext_CSGetUnorderedAccessViews_reply(struct npt_cs_enc
         .cmd_return = 0,
     };
     npt_cs_encoder_write(enc, sizeof(_reply), &_reply, sizeof(_reply));
-/* skip args->ppUnorderedAccessViews (guest-allocated id, registered host-side; not in reply) */
+{
+    const uint32_t _n = args->_guest_id_count_ppUnorderedAccessViews;
+    npt_encode_array_count(enc, _n);
+    for (uint32_t _i = 0; _i < _n; _i++)
+        npt_encode_npt_wire_object_ref(enc, &args->_refs_ppUnorderedAccessViews[_i]);
+}
 }
 
 static inline void
@@ -14320,14 +14550,14 @@ npt_dispatch_ID3D11DeviceContext_CSGetUnorderedAccessViews(struct npt_dispatch_c
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
     if (args.ppUnorderedAccessViews && args._guest_ids_ppUnorderedAccessViews) {
         const uint32_t _n = args._guest_id_count_ppUnorderedAccessViews;
         for (uint32_t _i = 0; _i < _n; _i++)
-            npt_cs_handle_register_guest_id(ctx,
-                args._guest_ids_ppUnorderedAccessViews[_i], args.ppUnorderedAccessViews[_i], NPT_OBJECT_TYPE_ID3D11UNORDEREDACCESSVIEW);
+            npt_cs_handle_register_canonical_guest_id(ctx,
+                args._guest_ids_ppUnorderedAccessViews[_i], args.ppUnorderedAccessViews[_i], NPT_OBJECT_TYPE_ID3D11UNORDEREDACCESSVIEW, &args._refs_ppUnorderedAccessViews[_i]);
     }
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
@@ -14356,11 +14586,13 @@ struct npt_command_ID3D11DeviceContext_CSGetShader {
      * this field and inserts {_guest_id_ppComputeShader -> *ppComputeShader} in the
      * context object table. */
     uint64_t _guest_id_ppComputeShader;
+    struct npt_wire_object_ref _ref_ppComputeShader;
     /* Shadow: per-element guest-allocated ids for ppClassInstances.  Array and
      * count are temp-allocated from the decoder pool in the same pass
      * that decodes the wire ids. */
     uint64_t *_guest_ids_ppClassInstances;
     uint32_t _guest_id_count_ppClassInstances;
+    struct npt_wire_object_ref *_refs_ppClassInstances;
 };
 
 static inline void
@@ -14383,6 +14615,9 @@ npt_decode_ID3D11DeviceContext_CSGetShader_args_temp(struct npt_cs_decoder *dec,
         args->_guest_id_count_ppClassInstances = (uint32_t)_cnt;
         if (_cnt && (!args->ppClassInstances || !args->_guest_ids_ppClassInstances)) return;
         if (_cnt) memset(args->ppClassInstances, 0, sizeof(void *) * _cnt);
+        args->_refs_ppClassInstances = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
+        if (_cnt && !args->_refs_ppClassInstances) return;
+        if (_cnt) memset(args->_refs_ppClassInstances, 0, sizeof(struct npt_wire_object_ref) * _cnt);
         for (uint64_t _i = 0; _i < _cnt; _i++) {
             uint64_t _gid;
             npt_decode_uint64_t(dec, &_gid);
@@ -14417,8 +14652,13 @@ npt_encode_ID3D11DeviceContext_CSGetShader_reply(struct npt_cs_encoder *enc,
         .cmd_return = 0,
     };
     npt_cs_encoder_write(enc, sizeof(_reply), &_reply, sizeof(_reply));
-/* skip args->ppComputeShader (guest-allocated id, registered host-side; not in reply) */
-/* skip args->ppClassInstances (guest-allocated id, registered host-side; not in reply) */
+npt_encode_npt_wire_object_ref(enc, &args->_ref_ppComputeShader);
+{
+    const uint32_t _n = args->_guest_id_count_ppClassInstances;
+    npt_encode_array_count(enc, _n);
+    for (uint32_t _i = 0; _i < _n; _i++)
+        npt_encode_npt_wire_object_ref(enc, &args->_refs_ppClassInstances[_i]);
+}
     if (npt_encode_simple_pointer(enc, args->pNumClassInstances))
         npt_encode_UINT(enc, args->pNumClassInstances);
 }
@@ -14489,18 +14729,16 @@ npt_dispatch_ID3D11DeviceContext_CSGetShader(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
-    if (args.ppComputeShader && *args.ppComputeShader)
-        npt_cs_handle_register_guest_id(ctx, args._guest_id_ppComputeShader, *args.ppComputeShader, NPT_OBJECT_TYPE_ID3D11COMPUTESHADER);
-    else if (args.ppComputeShader)
-        npt_cs_handle_register_failed_guest_id(ctx, args._guest_id_ppComputeShader);
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
+    if (args.ppComputeShader)
+        npt_cs_handle_register_canonical_guest_id(ctx, args._guest_id_ppComputeShader, *args.ppComputeShader, NPT_OBJECT_TYPE_ID3D11COMPUTESHADER, &args._ref_ppComputeShader);
     if (args.ppClassInstances && args._guest_ids_ppClassInstances) {
         const uint32_t _n = args._guest_id_count_ppClassInstances;
         for (uint32_t _i = 0; _i < _n; _i++)
-            npt_cs_handle_register_guest_id(ctx,
-                args._guest_ids_ppClassInstances[_i], args.ppClassInstances[_i], NPT_OBJECT_TYPE_ID3D11CLASSINSTANCE);
+            npt_cs_handle_register_canonical_guest_id(ctx,
+                args._guest_ids_ppClassInstances[_i], args.ppClassInstances[_i], NPT_OBJECT_TYPE_ID3D11CLASSINSTANCE, &args._refs_ppClassInstances[_i]);
     }
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
@@ -14529,6 +14767,7 @@ struct npt_command_ID3D11DeviceContext_CSGetSamplers {
      * that decodes the wire ids. */
     uint64_t *_guest_ids_ppSamplers;
     uint32_t _guest_id_count_ppSamplers;
+    struct npt_wire_object_ref *_refs_ppSamplers;
 };
 
 static inline void
@@ -14545,6 +14784,9 @@ npt_decode_ID3D11DeviceContext_CSGetSamplers_args_temp(struct npt_cs_decoder *de
         args->_guest_id_count_ppSamplers = (uint32_t)_cnt;
         if (_cnt && (!args->ppSamplers || !args->_guest_ids_ppSamplers)) return;
         if (_cnt) memset(args->ppSamplers, 0, sizeof(void *) * _cnt);
+        args->_refs_ppSamplers = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
+        if (_cnt && !args->_refs_ppSamplers) return;
+        if (_cnt) memset(args->_refs_ppSamplers, 0, sizeof(struct npt_wire_object_ref) * _cnt);
         for (uint64_t _i = 0; _i < _cnt; _i++) {
             uint64_t _gid;
             npt_decode_uint64_t(dec, &_gid);
@@ -14572,7 +14814,12 @@ npt_encode_ID3D11DeviceContext_CSGetSamplers_reply(struct npt_cs_encoder *enc,
         .cmd_return = 0,
     };
     npt_cs_encoder_write(enc, sizeof(_reply), &_reply, sizeof(_reply));
-/* skip args->ppSamplers (guest-allocated id, registered host-side; not in reply) */
+{
+    const uint32_t _n = args->_guest_id_count_ppSamplers;
+    npt_encode_array_count(enc, _n);
+    for (uint32_t _i = 0; _i < _n; _i++)
+        npt_encode_npt_wire_object_ref(enc, &args->_refs_ppSamplers[_i]);
+}
 }
 
 static inline void
@@ -14641,14 +14888,14 @@ npt_dispatch_ID3D11DeviceContext_CSGetSamplers(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
     if (args.ppSamplers && args._guest_ids_ppSamplers) {
         const uint32_t _n = args._guest_id_count_ppSamplers;
         for (uint32_t _i = 0; _i < _n; _i++)
-            npt_cs_handle_register_guest_id(ctx,
-                args._guest_ids_ppSamplers[_i], args.ppSamplers[_i], NPT_OBJECT_TYPE_ID3D11SAMPLERSTATE);
+            npt_cs_handle_register_canonical_guest_id(ctx,
+                args._guest_ids_ppSamplers[_i], args.ppSamplers[_i], NPT_OBJECT_TYPE_ID3D11SAMPLERSTATE, &args._refs_ppSamplers[_i]);
     }
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
@@ -14677,6 +14924,7 @@ struct npt_command_ID3D11DeviceContext_CSGetConstantBuffers {
      * that decodes the wire ids. */
     uint64_t *_guest_ids_ppConstantBuffers;
     uint32_t _guest_id_count_ppConstantBuffers;
+    struct npt_wire_object_ref *_refs_ppConstantBuffers;
 };
 
 static inline void
@@ -14693,6 +14941,9 @@ npt_decode_ID3D11DeviceContext_CSGetConstantBuffers_args_temp(struct npt_cs_deco
         args->_guest_id_count_ppConstantBuffers = (uint32_t)_cnt;
         if (_cnt && (!args->ppConstantBuffers || !args->_guest_ids_ppConstantBuffers)) return;
         if (_cnt) memset(args->ppConstantBuffers, 0, sizeof(void *) * _cnt);
+        args->_refs_ppConstantBuffers = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
+        if (_cnt && !args->_refs_ppConstantBuffers) return;
+        if (_cnt) memset(args->_refs_ppConstantBuffers, 0, sizeof(struct npt_wire_object_ref) * _cnt);
         for (uint64_t _i = 0; _i < _cnt; _i++) {
             uint64_t _gid;
             npt_decode_uint64_t(dec, &_gid);
@@ -14720,7 +14971,12 @@ npt_encode_ID3D11DeviceContext_CSGetConstantBuffers_reply(struct npt_cs_encoder 
         .cmd_return = 0,
     };
     npt_cs_encoder_write(enc, sizeof(_reply), &_reply, sizeof(_reply));
-/* skip args->ppConstantBuffers (guest-allocated id, registered host-side; not in reply) */
+{
+    const uint32_t _n = args->_guest_id_count_ppConstantBuffers;
+    npt_encode_array_count(enc, _n);
+    for (uint32_t _i = 0; _i < _n; _i++)
+        npt_encode_npt_wire_object_ref(enc, &args->_refs_ppConstantBuffers[_i]);
+}
 }
 
 static inline void
@@ -14789,14 +15045,14 @@ npt_dispatch_ID3D11DeviceContext_CSGetConstantBuffers(struct npt_dispatch_contex
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
     if (args.ppConstantBuffers && args._guest_ids_ppConstantBuffers) {
         const uint32_t _n = args._guest_id_count_ppConstantBuffers;
         for (uint32_t _i = 0; _i < _n; _i++)
-            npt_cs_handle_register_guest_id(ctx,
-                args._guest_ids_ppConstantBuffers[_i], args.ppConstantBuffers[_i], NPT_OBJECT_TYPE_ID3D11BUFFER);
+            npt_cs_handle_register_canonical_guest_id(ctx,
+                args._guest_ids_ppConstantBuffers[_i], args.ppConstantBuffers[_i], NPT_OBJECT_TYPE_ID3D11BUFFER, &args._refs_ppConstantBuffers[_i]);
     }
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
@@ -14910,9 +15166,9 @@ npt_dispatch_ID3D11DeviceContext_ClearState(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -15025,9 +15281,9 @@ npt_dispatch_ID3D11DeviceContext_Flush(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -15141,9 +15397,9 @@ npt_dispatch_ID3D11DeviceContext_GetType(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -15257,9 +15513,9 @@ npt_dispatch_ID3D11DeviceContext_GetContextFlags(struct npt_dispatch_context *ct
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -15286,6 +15542,7 @@ struct npt_command_ID3D11DeviceContext_FinishCommandList {
      * this field and inserts {_guest_id_ppCommandList -> *ppCommandList} in the
      * context object table. */
     uint64_t _guest_id_ppCommandList;
+    struct npt_wire_object_ref _ref_ppCommandList;
     HRESULT ret;
 };
 
@@ -15323,7 +15580,7 @@ npt_encode_ID3D11DeviceContext_FinishCommandList_reply(struct npt_cs_encoder *en
         .cmd_return = (uint32_t)args->ret,
     };
     npt_cs_encoder_write(enc, sizeof(_reply), &_reply, sizeof(_reply));
-/* skip args->ppCommandList (guest-allocated id, registered host-side; not in reply) */
+npt_encode_npt_wire_object_ref(enc, &args->_ref_ppCommandList);
 }
 
 static inline void
@@ -15392,13 +15649,11 @@ npt_dispatch_ID3D11DeviceContext_FinishCommandList(struct npt_dispatch_context *
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
-    if (args.ppCommandList && *args.ppCommandList)
-        npt_cs_handle_register_guest_id(ctx, args._guest_id_ppCommandList, *args.ppCommandList, NPT_OBJECT_TYPE_ID3D11COMMANDLIST);
-    else if (args.ppCommandList)
-        npt_cs_handle_register_failed_guest_id(ctx, args._guest_id_ppCommandList);
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
+    if (args.ppCommandList)
+        npt_cs_handle_register_canonical_guest_id(ctx, args._guest_id_ppCommandList, *args.ppCommandList, NPT_OBJECT_TYPE_ID3D11COMMANDLIST, &args._ref_ppCommandList);
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -15554,9 +15809,9 @@ npt_dispatch_ID3D11DeviceContext1_CopySubresourceRegion1(struct npt_dispatch_con
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -15702,9 +15957,9 @@ npt_dispatch_ID3D11DeviceContext1_UpdateSubresource1(struct npt_dispatch_context
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -15825,9 +16080,9 @@ npt_dispatch_ID3D11DeviceContext1_DiscardResource(struct npt_dispatch_context *c
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -15948,9 +16203,9 @@ npt_dispatch_ID3D11DeviceContext1_DiscardView(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -16121,9 +16376,9 @@ npt_dispatch_ID3D11DeviceContext1_VSSetConstantBuffers1(struct npt_dispatch_cont
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -16294,9 +16549,9 @@ npt_dispatch_ID3D11DeviceContext1_HSSetConstantBuffers1(struct npt_dispatch_cont
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -16467,9 +16722,9 @@ npt_dispatch_ID3D11DeviceContext1_DSSetConstantBuffers1(struct npt_dispatch_cont
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -16640,9 +16895,9 @@ npt_dispatch_ID3D11DeviceContext1_GSSetConstantBuffers1(struct npt_dispatch_cont
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -16813,9 +17068,9 @@ npt_dispatch_ID3D11DeviceContext1_PSSetConstantBuffers1(struct npt_dispatch_cont
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -16986,9 +17241,9 @@ npt_dispatch_ID3D11DeviceContext1_CSSetConstantBuffers1(struct npt_dispatch_cont
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -17018,6 +17273,7 @@ struct npt_command_ID3D11DeviceContext1_VSGetConstantBuffers1 {
      * that decodes the wire ids. */
     uint64_t *_guest_ids_ppConstantBuffers;
     uint32_t _guest_id_count_ppConstantBuffers;
+    struct npt_wire_object_ref *_refs_ppConstantBuffers;
 };
 
 static inline void
@@ -17034,6 +17290,9 @@ npt_decode_ID3D11DeviceContext1_VSGetConstantBuffers1_args_temp(struct npt_cs_de
         args->_guest_id_count_ppConstantBuffers = (uint32_t)_cnt;
         if (_cnt && (!args->ppConstantBuffers || !args->_guest_ids_ppConstantBuffers)) return;
         if (_cnt) memset(args->ppConstantBuffers, 0, sizeof(void *) * _cnt);
+        args->_refs_ppConstantBuffers = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
+        if (_cnt && !args->_refs_ppConstantBuffers) return;
+        if (_cnt) memset(args->_refs_ppConstantBuffers, 0, sizeof(struct npt_wire_object_ref) * _cnt);
         for (uint64_t _i = 0; _i < _cnt; _i++) {
             uint64_t _gid;
             npt_decode_uint64_t(dec, &_gid);
@@ -17077,7 +17336,12 @@ npt_encode_ID3D11DeviceContext1_VSGetConstantBuffers1_reply(struct npt_cs_encode
         .cmd_return = 0,
     };
     npt_cs_encoder_write(enc, sizeof(_reply), &_reply, sizeof(_reply));
-/* skip args->ppConstantBuffers (guest-allocated id, registered host-side; not in reply) */
+{
+    const uint32_t _n = args->_guest_id_count_ppConstantBuffers;
+    npt_encode_array_count(enc, _n);
+    for (uint32_t _i = 0; _i < _n; _i++)
+        npt_encode_npt_wire_object_ref(enc, &args->_refs_ppConstantBuffers[_i]);
+}
     if (args->pFirstConstant) {
         npt_encode_array_count(enc, args->NumBuffers);
         npt_encode_UINT_array(enc, args->pFirstConstant, args->NumBuffers);
@@ -17158,14 +17422,14 @@ npt_dispatch_ID3D11DeviceContext1_VSGetConstantBuffers1(struct npt_dispatch_cont
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
     if (args.ppConstantBuffers && args._guest_ids_ppConstantBuffers) {
         const uint32_t _n = args._guest_id_count_ppConstantBuffers;
         for (uint32_t _i = 0; _i < _n; _i++)
-            npt_cs_handle_register_guest_id(ctx,
-                args._guest_ids_ppConstantBuffers[_i], args.ppConstantBuffers[_i], NPT_OBJECT_TYPE_ID3D11BUFFER);
+            npt_cs_handle_register_canonical_guest_id(ctx,
+                args._guest_ids_ppConstantBuffers[_i], args.ppConstantBuffers[_i], NPT_OBJECT_TYPE_ID3D11BUFFER, &args._refs_ppConstantBuffers[_i]);
     }
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
@@ -17196,6 +17460,7 @@ struct npt_command_ID3D11DeviceContext1_HSGetConstantBuffers1 {
      * that decodes the wire ids. */
     uint64_t *_guest_ids_ppConstantBuffers;
     uint32_t _guest_id_count_ppConstantBuffers;
+    struct npt_wire_object_ref *_refs_ppConstantBuffers;
 };
 
 static inline void
@@ -17212,6 +17477,9 @@ npt_decode_ID3D11DeviceContext1_HSGetConstantBuffers1_args_temp(struct npt_cs_de
         args->_guest_id_count_ppConstantBuffers = (uint32_t)_cnt;
         if (_cnt && (!args->ppConstantBuffers || !args->_guest_ids_ppConstantBuffers)) return;
         if (_cnt) memset(args->ppConstantBuffers, 0, sizeof(void *) * _cnt);
+        args->_refs_ppConstantBuffers = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
+        if (_cnt && !args->_refs_ppConstantBuffers) return;
+        if (_cnt) memset(args->_refs_ppConstantBuffers, 0, sizeof(struct npt_wire_object_ref) * _cnt);
         for (uint64_t _i = 0; _i < _cnt; _i++) {
             uint64_t _gid;
             npt_decode_uint64_t(dec, &_gid);
@@ -17255,7 +17523,12 @@ npt_encode_ID3D11DeviceContext1_HSGetConstantBuffers1_reply(struct npt_cs_encode
         .cmd_return = 0,
     };
     npt_cs_encoder_write(enc, sizeof(_reply), &_reply, sizeof(_reply));
-/* skip args->ppConstantBuffers (guest-allocated id, registered host-side; not in reply) */
+{
+    const uint32_t _n = args->_guest_id_count_ppConstantBuffers;
+    npt_encode_array_count(enc, _n);
+    for (uint32_t _i = 0; _i < _n; _i++)
+        npt_encode_npt_wire_object_ref(enc, &args->_refs_ppConstantBuffers[_i]);
+}
     if (args->pFirstConstant) {
         npt_encode_array_count(enc, args->NumBuffers);
         npt_encode_UINT_array(enc, args->pFirstConstant, args->NumBuffers);
@@ -17336,14 +17609,14 @@ npt_dispatch_ID3D11DeviceContext1_HSGetConstantBuffers1(struct npt_dispatch_cont
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
     if (args.ppConstantBuffers && args._guest_ids_ppConstantBuffers) {
         const uint32_t _n = args._guest_id_count_ppConstantBuffers;
         for (uint32_t _i = 0; _i < _n; _i++)
-            npt_cs_handle_register_guest_id(ctx,
-                args._guest_ids_ppConstantBuffers[_i], args.ppConstantBuffers[_i], NPT_OBJECT_TYPE_ID3D11BUFFER);
+            npt_cs_handle_register_canonical_guest_id(ctx,
+                args._guest_ids_ppConstantBuffers[_i], args.ppConstantBuffers[_i], NPT_OBJECT_TYPE_ID3D11BUFFER, &args._refs_ppConstantBuffers[_i]);
     }
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
@@ -17374,6 +17647,7 @@ struct npt_command_ID3D11DeviceContext1_DSGetConstantBuffers1 {
      * that decodes the wire ids. */
     uint64_t *_guest_ids_ppConstantBuffers;
     uint32_t _guest_id_count_ppConstantBuffers;
+    struct npt_wire_object_ref *_refs_ppConstantBuffers;
 };
 
 static inline void
@@ -17390,6 +17664,9 @@ npt_decode_ID3D11DeviceContext1_DSGetConstantBuffers1_args_temp(struct npt_cs_de
         args->_guest_id_count_ppConstantBuffers = (uint32_t)_cnt;
         if (_cnt && (!args->ppConstantBuffers || !args->_guest_ids_ppConstantBuffers)) return;
         if (_cnt) memset(args->ppConstantBuffers, 0, sizeof(void *) * _cnt);
+        args->_refs_ppConstantBuffers = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
+        if (_cnt && !args->_refs_ppConstantBuffers) return;
+        if (_cnt) memset(args->_refs_ppConstantBuffers, 0, sizeof(struct npt_wire_object_ref) * _cnt);
         for (uint64_t _i = 0; _i < _cnt; _i++) {
             uint64_t _gid;
             npt_decode_uint64_t(dec, &_gid);
@@ -17433,7 +17710,12 @@ npt_encode_ID3D11DeviceContext1_DSGetConstantBuffers1_reply(struct npt_cs_encode
         .cmd_return = 0,
     };
     npt_cs_encoder_write(enc, sizeof(_reply), &_reply, sizeof(_reply));
-/* skip args->ppConstantBuffers (guest-allocated id, registered host-side; not in reply) */
+{
+    const uint32_t _n = args->_guest_id_count_ppConstantBuffers;
+    npt_encode_array_count(enc, _n);
+    for (uint32_t _i = 0; _i < _n; _i++)
+        npt_encode_npt_wire_object_ref(enc, &args->_refs_ppConstantBuffers[_i]);
+}
     if (args->pFirstConstant) {
         npt_encode_array_count(enc, args->NumBuffers);
         npt_encode_UINT_array(enc, args->pFirstConstant, args->NumBuffers);
@@ -17514,14 +17796,14 @@ npt_dispatch_ID3D11DeviceContext1_DSGetConstantBuffers1(struct npt_dispatch_cont
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
     if (args.ppConstantBuffers && args._guest_ids_ppConstantBuffers) {
         const uint32_t _n = args._guest_id_count_ppConstantBuffers;
         for (uint32_t _i = 0; _i < _n; _i++)
-            npt_cs_handle_register_guest_id(ctx,
-                args._guest_ids_ppConstantBuffers[_i], args.ppConstantBuffers[_i], NPT_OBJECT_TYPE_ID3D11BUFFER);
+            npt_cs_handle_register_canonical_guest_id(ctx,
+                args._guest_ids_ppConstantBuffers[_i], args.ppConstantBuffers[_i], NPT_OBJECT_TYPE_ID3D11BUFFER, &args._refs_ppConstantBuffers[_i]);
     }
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
@@ -17552,6 +17834,7 @@ struct npt_command_ID3D11DeviceContext1_GSGetConstantBuffers1 {
      * that decodes the wire ids. */
     uint64_t *_guest_ids_ppConstantBuffers;
     uint32_t _guest_id_count_ppConstantBuffers;
+    struct npt_wire_object_ref *_refs_ppConstantBuffers;
 };
 
 static inline void
@@ -17568,6 +17851,9 @@ npt_decode_ID3D11DeviceContext1_GSGetConstantBuffers1_args_temp(struct npt_cs_de
         args->_guest_id_count_ppConstantBuffers = (uint32_t)_cnt;
         if (_cnt && (!args->ppConstantBuffers || !args->_guest_ids_ppConstantBuffers)) return;
         if (_cnt) memset(args->ppConstantBuffers, 0, sizeof(void *) * _cnt);
+        args->_refs_ppConstantBuffers = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
+        if (_cnt && !args->_refs_ppConstantBuffers) return;
+        if (_cnt) memset(args->_refs_ppConstantBuffers, 0, sizeof(struct npt_wire_object_ref) * _cnt);
         for (uint64_t _i = 0; _i < _cnt; _i++) {
             uint64_t _gid;
             npt_decode_uint64_t(dec, &_gid);
@@ -17611,7 +17897,12 @@ npt_encode_ID3D11DeviceContext1_GSGetConstantBuffers1_reply(struct npt_cs_encode
         .cmd_return = 0,
     };
     npt_cs_encoder_write(enc, sizeof(_reply), &_reply, sizeof(_reply));
-/* skip args->ppConstantBuffers (guest-allocated id, registered host-side; not in reply) */
+{
+    const uint32_t _n = args->_guest_id_count_ppConstantBuffers;
+    npt_encode_array_count(enc, _n);
+    for (uint32_t _i = 0; _i < _n; _i++)
+        npt_encode_npt_wire_object_ref(enc, &args->_refs_ppConstantBuffers[_i]);
+}
     if (args->pFirstConstant) {
         npt_encode_array_count(enc, args->NumBuffers);
         npt_encode_UINT_array(enc, args->pFirstConstant, args->NumBuffers);
@@ -17692,14 +17983,14 @@ npt_dispatch_ID3D11DeviceContext1_GSGetConstantBuffers1(struct npt_dispatch_cont
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
     if (args.ppConstantBuffers && args._guest_ids_ppConstantBuffers) {
         const uint32_t _n = args._guest_id_count_ppConstantBuffers;
         for (uint32_t _i = 0; _i < _n; _i++)
-            npt_cs_handle_register_guest_id(ctx,
-                args._guest_ids_ppConstantBuffers[_i], args.ppConstantBuffers[_i], NPT_OBJECT_TYPE_ID3D11BUFFER);
+            npt_cs_handle_register_canonical_guest_id(ctx,
+                args._guest_ids_ppConstantBuffers[_i], args.ppConstantBuffers[_i], NPT_OBJECT_TYPE_ID3D11BUFFER, &args._refs_ppConstantBuffers[_i]);
     }
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
@@ -17730,6 +18021,7 @@ struct npt_command_ID3D11DeviceContext1_PSGetConstantBuffers1 {
      * that decodes the wire ids. */
     uint64_t *_guest_ids_ppConstantBuffers;
     uint32_t _guest_id_count_ppConstantBuffers;
+    struct npt_wire_object_ref *_refs_ppConstantBuffers;
 };
 
 static inline void
@@ -17746,6 +18038,9 @@ npt_decode_ID3D11DeviceContext1_PSGetConstantBuffers1_args_temp(struct npt_cs_de
         args->_guest_id_count_ppConstantBuffers = (uint32_t)_cnt;
         if (_cnt && (!args->ppConstantBuffers || !args->_guest_ids_ppConstantBuffers)) return;
         if (_cnt) memset(args->ppConstantBuffers, 0, sizeof(void *) * _cnt);
+        args->_refs_ppConstantBuffers = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
+        if (_cnt && !args->_refs_ppConstantBuffers) return;
+        if (_cnt) memset(args->_refs_ppConstantBuffers, 0, sizeof(struct npt_wire_object_ref) * _cnt);
         for (uint64_t _i = 0; _i < _cnt; _i++) {
             uint64_t _gid;
             npt_decode_uint64_t(dec, &_gid);
@@ -17789,7 +18084,12 @@ npt_encode_ID3D11DeviceContext1_PSGetConstantBuffers1_reply(struct npt_cs_encode
         .cmd_return = 0,
     };
     npt_cs_encoder_write(enc, sizeof(_reply), &_reply, sizeof(_reply));
-/* skip args->ppConstantBuffers (guest-allocated id, registered host-side; not in reply) */
+{
+    const uint32_t _n = args->_guest_id_count_ppConstantBuffers;
+    npt_encode_array_count(enc, _n);
+    for (uint32_t _i = 0; _i < _n; _i++)
+        npt_encode_npt_wire_object_ref(enc, &args->_refs_ppConstantBuffers[_i]);
+}
     if (args->pFirstConstant) {
         npt_encode_array_count(enc, args->NumBuffers);
         npt_encode_UINT_array(enc, args->pFirstConstant, args->NumBuffers);
@@ -17870,14 +18170,14 @@ npt_dispatch_ID3D11DeviceContext1_PSGetConstantBuffers1(struct npt_dispatch_cont
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
     if (args.ppConstantBuffers && args._guest_ids_ppConstantBuffers) {
         const uint32_t _n = args._guest_id_count_ppConstantBuffers;
         for (uint32_t _i = 0; _i < _n; _i++)
-            npt_cs_handle_register_guest_id(ctx,
-                args._guest_ids_ppConstantBuffers[_i], args.ppConstantBuffers[_i], NPT_OBJECT_TYPE_ID3D11BUFFER);
+            npt_cs_handle_register_canonical_guest_id(ctx,
+                args._guest_ids_ppConstantBuffers[_i], args.ppConstantBuffers[_i], NPT_OBJECT_TYPE_ID3D11BUFFER, &args._refs_ppConstantBuffers[_i]);
     }
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
@@ -17908,6 +18208,7 @@ struct npt_command_ID3D11DeviceContext1_CSGetConstantBuffers1 {
      * that decodes the wire ids. */
     uint64_t *_guest_ids_ppConstantBuffers;
     uint32_t _guest_id_count_ppConstantBuffers;
+    struct npt_wire_object_ref *_refs_ppConstantBuffers;
 };
 
 static inline void
@@ -17924,6 +18225,9 @@ npt_decode_ID3D11DeviceContext1_CSGetConstantBuffers1_args_temp(struct npt_cs_de
         args->_guest_id_count_ppConstantBuffers = (uint32_t)_cnt;
         if (_cnt && (!args->ppConstantBuffers || !args->_guest_ids_ppConstantBuffers)) return;
         if (_cnt) memset(args->ppConstantBuffers, 0, sizeof(void *) * _cnt);
+        args->_refs_ppConstantBuffers = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
+        if (_cnt && !args->_refs_ppConstantBuffers) return;
+        if (_cnt) memset(args->_refs_ppConstantBuffers, 0, sizeof(struct npt_wire_object_ref) * _cnt);
         for (uint64_t _i = 0; _i < _cnt; _i++) {
             uint64_t _gid;
             npt_decode_uint64_t(dec, &_gid);
@@ -17967,7 +18271,12 @@ npt_encode_ID3D11DeviceContext1_CSGetConstantBuffers1_reply(struct npt_cs_encode
         .cmd_return = 0,
     };
     npt_cs_encoder_write(enc, sizeof(_reply), &_reply, sizeof(_reply));
-/* skip args->ppConstantBuffers (guest-allocated id, registered host-side; not in reply) */
+{
+    const uint32_t _n = args->_guest_id_count_ppConstantBuffers;
+    npt_encode_array_count(enc, _n);
+    for (uint32_t _i = 0; _i < _n; _i++)
+        npt_encode_npt_wire_object_ref(enc, &args->_refs_ppConstantBuffers[_i]);
+}
     if (args->pFirstConstant) {
         npt_encode_array_count(enc, args->NumBuffers);
         npt_encode_UINT_array(enc, args->pFirstConstant, args->NumBuffers);
@@ -18048,14 +18357,14 @@ npt_dispatch_ID3D11DeviceContext1_CSGetConstantBuffers1(struct npt_dispatch_cont
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
     if (args.ppConstantBuffers && args._guest_ids_ppConstantBuffers) {
         const uint32_t _n = args._guest_id_count_ppConstantBuffers;
         for (uint32_t _i = 0; _i < _n; _i++)
-            npt_cs_handle_register_guest_id(ctx,
-                args._guest_ids_ppConstantBuffers[_i], args.ppConstantBuffers[_i], NPT_OBJECT_TYPE_ID3D11BUFFER);
+            npt_cs_handle_register_canonical_guest_id(ctx,
+                args._guest_ids_ppConstantBuffers[_i], args.ppConstantBuffers[_i], NPT_OBJECT_TYPE_ID3D11BUFFER, &args._refs_ppConstantBuffers[_i]);
     }
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
@@ -18083,6 +18392,7 @@ struct npt_command_ID3D11DeviceContext1_SwapDeviceContextState {
      * this field and inserts {_guest_id_ppPreviousState -> *ppPreviousState} in the
      * context object table. */
     uint64_t _guest_id_ppPreviousState;
+    struct npt_wire_object_ref _ref_ppPreviousState;
 };
 
 static inline void
@@ -18124,7 +18434,7 @@ npt_encode_ID3D11DeviceContext1_SwapDeviceContextState_reply(struct npt_cs_encod
         .cmd_return = 0,
     };
     npt_cs_encoder_write(enc, sizeof(_reply), &_reply, sizeof(_reply));
-/* skip args->ppPreviousState (guest-allocated id, registered host-side; not in reply) */
+npt_encode_npt_wire_object_ref(enc, &args->_ref_ppPreviousState);
 }
 
 static inline void
@@ -18193,13 +18503,11 @@ npt_dispatch_ID3D11DeviceContext1_SwapDeviceContextState(struct npt_dispatch_con
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
-    if (args.ppPreviousState && *args.ppPreviousState)
-        npt_cs_handle_register_guest_id(ctx, args._guest_id_ppPreviousState, *args.ppPreviousState, NPT_OBJECT_TYPE_ID3DDEVICECONTEXTSTATE);
-    else if (args.ppPreviousState)
-        npt_cs_handle_register_failed_guest_id(ctx, args._guest_id_ppPreviousState);
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
+    if (args.ppPreviousState)
+        npt_cs_handle_register_canonical_guest_id(ctx, args._guest_id_ppPreviousState, *args.ppPreviousState, NPT_OBJECT_TYPE_ID3DDEVICECONTEXTSTATE, &args._ref_ppPreviousState);
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -18345,9 +18653,9 @@ npt_dispatch_ID3D11DeviceContext1_ClearView(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -18487,9 +18795,9 @@ npt_dispatch_ID3D11DeviceContext1_DiscardView1(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -18701,9 +19009,9 @@ npt_dispatch_ID3D11DeviceContext2_UpdateTileMappings(struct npt_dispatch_context
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -18869,9 +19177,9 @@ npt_dispatch_ID3D11DeviceContext2_CopyTileMappings(struct npt_dispatch_context *
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -19028,9 +19336,9 @@ npt_dispatch_ID3D11DeviceContext2_CopyTiles(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -19180,9 +19488,9 @@ npt_dispatch_ID3D11DeviceContext2_UpdateTiles(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -19307,9 +19615,9 @@ npt_dispatch_ID3D11DeviceContext2_ResizeTilePool(struct npt_dispatch_context *ct
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -19438,9 +19746,9 @@ npt_dispatch_ID3D11DeviceContext2_TiledResourceBarrier(struct npt_dispatch_conte
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -19554,9 +19862,9 @@ npt_dispatch_ID3D11DeviceContext2_IsAnnotationEnabled(struct npt_dispatch_contex
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -19684,9 +19992,9 @@ npt_dispatch_ID3D11DeviceContext2_SetMarkerInt(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -19814,9 +20122,9 @@ npt_dispatch_ID3D11DeviceContext2_BeginEventInt(struct npt_dispatch_context *ctx
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -19929,9 +20237,9 @@ npt_dispatch_ID3D11DeviceContext2_EndEvent(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -20055,9 +20363,9 @@ npt_dispatch_ID3D11DeviceContext3_Flush1(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -20173,9 +20481,9 @@ npt_dispatch_ID3D11DeviceContext3_SetHardwareProtectionState(struct npt_dispatch
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -20295,9 +20603,9 @@ npt_dispatch_ID3D11DeviceContext3_GetHardwareProtectionState(struct npt_dispatch
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -20422,9 +20730,9 @@ npt_dispatch_ID3D11DeviceContext4_Signal(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -20549,9 +20857,9 @@ npt_dispatch_ID3D11DeviceContext4_Wait(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
