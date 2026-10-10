@@ -440,6 +440,17 @@ void
 npt_cs_handle_register_failed_guest_id(struct npt_dispatch_context *ctx,
                                        uint64_t guest_id);
 
+/* An output slot of a canonical method: see
+ * npt_context_register_canonical_object.  Safe with obj == NULL, which
+ * zeroes `ref`. */
+struct npt_wire_object_ref;
+void
+npt_cs_handle_register_canonical_guest_id(struct npt_dispatch_context *ctx,
+                                          uint64_t guest_id,
+                                          void *obj,
+                                          npt_object_type type,
+                                          struct npt_wire_object_ref *ref);
+
 /* Win32 handles are opaque on the wire: identity pass-through.  Identity
  * preserves the KMT-vs-NT high-bit dispatch host D3D libraries use to
  * route OpenSharedResource. */

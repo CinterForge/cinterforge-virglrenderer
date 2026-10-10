@@ -42,6 +42,15 @@
  *                                        void *obj, npt_object_type type)
  *   void npt_cs_handle_register_failed_guest_id(struct npt_dispatch_context *ctx,
  *                                               uint64_t guest_id)
+ *   void npt_cs_handle_register_canonical_guest_id(struct npt_dispatch_context *ctx,
+ *                                                  npt_object_id guest_id,
+ *                                                  void *obj, npt_object_type type,
+ *                                                  struct npt_wire_object_ref *ref)
+ *       For a canonical method's output slot: registers `obj` as
+ *       register_guest_id does when the context does not know the
+ *       object yet, else answers the id it already has for it.  Fills
+ *       `ref` with the id the slot is registered under, the object's
+ *       primary id and its type; a NULL `obj` zeroes `ref`.
  *   void *npt_win32_handle_replace(struct npt_dispatch_context *ctx,
  *                                  npt_object_id id)
  *   void *npt_event_handle_replace(struct npt_dispatch_context *ctx,

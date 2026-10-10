@@ -147,9 +147,9 @@ npt_dispatch_ID3D11VideoContext_GetDecoderBuffer(struct npt_dispatch_context *ct
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -274,9 +274,9 @@ npt_dispatch_ID3D11VideoContext_ReleaseDecoderBuffer(struct npt_dispatch_context
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -421,9 +421,9 @@ npt_dispatch_ID3D11VideoContext_DecoderBeginFrame(struct npt_dispatch_context *c
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -545,9 +545,9 @@ npt_dispatch_ID3D11VideoContext_DecoderEndFrame(struct npt_dispatch_context *ctx
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -688,9 +688,9 @@ npt_dispatch_ID3D11VideoContext_SubmitDecoderBuffers(struct npt_dispatch_context
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -825,9 +825,9 @@ npt_dispatch_ID3D11VideoContext_DecoderExtension(struct npt_dispatch_context *ct
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -960,9 +960,9 @@ npt_dispatch_ID3D11VideoContext_VideoProcessorSetOutputTargetRect(struct npt_dis
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -1097,9 +1097,9 @@ npt_dispatch_ID3D11VideoContext_VideoProcessorSetOutputBackgroundColor(struct np
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -1231,9 +1231,9 @@ npt_dispatch_ID3D11VideoContext_VideoProcessorSetOutputColorSpace(struct npt_dis
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -1360,9 +1360,9 @@ npt_dispatch_ID3D11VideoContext_VideoProcessorSetOutputAlphaFillMode(struct npt_
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -1489,9 +1489,9 @@ npt_dispatch_ID3D11VideoContext_VideoProcessorSetOutputConstriction(struct npt_d
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -1615,9 +1615,9 @@ npt_dispatch_ID3D11VideoContext_VideoProcessorSetOutputStereoMode(struct npt_dis
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -1757,9 +1757,9 @@ npt_dispatch_ID3D11VideoContext_VideoProcessorSetOutputExtension(struct npt_disp
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -1894,9 +1894,9 @@ npt_dispatch_ID3D11VideoContext_VideoProcessorGetOutputTargetRect(struct npt_dis
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -2031,9 +2031,9 @@ npt_dispatch_ID3D11VideoContext_VideoProcessorGetOutputBackgroundColor(struct np
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -2161,9 +2161,9 @@ npt_dispatch_ID3D11VideoContext_VideoProcessorGetOutputColorSpace(struct npt_dis
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -2298,9 +2298,9 @@ npt_dispatch_ID3D11VideoContext_VideoProcessorGetOutputAlphaFillMode(struct npt_
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -2435,9 +2435,9 @@ npt_dispatch_ID3D11VideoContext_VideoProcessorGetOutputConstriction(struct npt_d
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -2565,9 +2565,9 @@ npt_dispatch_ID3D11VideoContext_VideoProcessorGetOutputStereoMode(struct npt_dis
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -2718,9 +2718,9 @@ npt_dispatch_ID3D11VideoContext_VideoProcessorGetOutputExtension(struct npt_disp
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -2847,9 +2847,9 @@ npt_dispatch_ID3D11VideoContext_VideoProcessorSetStreamFrameFormat(struct npt_di
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -2984,9 +2984,9 @@ npt_dispatch_ID3D11VideoContext_VideoProcessorSetStreamColorSpace(struct npt_dis
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -3125,9 +3125,9 @@ npt_dispatch_ID3D11VideoContext_VideoProcessorSetStreamOutputRate(struct npt_dis
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -3263,9 +3263,9 @@ npt_dispatch_ID3D11VideoContext_VideoProcessorSetStreamSourceRect(struct npt_dis
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -3401,9 +3401,9 @@ npt_dispatch_ID3D11VideoContext_VideoProcessorSetStreamDestRect(struct npt_dispa
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -3533,9 +3533,9 @@ npt_dispatch_ID3D11VideoContext_VideoProcessorSetStreamAlpha(struct npt_dispatch
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -3677,9 +3677,9 @@ npt_dispatch_ID3D11VideoContext_VideoProcessorSetStreamPalette(struct npt_dispat
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -3824,9 +3824,9 @@ npt_dispatch_ID3D11VideoContext_VideoProcessorSetStreamPixelAspectRatio(struct n
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -3959,9 +3959,9 @@ npt_dispatch_ID3D11VideoContext_VideoProcessorSetStreamLumaKey(struct npt_dispat
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -4103,9 +4103,9 @@ npt_dispatch_ID3D11VideoContext_VideoProcessorSetStreamStereoFormat(struct npt_d
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -4232,9 +4232,9 @@ npt_dispatch_ID3D11VideoContext_VideoProcessorSetStreamAutoProcessingMode(struct
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -4367,9 +4367,9 @@ npt_dispatch_ID3D11VideoContext_VideoProcessorSetStreamFilter(struct npt_dispatc
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -4512,9 +4512,9 @@ npt_dispatch_ID3D11VideoContext_VideoProcessorSetStreamExtension(struct npt_disp
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -4645,9 +4645,9 @@ npt_dispatch_ID3D11VideoContext_VideoProcessorGetStreamFrameFormat(struct npt_di
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -4778,9 +4778,9 @@ npt_dispatch_ID3D11VideoContext_VideoProcessorGetStreamColorSpace(struct npt_dis
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -4925,9 +4925,9 @@ npt_dispatch_ID3D11VideoContext_VideoProcessorGetStreamOutputRate(struct npt_dis
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -5065,9 +5065,9 @@ npt_dispatch_ID3D11VideoContext_VideoProcessorGetStreamSourceRect(struct npt_dis
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -5205,9 +5205,9 @@ npt_dispatch_ID3D11VideoContext_VideoProcessorGetStreamDestRect(struct npt_dispa
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -5345,9 +5345,9 @@ npt_dispatch_ID3D11VideoContext_VideoProcessorGetStreamAlpha(struct npt_dispatch
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -5489,9 +5489,9 @@ npt_dispatch_ID3D11VideoContext_VideoProcessorGetStreamPalette(struct npt_dispat
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -5636,9 +5636,9 @@ npt_dispatch_ID3D11VideoContext_VideoProcessorGetStreamPixelAspectRatio(struct n
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -5783,9 +5783,9 @@ npt_dispatch_ID3D11VideoContext_VideoProcessorGetStreamLumaKey(struct npt_dispat
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -5951,9 +5951,9 @@ npt_dispatch_ID3D11VideoContext_VideoProcessorGetStreamStereoFormat(struct npt_d
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -6084,9 +6084,9 @@ npt_dispatch_ID3D11VideoContext_VideoProcessorGetStreamAutoProcessingMode(struct
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -6227,9 +6227,9 @@ npt_dispatch_ID3D11VideoContext_VideoProcessorGetStreamFilter(struct npt_dispatc
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -6383,9 +6383,9 @@ npt_dispatch_ID3D11VideoContext_VideoProcessorGetStreamExtension(struct npt_disp
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -6541,9 +6541,9 @@ npt_dispatch_ID3D11VideoContext_VideoProcessorBlt(struct npt_dispatch_context *c
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -6686,9 +6686,9 @@ npt_dispatch_ID3D11VideoContext_NegotiateCryptoSessionKeyExchange(struct npt_dis
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -6846,9 +6846,9 @@ npt_dispatch_ID3D11VideoContext_EncryptionBlt(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -7030,9 +7030,9 @@ npt_dispatch_ID3D11VideoContext_DecryptionBlt(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -7171,9 +7171,9 @@ npt_dispatch_ID3D11VideoContext_StartSessionKeyRefresh(struct npt_dispatch_conte
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -7294,9 +7294,9 @@ npt_dispatch_ID3D11VideoContext_FinishSessionKeyRefresh(struct npt_dispatch_cont
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -7436,9 +7436,9 @@ npt_dispatch_ID3D11VideoContext_GetEncryptionBltKey(struct npt_dispatch_context 
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -7581,9 +7581,9 @@ npt_dispatch_ID3D11VideoContext_NegotiateAuthenticatedChannelKeyExchange(struct 
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -7738,9 +7738,9 @@ npt_dispatch_ID3D11VideoContext_QueryAuthenticatedChannel(struct npt_dispatch_co
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -7886,9 +7886,9 @@ npt_dispatch_ID3D11VideoContext_ConfigureAuthenticatedChannel(struct npt_dispatc
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -8018,9 +8018,9 @@ npt_dispatch_ID3D11VideoContext_VideoProcessorSetStreamRotation(struct npt_dispa
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -8158,9 +8158,9 @@ npt_dispatch_ID3D11VideoContext_VideoProcessorGetStreamRotation(struct npt_dispa
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -8301,9 +8301,9 @@ npt_dispatch_ID3D11VideoContext1_SubmitDecoderBuffers1(struct npt_dispatch_conte
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -8447,9 +8447,9 @@ npt_dispatch_ID3D11VideoContext1_GetDataForNewHardwareKey(struct npt_dispatch_co
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -8578,9 +8578,9 @@ npt_dispatch_ID3D11VideoContext1_CheckCryptoSessionStatus(struct npt_dispatch_co
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -8719,9 +8719,9 @@ npt_dispatch_ID3D11VideoContext1_DecoderEnableDownsampling(struct npt_dispatch_c
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -8854,9 +8854,9 @@ npt_dispatch_ID3D11VideoContext1_DecoderUpdateDownsampling(struct npt_dispatch_c
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -8980,9 +8980,9 @@ npt_dispatch_ID3D11VideoContext1_VideoProcessorSetOutputColorSpace1(struct npt_d
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -9106,9 +9106,9 @@ npt_dispatch_ID3D11VideoContext1_VideoProcessorSetOutputShaderUsage(struct npt_d
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -9236,9 +9236,9 @@ npt_dispatch_ID3D11VideoContext1_VideoProcessorGetOutputColorSpace1(struct npt_d
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -9366,9 +9366,9 @@ npt_dispatch_ID3D11VideoContext1_VideoProcessorGetOutputShaderUsage(struct npt_d
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -9495,9 +9495,9 @@ npt_dispatch_ID3D11VideoContext1_VideoProcessorSetStreamColorSpace1(struct npt_d
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -9630,9 +9630,9 @@ npt_dispatch_ID3D11VideoContext1_VideoProcessorSetStreamMirror(struct npt_dispat
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -9763,9 +9763,9 @@ npt_dispatch_ID3D11VideoContext1_VideoProcessorGetStreamColorSpace1(struct npt_d
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -9910,9 +9910,9 @@ npt_dispatch_ID3D11VideoContext1_VideoProcessorGetStreamMirror(struct npt_dispat
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -10069,9 +10069,9 @@ npt_dispatch_ID3D11VideoContext1_VideoProcessorGetBehaviorHints(struct npt_dispa
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -10210,9 +10210,9 @@ npt_dispatch_ID3D11VideoContext2_VideoProcessorSetOutputHDRMetaData(struct npt_d
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -10358,9 +10358,9 @@ npt_dispatch_ID3D11VideoContext2_VideoProcessorGetOutputHDRMetaData(struct npt_d
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -10502,9 +10502,9 @@ npt_dispatch_ID3D11VideoContext2_VideoProcessorSetStreamHDRMetaData(struct npt_d
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -10653,9 +10653,9 @@ npt_dispatch_ID3D11VideoContext2_VideoProcessorGetStreamHDRMetaData(struct npt_d
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -10841,9 +10841,9 @@ npt_dispatch_ID3D11VideoContext3_DecoderBeginFrame1(struct npt_dispatch_context 
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
@@ -10984,9 +10984,9 @@ npt_dispatch_ID3D11VideoContext3_SubmitDecoderBuffers2(struct npt_dispatch_conte
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {

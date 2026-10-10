@@ -345,11 +345,10 @@ npt_dispatch_com_query_interface(struct npt_context *ctx,
    if (npt_cs_decoder_get_fatal(dec))
       return;
 
-   const HRESULT hr = npt_context_query_interface(
-      ctx, header->object_id, &cmd.iid, cmd.guest_id);
-
    struct npt_cmd_com_query_interface_reply reply;
    memset(&reply, 0, sizeof(reply));
+   const HRESULT hr = npt_context_query_interface(
+      ctx, header->object_id, &cmd.iid, cmd.guest_id, &reply.ref);
    reply.header.cmd_type = header->cmd_type;
    reply.header.cmd_return = (uint32_t)hr;
 

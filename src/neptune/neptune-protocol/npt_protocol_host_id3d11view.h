@@ -29,6 +29,7 @@ struct npt_command_ID3D11View_GetResource {
      * this field and inserts {_guest_id_ppResource -> *ppResource} in the
      * context object table. */
     uint64_t _guest_id_ppResource;
+    struct npt_wire_object_ref _ref_ppResource;
 };
 
 static inline void
@@ -63,7 +64,7 @@ npt_encode_ID3D11View_GetResource_reply(struct npt_cs_encoder *enc,
         .cmd_return = 0,
     };
     npt_cs_encoder_write(enc, sizeof(_reply), &_reply, sizeof(_reply));
-/* skip args->ppResource (guest-allocated id, registered host-side; not in reply) */
+npt_encode_npt_wire_object_ref(enc, &args->_ref_ppResource);
 }
 
 static inline void
@@ -132,13 +133,11 @@ npt_dispatch_ID3D11View_GetResource(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
-    if (args.ppResource && *args.ppResource)
-        npt_cs_handle_register_guest_id(ctx, args._guest_id_ppResource, *args.ppResource, NPT_OBJECT_TYPE_ID3D11RESOURCE);
-    else if (args.ppResource)
-        npt_cs_handle_register_failed_guest_id(ctx, args._guest_id_ppResource);
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
+    if (args.ppResource)
+        npt_cs_handle_register_canonical_guest_id(ctx, args._guest_id_ppResource, *args.ppResource, NPT_OBJECT_TYPE_ID3D11RESOURCE, &args._ref_ppResource);
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {

@@ -30,6 +30,7 @@ struct npt_command_ID3D12DeviceChild_GetDevice {
      * this field and inserts {_guest_id_ppvDevice -> *ppvDevice} in the
      * context object table. */
     uint64_t _guest_id_ppvDevice;
+    struct npt_wire_object_ref _ref_ppvDevice;
     HRESULT ret;
 };
 
@@ -75,7 +76,7 @@ npt_encode_ID3D12DeviceChild_GetDevice_reply(struct npt_cs_encoder *enc,
         .cmd_return = (uint32_t)args->ret,
     };
     npt_cs_encoder_write(enc, sizeof(_reply), &_reply, sizeof(_reply));
-/* skip args->ppvDevice (guest-allocated id, registered host-side; not in reply) */
+npt_encode_npt_wire_object_ref(enc, &args->_ref_ppvDevice);
 }
 
 static inline void
@@ -144,14 +145,12 @@ npt_dispatch_ID3D12DeviceChild_GetDevice(struct npt_dispatch_context *ctx,
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
-    if (args.ppvDevice && *args.ppvDevice)
-        npt_cs_handle_register_guest_id(ctx, args._guest_id_ppvDevice, *args.ppvDevice,
-            npt_object_type_from_iid(args.riid));
-    else if (args.ppvDevice)
-        npt_cs_handle_register_failed_guest_id(ctx, args._guest_id_ppvDevice);
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
+    if (args.ppvDevice)
+        npt_cs_handle_register_canonical_guest_id(ctx, args._guest_id_ppvDevice, *args.ppvDevice,
+            npt_object_type_from_iid(args.riid), &args._ref_ppvDevice);
 
     if (cmd_flags & NPT_CMD_FLAG_REPLY) {
         if (!npt_cs_decoder_get_fatal(ctx->decoder)) {

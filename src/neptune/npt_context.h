@@ -142,12 +142,15 @@ struct npt_context {
       uint32_t cap;
    } sync_maps;
 
-   /* Object handle table.  Maps guest-visible object_id (host COM
-    * pointer cast to uint64_t) to npt_object_type, so handle lookup
-    * can reject ids the guest never obtained from Create* / QI.
-    * Drained by COM_RELEASE and context_destroy. */
+   /* Object handle table.  Maps the guest-minted object_id to the host
+    * COM pointer and npt_object_type, so handle lookup can reject ids
+    * the guest never obtained from Create* / QI.  identity_table maps
+    * a host object (its IUnknown) to every id registered for it, so a
+    * canonical getter answers an id the guest already holds.  Both
+    * drained by COM_RELEASE and context_destroy. */
    mtx_t object_mutex;
    struct hash_table *object_table;
+   struct hash_table *identity_table;
    /* Ring threads blocked in a lookup on an id another ring has yet to
     * register; registration broadcasts when nonzero.  Both under
     * object_mutex. */
@@ -398,14 +401,35 @@ npt_context_from_dispatch(struct npt_dispatch_context *dispatch)
 /* Object handle table.  Without it a compromised guest could pass an
  * arbitrary uint64_t and have the host deref it as a COM pointer. */
 
-/* Safe with obj == NULL or type == 0.  Re-register with the same
- * type is a no-op; type upgrade (parent -> child) is allowed;
- * unrelated types log and keep the existing entry. */
+/* Register a new object under the id the guest minted for it (a
+ * Create's output).  Safe with obj == NULL or type == 0.  Re-register
+ * with the same type is a no-op; type upgrade (parent -> child) is
+ * allowed; unrelated types log and keep the existing entry. */
 void
 npt_context_register_object(struct npt_context *ctx,
                             uint64_t id,
                             void *obj,
                             npt_object_type type);
+
+struct npt_wire_object_ref;
+
+/* Register the object a canonical method returned (a getter or
+ * QueryInterface whose result may be an object this context already
+ * knows).  When the object is already registered under an id whose type
+ * is in `type`'s interface family, or derives from `type`, that id is
+ * answered -- the most derived such id, the primary on a tie -- and
+ * counted as one more registration of it, the guest-minted `id`
+ * staying unused; otherwise `obj` is registered under `id` as another
+ * view of the object.  `ref` receives the id the slot is registered
+ * under, the object's primary id and that id's type; zero for a NULL
+ * obj.  The host-library ref `obj` carries is kept either way, and one
+ * COM_RELEASE of the answered id drops it. */
+void
+npt_context_register_canonical_object(struct npt_context *ctx,
+                                      uint64_t id,
+                                      void *obj,
+                                      npt_object_type type,
+                                      struct npt_wire_object_ref *ref);
 
 /* A Create whose host call failed leaves its guest-minted id with no
  * object.  Record that, so a ring waiting for the id to appear is
@@ -439,20 +463,24 @@ npt_context_lookup_object(struct npt_context *ctx,
                           uint64_t id,
                           npt_object_type expected);
 
-/* COM_RELEASE coordination: drop the feedback entry (if any), unmap
- * the object_table entry, then drop the host-library ref via
- * IUnknown::Release.  Stray RELEASE on an unregistered id is silent. */
+/* COM_RELEASE coordination: drop one registration of the id and the
+ * host-library ref it holds via IUnknown::Release; on the last one also
+ * drop the feedback entry (if any) and unmap the object_table entry
+ * first.  Stray RELEASE on an unregistered id is silent. */
 void
 npt_context_release_object(struct npt_context *ctx, uint64_t guest_id);
 
 /* COM_QUERY_INTERFACE: resolve src_guest_id, call QI for riid, and on
- * success register the returned interface under new_guest_id.
- * Returns the host HRESULT (or NPT_E_NOINTERFACE if src_guest_id is
- * not registered). */
+ * success register the returned interface canonically (see
+ * npt_context_register_canonical_object), new_guest_id being the id it
+ * takes when the object is new to this context; `ref` names the id it
+ * is registered under.  Returns the host HRESULT (or NPT_E_NOINTERFACE
+ * if src_guest_id is not registered). */
 HRESULT
 npt_context_query_interface(struct npt_context *ctx,
                             uint64_t src_guest_id,
                             const GUID *riid,
-                            uint64_t new_guest_id);
+                            uint64_t new_guest_id,
+                            struct npt_wire_object_ref *ref);
 
 #endif /* NPT_CONTEXT_H */

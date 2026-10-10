@@ -168,9 +168,9 @@ npt_dispatch_IDXGIFactoryMedia_CreateSwapChainForCompositionSurfaceHandle(struct
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
     if (args.ppSwapChain && *args.ppSwapChain)
         npt_cs_handle_register_guest_id(ctx, args._guest_id_ppSwapChain, *args.ppSwapChain, NPT_OBJECT_TYPE_IDXGISWAPCHAIN1);
     else if (args.ppSwapChain)
@@ -347,9 +347,9 @@ npt_dispatch_IDXGIFactoryMedia_CreateDecodeSwapChainForCompositionSurfaceHandle(
     }
 
     /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  The riid
-     * expression (if any) lets the generator resolve void** outputs
-     * whose type is determined by the caller's riid. */
+     * later commands that reference them can be validated.  A void**
+     * output takes its type from the REFIID input paired with it.  A
+     * canonical method's slots are answered into the reply refs. */
     if (args.ppSwapChain && *args.ppSwapChain)
         npt_cs_handle_register_guest_id(ctx, args._guest_id_ppSwapChain, *args.ppSwapChain, NPT_OBJECT_TYPE_IDXGIDECODESWAPCHAIN);
     else if (args.ppSwapChain)

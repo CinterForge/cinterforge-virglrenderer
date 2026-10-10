@@ -216,6 +216,11 @@ struct npt_cmd_com_query_interface {
 
 struct npt_cmd_com_query_interface_reply {
    struct npt_reply_header header;
+   /* The id the interface is registered under (guest_id when the
+    * object was new to this context, else the id already held for it),
+    * the object's primary registration and its type; zero unless
+    * cmd_return is S_OK. */
+   struct npt_wire_object_ref ref;
 };
 
 /* ====================================================================== */
