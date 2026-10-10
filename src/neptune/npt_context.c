@@ -455,15 +455,23 @@ npt_context_register_canonical_as(struct npt_context *ctx,
          e = npt_object_insert_locked(ctx, id, obj, identity, type);
       }
    }
+   /* A registration's ref is released through host_ptr, so a different
+    * pointer's ref moves onto it: an interface a backend mints fresh per
+    * call (a DXGI resource view) has a count of its own. */
+   void *drop = e ? NULL : obj;
    if (e) {
+      if (e->host_ptr != obj) {
+         npt_com_add_ref(e->host_ptr);
+         drop = obj;
+      }
       ref->id = e->id;
       ref->primary_id = npt_identity_primary_locked(ctx, e);
       ref->type = (uint32_t)e->type;
    }
    mtx_unlock(&ctx->object_mutex);
 
-   if (!e)
-      npt_com_release(obj);
+   if (drop)
+      npt_com_release(drop);
 }
 
 void
