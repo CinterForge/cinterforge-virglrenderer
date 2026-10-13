@@ -270,8 +270,7 @@ npt_ring_feedback_pending(const struct npt_context *ctx)
                                memory_order_relaxed) != 0;
 }
 
-/* Bounded wait on ring->cond with a relative timeout.  Caller holds
- * ring->mutex.
+/* Bounded wait on `cond` with a relative timeout.  Caller holds `mutex`.
  *
  * c11 cnd_timedwait takes an absolute CLOCK_REALTIME deadline, so a
  * backward wall-clock step lands the deadline that far in the future --
@@ -280,11 +279,11 @@ npt_ring_feedback_pending(const struct npt_context *ctx)
  * primitives below take a relative timeout off a clock that cannot step.
  * The portable fallback is the c11 one and keeps that exposure. */
 static void
-npt_ring_cond_wait_ns(struct npt_ring *ring, uint64_t ns)
+npt_cnd_wait_rel_ns(cnd_t *cond, mtx_t *mutex, uint64_t ns)
 {
 #if defined(_WIN32)
-   SleepConditionVariableCS(&ring->cond, &ring->mutex,
-                            (DWORD)(ns / 1000000ull));
+   /* Round up: a sub-millisecond wait truncated to 0 would spin. */
+   SleepConditionVariableCS(cond, mutex, (DWORD)((ns + 999999ull) / 1000000ull));
 #else
    const uint64_t ns_per_sec = 1000000000ull;
 #if defined(__APPLE__)
@@ -292,7 +291,7 @@ npt_ring_cond_wait_ns(struct npt_ring *ring, uint64_t ns)
       .tv_sec = (time_t)(ns / ns_per_sec),
       .tv_nsec = (long)(ns % ns_per_sec),
    };
-   pthread_cond_timedwait_relative_np(&ring->cond, &ring->mutex, &rel);
+   pthread_cond_timedwait_relative_np(cond, mutex, &rel);
 #else
    struct timespec ts;
    timespec_get(&ts, TIME_UTC);
@@ -302,9 +301,15 @@ npt_ring_cond_wait_ns(struct npt_ring *ring, uint64_t ns)
       ts.tv_sec += 1;
       ts.tv_nsec -= (long)ns_per_sec;
    }
-   cnd_timedwait(&ring->cond, &ring->mutex, &ts);
+   cnd_timedwait(cond, mutex, &ts);
 #endif
 #endif
+}
+
+static void
+npt_ring_cond_wait_ns(struct npt_ring *ring, uint64_t ns)
+{
+   npt_cnd_wait_rel_ns(&ring->cond, &ring->mutex, ns);
 }
 
 /* Relax passes below this many yield; from it on they sleep. */
@@ -925,20 +930,8 @@ npt_ring_lookup_wait_locked(struct npt_context *ctx, uint64_t ring_id)
       }
       if (ctx->cs_fatal_error)
          return NULL;
-      const struct timespec rel = { .tv_sec = 0, .tv_nsec = 10 * 1000 * 1000 };
-#if defined(__APPLE__)
-      pthread_cond_timedwait_relative_np(&ctx->ring_cond, &ctx->ring_mutex,
-                                         &rel);
-#else
-      struct timespec ts;
-      timespec_get(&ts, TIME_UTC);
-      ts.tv_nsec += rel.tv_nsec;
-      if (ts.tv_nsec >= 1000000000L) {
-         ts.tv_sec += 1;
-         ts.tv_nsec -= 1000000000L;
-      }
-      cnd_timedwait(&ctx->ring_cond, &ctx->ring_mutex, &ts);
-#endif
+      npt_cnd_wait_rel_ns(&ctx->ring_cond, &ctx->ring_mutex,
+                          10ull * 1000 * 1000);
       const uint64_t now = npt_ring_now();
       if (now >= next_report) {
          npt_log("ring %" PRIu64 " named before its CREATE_RING was decoded; "
