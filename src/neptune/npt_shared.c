@@ -14,6 +14,8 @@
 
 #include "npt_shared.h"
 
+#include <assert.h>
+#include <stddef.h>
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
@@ -89,6 +91,11 @@ struct npt_darwin_shared_texture {
                             * surface placed in a shared heap is a window
                             * into the heap's one object); 0 otherwise */
 };
+/* The same layout d3dmetal-native asserts for dmn_shared_texture_handle. */
+static_assert(sizeof(struct npt_darwin_shared_texture) == 72 &&
+              offsetof(struct npt_darwin_shared_texture, stride) == 48 &&
+              offsetof(struct npt_darwin_shared_texture, offset) == 64,
+              "darwin shared-texture POD ABI drift");
 #endif
 
 /* OPEN_RES arrives on the consumer's ring thread; the resource fd
