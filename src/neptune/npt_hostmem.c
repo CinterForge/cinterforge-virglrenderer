@@ -6,11 +6,18 @@
 #include "npt_hostmem.h"
 
 #include <dlfcn.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <linux/udmabuf.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/ioctl.h>
+#include <unistd.h>
 
 #include "c11/threads.h"
 #include "venus-protocol/vulkan.h"
+
+#include "npt_context.h"
 
 static struct {
    void *lib;
@@ -229,5 +236,44 @@ npt_hostmem_alloc_dmabuf(uint64_t size)
 
    /* The dmabuf holds its own reference on the BO. */
    hostmem.FreeMemory(hostmem.device, mem, NULL);
+   return fd;
+}
+
+int
+npt_hostmem_blob_dmabuf(const struct npt_resource *res, uint64_t offset,
+                        uint64_t size, const char *who)
+{
+   if (res->dmabuf_backed) {
+      if (offset || size != res->size) {
+         npt_log("%s: window (off %" PRIu64 ", size %" PRIu64 ") is not "
+                 "all of dmabuf res %u", who, offset, size, res->res_id);
+         return -1;
+      }
+      const int fd = fcntl(res->u.fd, F_DUPFD_CLOEXEC, 0);
+      if (fd < 0)
+         npt_log("%s: dup of res %u failed (errno %d)", who, res->res_id,
+                 errno);
+      return fd;
+   }
+
+   /* udmabuf requires the memfd to carry F_SEAL_SHRINK. */
+   const int dev_fd = open("/dev/udmabuf", O_RDWR | O_CLOEXEC);
+   if (dev_fd < 0) {
+      npt_log("%s: open(/dev/udmabuf) failed (errno %d)", who, errno);
+      return -1;
+   }
+
+   struct udmabuf_create uc = {
+      .memfd = (uint32_t)res->u.fd,
+      .flags = UDMABUF_FLAGS_CLOEXEC,
+      .offset = offset,
+      .size = size,
+   };
+   const int fd = ioctl(dev_fd, UDMABUF_CREATE, &uc);
+   if (fd < 0)
+      npt_log("%s: UDMABUF_CREATE(res %u memfd %d off %" PRIu64
+              " size %" PRIu64 ") failed (errno %d)",
+              who, res->res_id, res->u.fd, offset, size, errno);
+   close(dev_fd);
    return fd;
 }

@@ -98,8 +98,12 @@ npt_capset_backend_caps(void)
 #else
    /* Every D3D12 backend takes DXBC.  DXIL is claimed only for a backend
     * the UMD's DXIL path is validated on, which no Linux backend is, and
-    * nothing a backend reports can stand in for that validation. */
-   return 0;
+    * nothing a backend reports can stand in for that validation.
+    *
+    * EXTERNAL_BUFFERS is safe to claim before dxvk is loaded: a dxvk
+    * without the exports answers the guest's first bind with E_NOTIMPL,
+    * and the guest drops back to the map ring. */
+   return VIRGL_RENDERER_CAPSET_NEPTUNE_CAP_D3D11_EXTERNAL_BUFFERS;
 #endif
 }
 
