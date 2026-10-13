@@ -70,6 +70,10 @@ struct npt_ring {
    struct npt_context *context;
 
    uint64_t idle_timeout;
+   /* Bound of the next idle park: doubles from NPT_RING_PARK_MIN_NS to
+    * NPT_RING_PARK_MAX_NS while the ring stays empty, back to the minimum
+    * on work or a doorbell.  Ring-thread private. */
+   uint64_t park_ns;
    /* Per-ring countdown for npt_feedback_poll (dispatch-thread private). */
    uint32_t feedback_poll_skip;
    void *cmd;

@@ -29,6 +29,13 @@
 #include "npt_dispatch.h"
 #include "neptune-protocol/npt_protocol_host_dispatch.h"
 
+/* Idle park bounds (npt_ring.h park_ns).  The guest rings a doorbell for
+ * every submit that follows the ring's previous one by at least the idle
+ * timeout, so a parked ring is always woken for new work; the bound is a
+ * safety net, not the wake-up path, and backs off while the ring is idle. */
+#define NPT_RING_PARK_MIN_NS (1000ull * 1000)
+#define NPT_RING_PARK_MAX_NS (100ull * 1000 * 1000)
+
 static _Thread_local struct npt_ring *npt_ring_thread_current;
 
 struct npt_ring *
@@ -158,6 +165,7 @@ npt_ring_create(const struct npt_ring_layout *layout,
    npt_ring_init_dispatch(ring, ctx);
 
    ring->idle_timeout = idle_timeout;
+   ring->park_ns = NPT_RING_PARK_MIN_NS;
 
    if (mtx_init(&ring->mutex, mtx_plain) != thrd_success)
       goto err_mtx_init;
@@ -478,6 +486,7 @@ npt_ring_thread(void *arg)
       /* An empty ring past the idle timeout waits; feedback decides only
        * whether the wait is bounded by the poll cadence. */
       bool notified = false;
+      bool parked_empty = false;
       if (idle_timed && npt_ring_now() >= idle_since + ring->idle_timeout) {
          const uint64_t idle_t0 =
             npt_profile_enabled() ? npt_profile_now_ns() : 0;
@@ -496,18 +505,13 @@ npt_ring_thread(void *arg)
             ring->feedback_notify || npt_ring_feedback_pending(ctx);
          ring->feedback_notify = false;
 
-         /* Dekker pairing with the guest submit path (store tail, then
-          * load status): set IDLE with a seq_cst RMW BEFORE deciding
-          * from the tail whether to sleep.  The guest orders its tail
-          * store before its status load with a full fence, so at least
-          * one side always sees the other: either the tail read below
-          * sees the new tail and the wait is skipped, or the guest sees
-          * IDLE and rings the doorbell, which takes ring->mutex and so
-          * cannot land between this decision and the wait.  Deciding
-          * from a tail read taken before the IDLE transition lets a
-          * submit slip through the gap -- guest misses IDLE (no
-          * doorbell), host misses the tail -> the ring parks with work
-          * already published. */
+         /* Work published before the tail read below is seen by it.
+          * Work published after it follows the guest's previous submit
+          * by at least idle_timeout -- this thread only gets here after
+          * idle_timeout without work -- so the guest rings a doorbell
+          * for it, and the doorbell takes ring->mutex, so it cannot land
+          * between this decision and the wait.  IDLE is informational:
+          * the guest no longer decides its doorbell from it. */
          npt_ring_set_status_bits(ring, NPT_RING_STATUS_IDLE_BIT);
          const bool wait = ring->buffer.cur == npt_ring_load_tail(ring);
          if (wait && ring->started) {
@@ -516,16 +520,17 @@ npt_ring_thread(void *arg)
                 * spending the yield/10us relax ramp to get there. */
                npt_ring_cond_wait_ns(ring, NPT_FEEDBACK_POLL_INTERVAL_NS);
             } else {
-               /* Bounded park rather than an unbounded one: the ring
-                * blob is cached here and uncached in the guest, so the
-                * IDLE bit set above reaches the guest only when this
-                * side's cache line is written back, and until then a
-                * guest submit sees no IDLE and rings no doorbell; the
-                * tail can lag the same way in the other direction.  The
-                * timeout bounds how long published work can sit behind
-                * that, and it is what the guest's ring-space and reply
-                * waits see as latency, so it is short. */
-               npt_ring_cond_wait_ns(ring, 1000ull * 1000);
+               /* The wait ends on the doorbell the guest rings for work
+                * arriving after an idle gap; its bound backs off while the
+                * ring stays empty (NPT_RING_PARK_MIN_NS..MAX_NS). */
+               npt_ring_cond_wait_ns(ring, ring->park_ns);
+               if (!ring->pending_notify &&
+                   ring->buffer.cur == npt_ring_load_tail(ring)) {
+                  parked_empty = true;
+                  ring->park_ns = MIN2(ring->park_ns * 2, NPT_RING_PARK_MAX_NS);
+               } else {
+                  ring->park_ns = NPT_RING_PARK_MIN_NS;
+               }
             }
          }
          npt_ring_unset_status_bits(ring, NPT_RING_STATUS_IDLE_BIT);
@@ -605,6 +610,11 @@ npt_ring_thread(void *arg)
          if (npt_ring_feedback_pending(ctx) &&
              relax_iter > NPT_RING_RELAX_SLEEP_ITER)
             relax_iter = NPT_RING_RELAX_SLEEP_ITER;
+
+         /* Straight back into the park after an empty one: the relax
+          * nanosleep cannot be cut short by a doorbell. */
+         if (parked_empty)
+            continue;
 
          const uint64_t relax_t0 =
             npt_profile_enabled() ? npt_profile_now_ns() : 0;
