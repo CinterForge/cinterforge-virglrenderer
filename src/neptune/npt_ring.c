@@ -386,7 +386,7 @@ npt_ring_submit_cmd(struct npt_ring *ring,
        * was published without a broadcast. */
       atomic_thread_fence(memory_order_seq_cst);
       if (unlikely(atomic_load_explicit(&ring->peer_waiters,
-                                        memory_order_relaxed)) &&
+                                        memory_order_acquire)) &&
           npt_seqno_ge(cur_ring_head,
                        atomic_load_explicit(&ring->peer_wake_at,
                                             memory_order_relaxed)))
@@ -729,7 +729,7 @@ npt_ring_wait_peer_seqno(struct npt_context *ctx, struct npt_ring *self,
     * wait.  The count must then be visible to the loop before this
     * thread reads the head it might already have published; the loop
     * pairs the same way (publish head, then read the count). */
-   atomic_fetch_add_explicit(&target->peer_waiters, 1, memory_order_relaxed);
+   atomic_fetch_add_explicit(&target->peer_waiters, 1, memory_order_release);
    atomic_thread_fence(memory_order_seq_cst);
    while (!npt_seqno_ge(npt_ring_load_head(target), seqno) &&
           target->started && self->started && !ctx->cs_fatal_error) {
