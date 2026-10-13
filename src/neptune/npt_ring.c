@@ -998,17 +998,15 @@ npt_ring_create_from_cmd(struct npt_context *ctx,
 
    ring->id = cmd->ring_id;
 
-   /* Arm the ring as monitored and stamp a first ALIVE heartbeat before
+   /* Arm the ring as monitored and stamp a first heartbeat before
     * publishing it to ctx->rings, under the same lock the monitor thread
-    * scans.  The monitor is the only writer of the ALIVE bit and ticks
-    * lazily on monitor_report_period_us, which is slower than the guest's
-    * ring watchdog: without a heartbeat stamped before the ring is
-    * reachable, the watchdog can observe a created-but-unserviced ring
-    * and tear it down. */
+    * scans.  The guest watchdog only judges a counter it has seen move
+    * off zero, so a ring is covered from creation rather than from the
+    * monitor's first tick one report period later. */
    mtx_lock(&ctx->ring_mutex);
    if (cmd->monitor_report_period_us) {
       ring->monitor = true;
-      npt_ring_set_status_bits(ring, NPT_RING_STATUS_ALIVE_BIT);
+      npt_ring_heartbeat(ring);
    }
    if (!list_is_empty(&ctx->rings))
       atomic_store_explicit(&ctx->multi_ring, true, memory_order_release);
