@@ -86,6 +86,18 @@ npt_heap12_import(const struct npt_d3d_library *lib, void *device,
                   const struct npt_cmd_create_heap_from_shmem *cmd,
                   void **out_heap)
 {
+   if (res->dmabuf_backed) {
+      /* The dmabuf cannot be carved, so only a whole-blob window maps. */
+      if (cmd->shmem_offset || cmd->size != res->size) {
+         npt_log("create_heap_from_shmem: window (off %u, size %" PRIu64
+                 ") is not all of dmabuf res %u (size %zu)",
+                 cmd->shmem_offset, cmd->size, res->res_id, res->size);
+         return NPT_E_INVALIDARG;
+      }
+      return lib->pfn_vkd3d_open_existing_heap_from_dmabuf(
+         device, res->u.fd, cmd->size, &NPT_IID_ID3D12Heap, out_heap);
+   }
+
    const int dmabuf_fd =
       npt_heap12_wrap_udmabuf(res, cmd->shmem_offset, cmd->size);
    if (dmabuf_fd < 0)

@@ -66,6 +66,9 @@ struct npt_resource {
 
    size_t size;
 
+   /* fd is a GPU dmabuf rather than a memfd; u.data maps it. */
+   bool dmabuf_backed;
+
    /* Users of u.data that outlive a resource_mutex section: live
     * ID3D12Heap imports aliasing it, an import in progress, and a
     * MAP/UNMAP copying through it.  DESTROY_RESOURCE is a virtio control

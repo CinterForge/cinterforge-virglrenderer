@@ -19,6 +19,7 @@
 #include "npt_event.h"
 #include "npt_feedback.h"
 #include "npt_heap12.h"
+#include "npt_hostmem.h"
 #include "npt_overrides.h"
 #include "npt_profile.h"
 #include "npt_queue.h"
@@ -1557,7 +1558,17 @@ npt_context_create_resource(struct npt_context *ctx,
 {
    if (blob_id == 0) {
       /* SHM resource (ring buffer or generic shared memory). */
-      int fd = os_create_anonymous_file(blob_size, "npt-shmem");
+      int fd = -1;
+      bool dmabuf_backed = false;
+      if (blob_size > NPT_HOSTMEM_DMABUF_MIN_SIZE) {
+         fd = npt_hostmem_alloc_dmabuf(blob_size);
+         dmabuf_backed = fd >= 0;
+      }
+      if (dmabuf_backed)
+         npt_log("create_resource: res %u (%" PRIu64 " bytes) backed by "
+                 "a GPU dmabuf", res_id, blob_size);
+      if (fd < 0)
+         fd = os_create_anonymous_file(blob_size, "npt-shmem");
       if (fd < 0)
          return false;
 
@@ -1578,12 +1589,13 @@ npt_context_create_resource(struct npt_context *ctx,
       res->fd_type = VIRGL_RESOURCE_FD_SHM;
       res->size = blob_size;
       res->u.data = data;
+      res->dmabuf_backed = dmabuf_backed;
 
 #ifdef __linux__
       /* Seal against shrink so the memfd can back a udmabuf for a D3D12
        * heap import.  Failure is not fatal: UDMABUF_CREATE then fails
        * cleanly and the guest degrades to the sync-map path. */
-      if (fcntl(fd, F_ADD_SEALS, F_SEAL_SHRINK) < 0)
+      if (!dmabuf_backed && fcntl(fd, F_ADD_SEALS, F_SEAL_SHRINK) < 0)
          npt_log("create_resource: F_ADD_SEALS(F_SEAL_SHRINK) on res %u "
                  "failed (errno %d); heap imports will fall back",
                  res_id, errno);
@@ -1616,7 +1628,7 @@ npt_context_create_resource(struct npt_context *ctx,
        * also hand these pages straight to the app, where write-back is
        * mandatory for read performance. */
       *out_blob = (struct virgl_context_blob){
-         .type = VIRGL_RESOURCE_FD_SHM,
+         .type = dmabuf_backed ? VIRGL_RESOURCE_FD_DMABUF : VIRGL_RESOURCE_FD_SHM,
          .u.fd = fd,
          .map_info = VIRGL_RENDERER_MAP_CACHE_CACHED,
       };

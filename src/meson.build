@@ -250,6 +250,9 @@ endif
 
 if with_neptune
    virgl_sources += neptune_sources
+   if host_machine.system() == 'linux'
+      virgl_sources += 'neptune/npt_hostmem.c'
+   endif
    # macOS needs no backend dep: it dlopens the backend umbrella and
    # defines the shared-texture descriptor locally (npt_shared.c).
    if not with_host_darwin
