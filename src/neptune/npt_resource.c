@@ -13,9 +13,11 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "npt_com.h"
 #include "npt_context.h"
+#include "npt_hostmem.h"
 #include "npt_library.h"
 #include "npt_transport_defs.h"
 
@@ -305,14 +307,14 @@ npt_resource_map_pinned(struct npt_context *ctx,
       if (NPT_FAILED(hr))
          return hr;
 
-      /* A DXMT buffer bound to guest shmem may have mapped one of those
-       * shmems: the guest then writes it in place, and nothing is copied
-       * here or at UNMAP. */
+      /* A buffer bound to guest shmems may have mapped one of them: the
+       * guest then writes it in place, and nothing is copied here or at
+       * UNMAP. */
       const struct npt_d3d_library *lib = npt_renderer_get_library();
       uint32_t cookie;
-      if (lib && lib->pfn_dxmt_d3d11_buffer_external_cookie &&
-          lib->pfn_dxmt_d3d11_buffer_external_cookie(resource, mapped.pData,
-                                                     &cookie) == 0)
+      if (lib && lib->pfn_d3d11_buffer_external_cookie &&
+          lib->pfn_d3d11_buffer_external_cookie(resource, mapped.pData,
+                                                &cookie) == 0)
          external_cookie = cookie;
    }
 
@@ -564,7 +566,7 @@ npt_resource_bind_d3d11_buffer_shmem(struct npt_context *ctx,
                                      uint32_t cookie, uint32_t reserved)
 {
    const struct npt_d3d_library *lib = npt_renderer_get_library();
-   if (!lib || !lib->pfn_dxmt_d3d11_buffer_bind_external_fd)
+   if (!lib || !lib->pfn_d3d11_buffer_bind_external_fd)
       return NPT_E_NOTIMPL;
    if (!byte_size || cookie == NPT_EXTERNAL_COOKIE_NONE || reserved)
       return NPT_E_INVALIDARG;
@@ -592,8 +594,23 @@ npt_resource_bind_d3d11_buffer_shmem(struct npt_context *ctx,
               shmem->size, byte_size);
       hr = NPT_E_INVALIDARG;
    } else {
-      hr = (HRESULT)lib->pfn_dxmt_d3d11_buffer_bind_external_fd(
-         buffer, shmem->u.fd, shmem->size, cookie);
+#ifdef __linux__
+      /* dxvk imports a dmabuf: the blob's own, or a udmabuf of its
+       * memfd. */
+      const int fd = npt_hostmem_blob_dmabuf(shmem, 0, shmem->size,
+                                             "bind_d3d11_buffer_shmem");
+#else
+      const int fd = shmem->u.fd;
+#endif
+      if (fd < 0) {
+         hr = NPT_E_FAIL;
+      } else {
+         hr = (HRESULT)lib->pfn_d3d11_buffer_bind_external_fd(
+            buffer, fd, shmem->size, cookie);
+#ifdef __linux__
+         close(fd);
+#endif
+      }
    }
    npt_context_unpin_resource(ctx, shmem);
    return hr;

@@ -116,14 +116,14 @@ npt_library_load_embedder_api(struct npt_d3d_library *lib)
             .p = npt_library_sym(mod, name) }).f;
 
       if (candidates[i].kind == NPT_BACKEND_DXMT) {
-         lib->pfn_dxmt_d3d11_buffer_bind_external_fd =
+         lib->pfn_d3d11_buffer_bind_external_fd =
             ((union { void *p;
-                      PFN_npt_lib_dxmt_d3d11_buffer_bind_external_fd f; }){
+                      PFN_npt_lib_d3d11_buffer_bind_external_fd f; }){
                .p = npt_library_sym(mod,
                                     "dxmt_d3d11_buffer_bind_external_fd") }).f;
-         lib->pfn_dxmt_d3d11_buffer_external_cookie =
+         lib->pfn_d3d11_buffer_external_cookie =
             ((union { void *p;
-                      PFN_npt_lib_dxmt_d3d11_buffer_external_cookie f; }){
+                      PFN_npt_lib_d3d11_buffer_external_cookie f; }){
                .p = npt_library_sym(mod,
                                     "dxmt_d3d11_buffer_external_cookie") }).f;
       }
@@ -165,6 +165,20 @@ npt_library_init(struct npt_d3d_library *lib)
                .p = npt_library_sym(lib->d3d11_module,
                                     "D3D11On12CreateDevice")
             }).f;
+#ifndef __APPLE__
+         /* Optional: a dxvk without them leaves the guest's DYNAMIC
+          * buffers on the copying map ring. */
+         lib->pfn_d3d11_buffer_bind_external_fd =
+            ((union { void *p; PFN_npt_lib_d3d11_buffer_bind_external_fd f; }){
+               .p = npt_library_sym(lib->d3d11_module,
+                                    "dxvk_d3d11_buffer_bind_external_dmabuf")
+            }).f;
+         lib->pfn_d3d11_buffer_external_cookie =
+            ((union { void *p; PFN_npt_lib_d3d11_buffer_external_cookie f; }){
+               .p = npt_library_sym(lib->d3d11_module,
+                                    "dxvk_d3d11_buffer_external_cookie")
+            }).f;
+#endif
       }
    }
 

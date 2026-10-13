@@ -14,17 +14,12 @@
 
 #include "npt_heap12.h"
 
-#include <fcntl.h>
-#include <sys/ioctl.h>
 #include <unistd.h>
-
-#ifdef __linux__
-#include <linux/udmabuf.h>
-#endif
 
 #include "npt_com.h"
 #include "npt_context.h"
 #include "npt_cs.h"
+#include "npt_hostmem.h"
 #include "npt_library.h"
 #include "npt_renderer.h"
 #include "npt_transport_defs.h"
@@ -33,42 +28,6 @@ struct npt_heap_import {
    uint64_t heap_id;              /* guest id of the ID3D12Heap */
    struct npt_resource *res;      /* backing SHM resource */
 };
-
-#ifdef __linux__
-/* Wrap [offset, offset + size) of the resource's memfd in a udmabuf.
- * Requires the memfd to carry F_SEAL_SHRINK.  Returns the dmabuf fd
- * or -1. */
-static int
-npt_heap12_wrap_udmabuf(const struct npt_resource *res,
-                        uint32_t offset, uint64_t size)
-{
-   struct udmabuf_create uc;
-   int dev_fd, buf_fd;
-
-   dev_fd = open("/dev/udmabuf", O_RDWR | O_CLOEXEC);
-   if (dev_fd < 0) {
-      npt_log("create_heap_from_shmem: open(/dev/udmabuf) failed "
-              "(errno %d); persistent-map heaps unavailable, guest "
-              "degrades to sync map", errno);
-      return -1;
-   }
-
-   memset(&uc, 0, sizeof(uc));
-   uc.memfd = (uint32_t)res->u.fd;
-   uc.flags = UDMABUF_FLAGS_CLOEXEC;
-   uc.offset = offset;
-   uc.size = size;
-
-   buf_fd = ioctl(dev_fd, UDMABUF_CREATE, &uc);
-   if (buf_fd < 0)
-      npt_log("create_heap_from_shmem: UDMABUF_CREATE(res %u memfd %d "
-              "off %u size %" PRIu64 ") failed (errno %d); guest "
-              "degrades to sync map",
-              res->res_id, res->u.fd, offset, size, errno);
-   close(dev_fd);
-   return buf_fd;
-}
-#endif /* __linux__ */
 
 #if defined(__linux__)
 static bool
@@ -86,20 +45,8 @@ npt_heap12_import(const struct npt_d3d_library *lib, void *device,
                   const struct npt_cmd_create_heap_from_shmem *cmd,
                   void **out_heap)
 {
-   if (res->dmabuf_backed) {
-      /* The dmabuf cannot be carved, so only a whole-blob window maps. */
-      if (cmd->shmem_offset || cmd->size != res->size) {
-         npt_log("create_heap_from_shmem: window (off %u, size %" PRIu64
-                 ") is not all of dmabuf res %u (size %zu)",
-                 cmd->shmem_offset, cmd->size, res->res_id, res->size);
-         return NPT_E_INVALIDARG;
-      }
-      return lib->pfn_vkd3d_open_existing_heap_from_dmabuf(
-         device, res->u.fd, cmd->size, &NPT_IID_ID3D12Heap, out_heap);
-   }
-
-   const int dmabuf_fd =
-      npt_heap12_wrap_udmabuf(res, cmd->shmem_offset, cmd->size);
+   const int dmabuf_fd = npt_hostmem_blob_dmabuf(
+      res, cmd->shmem_offset, cmd->size, "create_heap_from_shmem");
    if (dmabuf_fd < 0)
       return NPT_E_FAIL;
 
