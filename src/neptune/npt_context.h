@@ -14,6 +14,7 @@
 #include "npt_feedback.h"
 #include "npt_renderer.h"
 #include "neptune-protocol/npt_protocol_host_dispatch_types.h"
+#include "neptune-protocol/npt_protocol_transport.h"
 #include "virgl_resource.h"
 
 struct npt_queue;
@@ -189,12 +190,9 @@ struct npt_context {
     * Partition:
     *   0                          : CPU timeline
     *   [1, NPT_EVENT_RING_BASE)   : reserved
-    *   [NPT_EVENT_RING_BASE, end) : Win32 event proxies
-    *
-    * NPT_EVENT_RING_BASE must equal (sync_queues count / 2) in
-    * lockstep with the guest driver. */
+    *   [NPT_EVENT_RING_BASE, end) : Win32 event proxies */
    mtx_t sync_queues_mutex;
-   struct npt_queue *sync_queues[64];
+   struct npt_queue *sync_queues[NPT_MAX_TIMELINES];
 
    /* Per-ring gate events for D3D12 monitored-fence gates, kept alive
     * until context teardown so the host D3D library's asynchronous
@@ -232,11 +230,6 @@ struct npt_context {
 
    struct list_head head;
 };
-
-/* Half of sync_queues[] is reserved rings, half is event proxies.
- * Must be (sizeof sync_queues / sizeof sync_queues[0]) / 2 in lockstep
- * with the guest driver. */
-#define NPT_EVENT_RING_BASE 32u
 
 struct npt_context *
 npt_context_create(uint32_t ctx_id,

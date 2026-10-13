@@ -85,10 +85,9 @@ void npt_event_fini(struct npt_context *ctx);
 /* Idempotent: re-register just bumps the refcount. */
 void npt_event_register(struct npt_context *ctx, uint64_t token);
 
-/* False if token isn't registered or dup/alloc fails.  arm_flags is
- * NPT_EVENT_ARM_FLAG_* from the wire. */
+/* False if token isn't registered or dup/alloc fails. */
 bool npt_event_arm(struct npt_context *ctx, uint64_t token,
-                    uint32_t ring_idx, uint32_t arm_flags);
+                    uint32_t ring_idx);
 
 void npt_event_release(struct npt_context *ctx, uint64_t token);
 

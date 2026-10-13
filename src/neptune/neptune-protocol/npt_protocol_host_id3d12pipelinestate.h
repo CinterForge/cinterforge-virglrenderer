@@ -42,9 +42,13 @@ npt_decode_ID3D12PipelineState_GetCachedBlob_args_temp(struct npt_cs_decoder *de
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppBlob = _gid;
-        args->ppBlob = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppBlob) return;
-        *args->ppBlob = NULL;
+        if (_gid) {
+            args->ppBlob = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppBlob) return;
+            *args->ppBlob = NULL;
+        } else {
+            args->ppBlob = NULL;
+        }
     }
     /* Allocate temp storage for output-only parameters */
 

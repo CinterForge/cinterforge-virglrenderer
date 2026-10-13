@@ -176,9 +176,13 @@ npt_decode_IDXGISwapChain_GetBuffer_args_temp(struct npt_cs_decoder *dec,
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppSurface = _gid;
-        args->ppSurface = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppSurface) return;
-        *args->ppSurface = NULL;
+        if (_gid) {
+            args->ppSurface = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppSurface) return;
+            *args->ppSurface = NULL;
+        } else {
+            args->ppSurface = NULL;
+        }
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -443,9 +447,13 @@ npt_decode_IDXGISwapChain_GetFullscreenState_args_temp(struct npt_cs_decoder *de
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppTarget = _gid;
-        args->ppTarget = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppTarget) return;
-        *args->ppTarget = NULL;
+        if (_gid) {
+            args->ppTarget = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppTarget) return;
+            *args->ppTarget = NULL;
+        } else {
+            args->ppTarget = NULL;
+        }
     }
     /* Allocate temp storage for output-only parameters */
     args->pFullscreen = npt_cs_decoder_alloc_temp(dec, sizeof(BOOL));
@@ -966,9 +974,13 @@ npt_decode_IDXGISwapChain_GetContainingOutput_args_temp(struct npt_cs_decoder *d
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppOutput = _gid;
-        args->ppOutput = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppOutput) return;
-        *args->ppOutput = NULL;
+        if (_gid) {
+            args->ppOutput = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppOutput) return;
+            *args->ppOutput = NULL;
+        } else {
+            args->ppOutput = NULL;
+        }
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -1725,9 +1737,13 @@ npt_decode_IDXGISwapChain1_GetCoreWindow_args_temp(struct npt_cs_decoder *dec,
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppUnk = _gid;
-        args->ppUnk = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppUnk) return;
-        *args->ppUnk = NULL;
+        if (_gid) {
+            args->ppUnk = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppUnk) return;
+            *args->ppUnk = NULL;
+        } else {
+            args->ppUnk = NULL;
+        }
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -1984,6 +2000,7 @@ npt_decode_IDXGISwapChain1_IsTemporaryMonoSupported_args_temp(struct npt_cs_deco
                                                               struct npt_command_IDXGISwapChain1_IsTemporaryMonoSupported *args)
 {
     /* Decode input parameters from the wire */
+
     /* Allocate temp storage for output-only parameters */
 }
 
@@ -2111,9 +2128,13 @@ npt_decode_IDXGISwapChain1_GetRestrictToOutput_args_temp(struct npt_cs_decoder *
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppRestrictToOutput = _gid;
-        args->ppRestrictToOutput = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppRestrictToOutput) return;
-        *args->ppRestrictToOutput = NULL;
+        if (_gid) {
+            args->ppRestrictToOutput = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppRestrictToOutput) return;
+            *args->ppRestrictToOutput = NULL;
+        } else {
+            args->ppRestrictToOutput = NULL;
+        }
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -3221,6 +3242,7 @@ npt_decode_IDXGISwapChain2_GetFrameLatencyWaitableObject_args_temp(struct npt_cs
                                                                    struct npt_command_IDXGISwapChain2_GetFrameLatencyWaitableObject *args)
 {
     /* Decode input parameters from the wire */
+
     /* Allocate temp storage for output-only parameters */
 }
 
@@ -3588,6 +3610,7 @@ npt_decode_IDXGISwapChain3_GetCurrentBackBufferIndex_args_temp(struct npt_cs_dec
                                                                struct npt_command_IDXGISwapChain3_GetCurrentBackBufferIndex *args)
 {
     /* Decode input parameters from the wire */
+
     /* Allocate temp storage for output-only parameters */
 }
 
@@ -3955,21 +3978,25 @@ static inline void
 npt_decode_IDXGISwapChain3_ResizeBuffers1_args_temp(struct npt_cs_decoder *dec,
                                                     struct npt_command_IDXGISwapChain3_ResizeBuffers1 *args)
 {
+    uint64_t _cnt_pCreationNodeMask = 0; int _has_cnt_pCreationNodeMask = -1;
+    uint64_t _cnt_ppPresentQueue = 0; int _has_cnt_ppPresentQueue = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->BufferCount);
     npt_decode_UINT(dec, &args->Width);
     npt_decode_UINT(dec, &args->Height);
     npt_decode_DXGI_FORMAT(dec, &args->Format);
     npt_decode_UINT(dec, &args->SwapChainFlags);
-    uint64_t _cnt_pCreationNodeMask = 0;
+    _has_cnt_pCreationNodeMask = 0;
     if (npt_decode_counted_pointer_count(dec, &_cnt_pCreationNodeMask)) {
+        _has_cnt_pCreationNodeMask = 1;
         args->pCreationNodeMask = npt_cs_decoder_alloc_temp_array(dec, sizeof(UINT), _cnt_pCreationNodeMask ? _cnt_pCreationNodeMask : 1);
         if (!args->pCreationNodeMask) return;
         npt_decode_UINT_array(dec, (UINT *)args->pCreationNodeMask, _cnt_pCreationNodeMask);
     } else {
         args->pCreationNodeMask = NULL;
     }
-    uint64_t _cnt_ppPresentQueue = npt_decode_array_count_unchecked(dec);
+    _cnt_ppPresentQueue = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppPresentQueue = _cnt_ppPresentQueue != 0;
     if (_cnt_ppPresentQueue) {
         args->ppPresentQueue = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppPresentQueue);
         if (!args->ppPresentQueue) return;
@@ -3981,12 +4008,14 @@ npt_decode_IDXGISwapChain3_ResizeBuffers1_args_temp(struct npt_cs_decoder *dec,
     } else {
         args->ppPresentQueue = NULL;
     }
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_pCreationNodeMask && _cnt_pCreationNodeMask < (uint64_t)(args->BufferCount)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_pCreationNodeMask > 0 && _cnt_pCreationNodeMask < (uint64_t)(args->BufferCount)) ||
+        (_has_cnt_pCreationNodeMask == 0 && (uint64_t)(args->BufferCount) != 0)) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
-    if (_cnt_ppPresentQueue && _cnt_ppPresentQueue < (uint64_t)(args->BufferCount)) {
+    if ((_has_cnt_ppPresentQueue > 0 && _cnt_ppPresentQueue < (uint64_t)(args->BufferCount)) ||
+        (_has_cnt_ppPresentQueue == 0 && (uint64_t)(args->BufferCount) != 0)) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -4120,18 +4149,23 @@ static inline void
 npt_decode_IDXGISwapChain4_SetHDRMetaData_args_temp(struct npt_cs_decoder *dec,
                                                     struct npt_command_IDXGISwapChain4_SetHDRMetaData *args)
 {
+    uint64_t _cnt_pMetaData = 0; int _has_cnt_pMetaData = -1;
     /* Decode input parameters from the wire */
     npt_decode_DXGI_HDR_METADATA_TYPE(dec, &args->Type);
     npt_decode_UINT(dec, &args->Size);
-    {
-        const uint64_t _blob_size = npt_decode_array_count_unchecked(dec);
-        if (_blob_size) {
-            args->pMetaData = npt_cs_decoder_alloc_temp(dec, _blob_size);
-            if (!args->pMetaData) return;
-            npt_decode_blob_array(dec, (void *)args->pMetaData, _blob_size);
-        } else {
-            args->pMetaData = NULL;
-        }
+    _cnt_pMetaData = npt_decode_array_count_unchecked(dec);
+    _has_cnt_pMetaData = _cnt_pMetaData != 0;
+    if (_cnt_pMetaData) {
+        args->pMetaData = npt_cs_decoder_alloc_temp(dec, _cnt_pMetaData);
+        if (!args->pMetaData) return;
+        npt_decode_blob_array(dec, (void *)args->pMetaData, _cnt_pMetaData);
+    } else {
+        args->pMetaData = NULL;
+    }
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_pMetaData > 0 && _cnt_pMetaData < (uint64_t)(args->Size))) {
+        npt_cs_decoder_set_fatal(dec);
+        return;
     }
     /* Allocate temp storage for output-only parameters */
 

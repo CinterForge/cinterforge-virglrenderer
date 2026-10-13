@@ -6,13 +6,16 @@
  * covered by the protocol generator; the wire format reuses
  * npt_command_header and bodies are cast-directly C structs.
  *
+ * Hand-written and shipped verbatim beside the generated headers, so the
+ * guest and the host compile the same definitions.
+ *
  * cmd_type layout for group 0: bits 23:16 = subgroup id, bits 15:0 =
  * method id within the subgroup. */
 
-#ifndef NPT_TRANSPORT_DEFS_H
-#define NPT_TRANSPORT_DEFS_H
+#ifndef NPT_PROTOCOL_TRANSPORT_H
+#define NPT_PROTOCOL_TRANSPORT_H
 
-#include "neptune-protocol/npt_protocol_defs.h"
+#include "npt_protocol_defs.h"
 
 #define NPT_TRANSPORT_GROUP 0u
 
@@ -69,16 +72,26 @@ struct npt_cmd_set_reply_stream {
 #define NPT_TRANSPORT_RING_WAIT_VQ_SEQNO   6u
 #define NPT_TRANSPORT_RING_WAIT_PEER       7u
 
+/* Virtio timelines (ring_idx values) every Neptune context is created
+ * with.  0 is the CPU timeline; Win32 event fences use the upper half,
+ * from NPT_EVENT_RING_BASE.  Both ends size their per-timeline state from
+ * these, so they cannot disagree on the split. */
+#define NPT_MAX_TIMELINES   64u
+#define NPT_EVENT_RING_BASE (NPT_MAX_TIMELINES / 2)
+
 /* Ring status bits (host writes, guest reads).  ALIVE is OR-set by
  * the ring-monitor thread on opted-in rings; the guest watchdog
  * clears and re-checks to detect a wedged host. */
 #define NPT_RING_STATUS_IDLE_BIT  (1u << 0)
 #define NPT_RING_STATUS_FATAL_BIT (1u << 1)
 #define NPT_RING_STATUS_ALIVE_BIT (1u << 2)
-/* Bits 8..31 hold a heartbeat counter the ring-monitor thread bumps on
- * every report period.  A guest that cannot clear ALIVE (an atomic
- * read-modify-write faults on write-combining memory under ARM and the
- * x86 translators) watches the counter stand still instead. */
+/* Bits 8..31 hold a heartbeat counter.  The host ticks it once when it
+ * creates a ring with a monitor and the ring-monitor thread ticks it on
+ * every report period after that, so the guest can tell a host worker
+ * that is gone from one that has not reported yet: a counter that stands
+ * still for several periods, zero included, is a dead worker.  Watching
+ * the counter needs no read-modify-write on write-combining memory,
+ * which faults under ARM and the x86 translators. */
 #define NPT_RING_STATUS_HEARTBEAT_SHIFT 8u
 #define NPT_RING_STATUS_HEARTBEAT_ONE   (1u << NPT_RING_STATUS_HEARTBEAT_SHIFT)
 
@@ -260,10 +273,13 @@ struct npt_cmd_resource_update {
    uint32_t box_right;
    uint32_t box_bottom;
    uint32_t box_back;
-   /* Explicit pad matches the trailing padding the header's uint64_t
-    * forces on this struct.  Without it the host body decode (which
-    * excludes the header) under-reads by 4 bytes versus guest sizeof. */
+   /* Explicit so the body has no implicit padding before context_id:
+    * the host decodes the body apart from the header. */
    uint32_t pad;
+   /* 0 = the device's immediate context.  Otherwise the host id of the
+    * deferred ID3D11DeviceContext the update is recorded on, so it takes
+    * effect when that context's command list executes.  D3D12 sends 0. */
+   uint64_t context_id;
    /* followed by `byte_size` bytes of payload */
 };
 
@@ -511,20 +527,11 @@ struct npt_cmd_register_event {
  * should use this token's proxy eventfd as its sync source.  Sync
  * so the guest knows the pending-arm is installed before the
  * matching command submission. */
-/* AUTO_RELEASE: no guest waiter owns this token (monitored-fence gate
- * arms).  The guest sends no REGISTER/RELEASE; the host transfers the
- * arm's proxy reference to the sync-queue entry at pairing and releases
- * it after the fence retires, so the signal handle the D3D library
- * stored stays valid until it has been written. */
-#define NPT_EVENT_ARM_FLAG_AUTO_RELEASE 0x1u
-
 struct npt_cmd_arm_event_fence {
    struct npt_command_header header;
    uint64_t event_token;
    uint32_t ring_idx;
-   /* NPT_EVENT_ARM_FLAG_*.  Occupies what older guests send as zeroed
-    * padding, so no flag may mean anything other than "off". */
-   uint32_t flags;
+   uint32_t pad;
 };
 
 struct npt_cmd_arm_event_fence_reply {
@@ -649,4 +656,4 @@ struct npt_cmd_register_fence_feedback {
    uint32_t pad;
 };
 
-#endif /* NPT_TRANSPORT_DEFS_H */
+#endif /* NPT_PROTOCOL_TRANSPORT_H */

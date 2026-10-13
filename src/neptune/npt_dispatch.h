@@ -9,7 +9,7 @@
 #define NPT_DISPATCH_H
 
 #include "npt_common.h"
-#include "npt_transport_defs.h"
+#include "neptune-protocol/npt_protocol_transport.h"
 
 struct npt_cs_decoder;
 struct npt_cs_encoder;

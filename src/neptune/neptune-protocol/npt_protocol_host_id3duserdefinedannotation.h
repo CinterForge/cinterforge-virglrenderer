@@ -159,6 +159,7 @@ npt_decode_ID3DUserDefinedAnnotation_EndEvent_args_temp(struct npt_cs_decoder *d
                                                         struct npt_command_ID3DUserDefinedAnnotation_EndEvent *args)
 {
     /* Decode input parameters from the wire */
+
     /* Allocate temp storage for output-only parameters */
 }
 
@@ -402,6 +403,7 @@ npt_decode_ID3DUserDefinedAnnotation_GetStatus_args_temp(struct npt_cs_decoder *
                                                          struct npt_command_ID3DUserDefinedAnnotation_GetStatus *args)
 {
     /* Decode input parameters from the wire */
+
     /* Allocate temp storage for output-only parameters */
 }
 

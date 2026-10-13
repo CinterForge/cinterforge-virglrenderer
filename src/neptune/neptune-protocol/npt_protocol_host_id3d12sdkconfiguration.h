@@ -195,9 +195,13 @@ npt_decode_ID3D12SDKConfiguration1_CreateDeviceFactory_args_temp(struct npt_cs_d
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppvFactory = _gid;
-        args->ppvFactory = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppvFactory) return;
-        *args->ppvFactory = NULL;
+        if (_gid) {
+            args->ppvFactory = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppvFactory) return;
+            *args->ppvFactory = NULL;
+        } else {
+            args->ppvFactory = NULL;
+        }
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -324,6 +328,7 @@ npt_decode_ID3D12SDKConfiguration1_FreeUnusedSDKs_args_temp(struct npt_cs_decode
                                                             struct npt_command_ID3D12SDKConfiguration1_FreeUnusedSDKs *args)
 {
     /* Decode input parameters from the wire */
+
     /* Allocate temp storage for output-only parameters */
 }
 

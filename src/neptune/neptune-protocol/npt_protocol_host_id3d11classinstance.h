@@ -41,9 +41,13 @@ npt_decode_ID3D11ClassInstance_GetClassLinkage_args_temp(struct npt_cs_decoder *
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppLinkage = _gid;
-        args->ppLinkage = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppLinkage) return;
-        *args->ppLinkage = NULL;
+        if (_gid) {
+            args->ppLinkage = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppLinkage) return;
+            *args->ppLinkage = NULL;
+        } else {
+            args->ppLinkage = NULL;
+        }
     }
     /* Allocate temp storage for output-only parameters */
 

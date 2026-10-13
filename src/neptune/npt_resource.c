@@ -17,13 +17,13 @@
 #include "npt_com.h"
 #include "npt_context.h"
 #include "npt_library.h"
-#include "npt_transport_defs.h"
+#include "neptune-protocol/npt_protocol_transport.h"
 
 #include "neptune-protocol/npt_protocol_host_dispatch_types.h"
 #include "neptune-protocol/npt_protocol_host_id3d12resource.h"
 
 void
-npt_resource_update(struct npt_context *ctx,
+npt_resource_update(struct npt_context *ctx, uint64_t context_id,
                     uint64_t resource_id, uint32_t subresource,
                     uint32_t row_pitch, uint32_t depth_pitch,
                     UNUSED uint32_t byte_size,
@@ -87,6 +87,34 @@ npt_resource_update(struct npt_context *ctx,
       return;
    }
 
+   D3D11_BOX box;
+   const D3D11_BOX *box_arg = NULL;
+   if (has_box) {
+      box.left   = box_left;
+      box.top    = box_top;
+      box.front  = box_front;
+      box.right  = box_right;
+      box.bottom = box_bottom;
+      box.back   = box_back;
+      box_arg = &box;
+   }
+
+   if (context_id) {
+      void *deferred = npt_context_lookup_object(
+         ctx, NULL, context_id, NPT_OBJECT_TYPE_ID3D11DEVICECONTEXT);
+      if (!deferred) {
+         npt_log("resource_update: no context 0x%" PRIx64, context_id);
+         return;
+      }
+      PFN_ID3D11DeviceContext_UpdateSubresource update =
+         NPT_COM_VTBL_FUNC(PFN_ID3D11DeviceContext_UpdateSubresource,
+                           npt_com_vtable(deferred),
+                           NPT_VTBL_ID3D11DeviceContext_UpdateSubresource);
+      update(deferred, resource, subresource, box_arg, payload, row_pitch,
+             depth_pitch);
+      return;
+   }
+
    ID3D11Device *device = NULL;
    PFN_ID3D11DeviceChild_GetDevice get_dev =
       NPT_COM_VTBL_FUNC(PFN_ID3D11DeviceChild_GetDevice,
@@ -108,18 +136,6 @@ npt_resource_update(struct npt_context *ctx,
       npt_log("resource_update: GetImmediateContext returned NULL");
       npt_com_release(device);
       return;
-   }
-
-   D3D11_BOX box;
-   const D3D11_BOX *box_arg = NULL;
-   if (has_box) {
-      box.left   = box_left;
-      box.top    = box_top;
-      box.front  = box_front;
-      box.right  = box_right;
-      box.bottom = box_bottom;
-      box.back   = box_back;
-      box_arg = &box;
    }
 
    PFN_ID3D11DeviceContext_UpdateSubresource update =

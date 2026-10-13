@@ -21,6 +21,10 @@
  *
  *   -- Types --
  *   struct npt_dispatch_context
+ *   struct npt_cs_decoder exposes `const uint8_t *cur, *end`, the read
+ *       position and the end of the stream.  npt_dispatch_command bounds
+ *       `end` to the command's cmd_size while it decodes and moves `cur`
+ *       to the command's end afterwards.
  *
  *   -- Encoder --
  *   bool npt_cs_encoder_acquire(struct npt_cs_encoder *enc)

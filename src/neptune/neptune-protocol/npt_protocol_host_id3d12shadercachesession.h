@@ -34,16 +34,16 @@ static inline void
 npt_decode_ID3D12ShaderCacheSession_FindValue_args_temp(struct npt_cs_decoder *dec,
                                                         struct npt_command_ID3D12ShaderCacheSession_FindValue *args)
 {
+    uint64_t _cnt_pKey = 0; int _has_cnt_pKey = -1;
     /* Decode input parameters from the wire */
-    {
-        const uint64_t _blob_size = npt_decode_array_count_unchecked(dec);
-        if (_blob_size) {
-            args->pKey = npt_cs_decoder_alloc_temp(dec, _blob_size);
-            if (!args->pKey) return;
-            npt_decode_blob_array(dec, (void *)args->pKey, _blob_size);
-        } else {
-            args->pKey = NULL;
-        }
+    _cnt_pKey = npt_decode_array_count_unchecked(dec);
+    _has_cnt_pKey = _cnt_pKey != 0;
+    if (_cnt_pKey) {
+        args->pKey = npt_cs_decoder_alloc_temp(dec, _cnt_pKey);
+        if (!args->pKey) return;
+        npt_decode_blob_array(dec, (void *)args->pKey, _cnt_pKey);
+    } else {
+        args->pKey = NULL;
     }
     npt_decode_UINT(dec, &args->KeySize);
 
@@ -54,6 +54,12 @@ npt_decode_ID3D12ShaderCacheSession_FindValue_args_temp(struct npt_cs_decoder *d
     } else {
         args->pValueSize = NULL;
         npt_cs_decoder_set_fatal(dec); /* non-optional pointer is NULL */
+        return;
+    }
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_pKey > 0 && _cnt_pKey < (uint64_t)(args->KeySize)) ||
+        (_has_cnt_pKey == 0 && (uint64_t)(args->KeySize) != 0)) {
+        npt_cs_decoder_set_fatal(dec);
         return;
     }
     /* Allocate temp storage for output-only parameters */
@@ -193,29 +199,40 @@ static inline void
 npt_decode_ID3D12ShaderCacheSession_StoreValue_args_temp(struct npt_cs_decoder *dec,
                                                          struct npt_command_ID3D12ShaderCacheSession_StoreValue *args)
 {
+    uint64_t _cnt_pKey = 0; int _has_cnt_pKey = -1;
+    uint64_t _cnt_pValue = 0; int _has_cnt_pValue = -1;
     /* Decode input parameters from the wire */
-    {
-        const uint64_t _blob_size = npt_decode_array_count_unchecked(dec);
-        if (_blob_size) {
-            args->pKey = npt_cs_decoder_alloc_temp(dec, _blob_size);
-            if (!args->pKey) return;
-            npt_decode_blob_array(dec, (void *)args->pKey, _blob_size);
-        } else {
-            args->pKey = NULL;
-        }
+    _cnt_pKey = npt_decode_array_count_unchecked(dec);
+    _has_cnt_pKey = _cnt_pKey != 0;
+    if (_cnt_pKey) {
+        args->pKey = npt_cs_decoder_alloc_temp(dec, _cnt_pKey);
+        if (!args->pKey) return;
+        npt_decode_blob_array(dec, (void *)args->pKey, _cnt_pKey);
+    } else {
+        args->pKey = NULL;
     }
     npt_decode_UINT(dec, &args->KeySize);
-    {
-        const uint64_t _blob_size = npt_decode_array_count_unchecked(dec);
-        if (_blob_size) {
-            args->pValue = npt_cs_decoder_alloc_temp(dec, _blob_size);
-            if (!args->pValue) return;
-            npt_decode_blob_array(dec, (void *)args->pValue, _blob_size);
-        } else {
-            args->pValue = NULL;
-        }
+    _cnt_pValue = npt_decode_array_count_unchecked(dec);
+    _has_cnt_pValue = _cnt_pValue != 0;
+    if (_cnt_pValue) {
+        args->pValue = npt_cs_decoder_alloc_temp(dec, _cnt_pValue);
+        if (!args->pValue) return;
+        npt_decode_blob_array(dec, (void *)args->pValue, _cnt_pValue);
+    } else {
+        args->pValue = NULL;
     }
     npt_decode_UINT(dec, &args->ValueSize);
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_pKey > 0 && _cnt_pKey < (uint64_t)(args->KeySize)) ||
+        (_has_cnt_pKey == 0 && (uint64_t)(args->KeySize) != 0)) {
+        npt_cs_decoder_set_fatal(dec);
+        return;
+    }
+    if ((_has_cnt_pValue > 0 && _cnt_pValue < (uint64_t)(args->ValueSize)) ||
+        (_has_cnt_pValue == 0 && (uint64_t)(args->ValueSize) != 0)) {
+        npt_cs_decoder_set_fatal(dec);
+        return;
+    }
     /* Allocate temp storage for output-only parameters */
 
 
@@ -335,6 +352,7 @@ npt_decode_ID3D12ShaderCacheSession_SetDeleteOnDestroy_args_temp(struct npt_cs_d
                                                                  struct npt_command_ID3D12ShaderCacheSession_SetDeleteOnDestroy *args)
 {
     /* Decode input parameters from the wire */
+
     /* Allocate temp storage for output-only parameters */
 }
 
@@ -451,6 +469,7 @@ npt_decode_ID3D12ShaderCacheSession_GetDesc_args_temp(struct npt_cs_decoder *dec
                                                       struct npt_command_ID3D12ShaderCacheSession_GetDesc *args)
 {
     /* Decode input parameters from the wire */
+
     /* Allocate temp storage for output-only parameters */
 }
 

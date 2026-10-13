@@ -52,9 +52,13 @@ npt_decode_IDXGIDeviceSubObject_GetDevice_args_temp(struct npt_cs_decoder *dec,
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppDevice = _gid;
-        args->ppDevice = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppDevice) return;
-        *args->ppDevice = NULL;
+        if (_gid) {
+            args->ppDevice = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppDevice) return;
+            *args->ppDevice = NULL;
+        } else {
+            args->ppDevice = NULL;
+        }
     }
     /* Allocate temp storage for output-only parameters */
 

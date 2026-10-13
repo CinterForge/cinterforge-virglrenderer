@@ -12,7 +12,7 @@
 #include "npt_context.h"
 #include "npt_cs.h"
 #include "npt_profile.h"
-#include "npt_transport_defs.h"
+#include "neptune-protocol/npt_protocol_transport.h"
 
 /* Bounded by the 32-bit head/tail counter. */
 #define NPT_RING_BUFFER_MAX_SIZE (16u * 1024 * 1024)

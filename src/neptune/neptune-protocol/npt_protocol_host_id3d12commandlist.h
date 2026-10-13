@@ -31,6 +31,7 @@ npt_decode_ID3D12CommandList_GetType_args_temp(struct npt_cs_decoder *dec,
                                                struct npt_command_ID3D12CommandList_GetType *args)
 {
     /* Decode input parameters from the wire */
+
     /* Allocate temp storage for output-only parameters */
 }
 

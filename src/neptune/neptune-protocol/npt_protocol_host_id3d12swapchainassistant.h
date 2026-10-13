@@ -31,6 +31,7 @@ npt_decode_ID3D12SwapChainAssistant_GetLUID_args_temp(struct npt_cs_decoder *dec
                                                       struct npt_command_ID3D12SwapChainAssistant_GetLUID *args)
 {
     /* Decode input parameters from the wire */
+
     /* Allocate temp storage for output-only parameters */
 }
 
@@ -171,9 +172,13 @@ npt_decode_ID3D12SwapChainAssistant_GetSwapChainObject_args_temp(struct npt_cs_d
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppv = _gid;
-        args->ppv = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppv) return;
-        *args->ppv = NULL;
+        if (_gid) {
+            args->ppv = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppv) return;
+            *args->ppv = NULL;
+        } else {
+            args->ppv = NULL;
+        }
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -326,9 +331,13 @@ npt_decode_ID3D12SwapChainAssistant_GetCurrentResourceAndCommandQueue_args_temp(
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppvResource = _gid;
-        args->ppvResource = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppvResource) return;
-        *args->ppvResource = NULL;
+        if (_gid) {
+            args->ppvResource = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppvResource) return;
+            *args->ppvResource = NULL;
+        } else {
+            args->ppvResource = NULL;
+        }
     }
     if (npt_decode_simple_pointer(dec)) {
         args->riidQueue = npt_cs_decoder_alloc_temp(dec, sizeof(IID));
@@ -343,9 +352,13 @@ npt_decode_ID3D12SwapChainAssistant_GetCurrentResourceAndCommandQueue_args_temp(
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppvQueue = _gid;
-        args->ppvQueue = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppvQueue) return;
-        *args->ppvQueue = NULL;
+        if (_gid) {
+            args->ppvQueue = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppvQueue) return;
+            *args->ppvQueue = NULL;
+        } else {
+            args->ppvQueue = NULL;
+        }
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -477,6 +490,7 @@ npt_decode_ID3D12SwapChainAssistant_InsertImplicitSync_args_temp(struct npt_cs_d
                                                                  struct npt_command_ID3D12SwapChainAssistant_InsertImplicitSync *args)
 {
     /* Decode input parameters from the wire */
+
     /* Allocate temp storage for output-only parameters */
 }
 

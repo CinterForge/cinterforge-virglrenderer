@@ -31,6 +31,7 @@ npt_decode_ID3D12DeviceConfiguration_GetDesc_args_temp(struct npt_cs_decoder *de
                                                        struct npt_command_ID3D12DeviceConfiguration_GetDesc *args)
 {
     /* Decode input parameters from the wire */
+
     /* Allocate temp storage for output-only parameters */
 }
 
@@ -313,17 +314,25 @@ npt_decode_ID3D12DeviceConfiguration_SerializeVersionedRootSignature_args_temp(s
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppResult = _gid;
-        args->ppResult = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppResult) return;
-        *args->ppResult = NULL;
+        if (_gid) {
+            args->ppResult = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppResult) return;
+            *args->ppResult = NULL;
+        } else {
+            args->ppResult = NULL;
+        }
     }
     {
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppError = _gid;
-        args->ppError = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppError) return;
-        *args->ppError = NULL;
+        if (_gid) {
+            args->ppError = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppError) return;
+            *args->ppError = NULL;
+        } else {
+            args->ppError = NULL;
+        }
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -460,16 +469,16 @@ static inline void
 npt_decode_ID3D12DeviceConfiguration_CreateVersionedRootSignatureDeserializer_args_temp(struct npt_cs_decoder *dec,
                                                                                         struct npt_command_ID3D12DeviceConfiguration_CreateVersionedRootSignatureDeserializer *args)
 {
+    uint64_t _cnt_pBlob = 0; int _has_cnt_pBlob = -1;
     /* Decode input parameters from the wire */
-    {
-        const uint64_t _blob_size = npt_decode_array_count_unchecked(dec);
-        if (_blob_size) {
-            args->pBlob = npt_cs_decoder_alloc_temp(dec, _blob_size);
-            if (!args->pBlob) return;
-            npt_decode_blob_array(dec, (void *)args->pBlob, _blob_size);
-        } else {
-            args->pBlob = NULL;
-        }
+    _cnt_pBlob = npt_decode_array_count_unchecked(dec);
+    _has_cnt_pBlob = _cnt_pBlob != 0;
+    if (_cnt_pBlob) {
+        args->pBlob = npt_cs_decoder_alloc_temp(dec, _cnt_pBlob);
+        if (!args->pBlob) return;
+        npt_decode_blob_array(dec, (void *)args->pBlob, _cnt_pBlob);
+    } else {
+        args->pBlob = NULL;
     }
     npt_decode_SIZE_T(dec, &args->Size);
     if (npt_decode_simple_pointer(dec)) {
@@ -485,9 +494,19 @@ npt_decode_ID3D12DeviceConfiguration_CreateVersionedRootSignatureDeserializer_ar
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppvDeserializer = _gid;
-        args->ppvDeserializer = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppvDeserializer) return;
-        *args->ppvDeserializer = NULL;
+        if (_gid) {
+            args->ppvDeserializer = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppvDeserializer) return;
+            *args->ppvDeserializer = NULL;
+        } else {
+            args->ppvDeserializer = NULL;
+        }
+    }
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_pBlob > 0 && _cnt_pBlob < (uint64_t)(args->Size)) ||
+        (_has_cnt_pBlob == 0 && (uint64_t)(args->Size) != 0)) {
+        npt_cs_decoder_set_fatal(dec);
+        return;
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -624,16 +643,16 @@ static inline void
 npt_decode_ID3D12DeviceConfiguration1_CreateVersionedRootSignatureDeserializerFromSubobjectInLibrary_args_temp(struct npt_cs_decoder *dec,
                                                                                                                struct npt_command_ID3D12DeviceConfiguration1_CreateVersionedRootSignatureDeserializerFromSubobjectInLibrary *args)
 {
+    uint64_t _cnt_pLibraryBlob = 0; int _has_cnt_pLibraryBlob = -1;
     /* Decode input parameters from the wire */
-    {
-        const uint64_t _blob_size = npt_decode_array_count_unchecked(dec);
-        if (_blob_size) {
-            args->pLibraryBlob = npt_cs_decoder_alloc_temp(dec, _blob_size);
-            if (!args->pLibraryBlob) return;
-            npt_decode_blob_array(dec, (void *)args->pLibraryBlob, _blob_size);
-        } else {
-            args->pLibraryBlob = NULL;
-        }
+    _cnt_pLibraryBlob = npt_decode_array_count_unchecked(dec);
+    _has_cnt_pLibraryBlob = _cnt_pLibraryBlob != 0;
+    if (_cnt_pLibraryBlob) {
+        args->pLibraryBlob = npt_cs_decoder_alloc_temp(dec, _cnt_pLibraryBlob);
+        if (!args->pLibraryBlob) return;
+        npt_decode_blob_array(dec, (void *)args->pLibraryBlob, _cnt_pLibraryBlob);
+    } else {
+        args->pLibraryBlob = NULL;
     }
     npt_decode_SIZE_T(dec, &args->Size);
     {
@@ -659,9 +678,19 @@ npt_decode_ID3D12DeviceConfiguration1_CreateVersionedRootSignatureDeserializerFr
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppvDeserializer = _gid;
-        args->ppvDeserializer = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppvDeserializer) return;
-        *args->ppvDeserializer = NULL;
+        if (_gid) {
+            args->ppvDeserializer = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppvDeserializer) return;
+            *args->ppvDeserializer = NULL;
+        } else {
+            args->ppvDeserializer = NULL;
+        }
+    }
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_pLibraryBlob > 0 && _cnt_pLibraryBlob < (uint64_t)(args->Size)) ||
+        (_has_cnt_pLibraryBlob == 0 && (uint64_t)(args->Size) != 0)) {
+        npt_cs_decoder_set_fatal(dec);
+        return;
     }
     /* Allocate temp storage for output-only parameters */
 

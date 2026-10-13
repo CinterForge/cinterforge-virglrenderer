@@ -31,6 +31,7 @@ npt_decode_ID3D11CommandList_GetContextFlags_args_temp(struct npt_cs_decoder *de
                                                        struct npt_command_ID3D11CommandList_GetContextFlags *args)
 {
     /* Decode input parameters from the wire */
+
     /* Allocate temp storage for output-only parameters */
 }
 

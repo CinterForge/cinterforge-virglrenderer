@@ -171,6 +171,7 @@ npt_decode_ID3D11Fence_GetCompletedValue_args_temp(struct npt_cs_decoder *dec,
                                                    struct npt_command_ID3D11Fence_GetCompletedValue *args)
 {
     /* Decode input parameters from the wire */
+
     /* Allocate temp storage for output-only parameters */
 }
 

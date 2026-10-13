@@ -55,9 +55,13 @@ npt_decode_ID3D11ClassLinkage_GetClassInstance_args_temp(struct npt_cs_decoder *
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppInstance = _gid;
-        args->ppInstance = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppInstance) return;
-        *args->ppInstance = NULL;
+        if (_gid) {
+            args->ppInstance = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppInstance) return;
+            *args->ppInstance = NULL;
+        } else {
+            args->ppInstance = NULL;
+        }
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -210,9 +214,13 @@ npt_decode_ID3D11ClassLinkage_CreateClassInstance_args_temp(struct npt_cs_decode
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppInstance = _gid;
-        args->ppInstance = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppInstance) return;
-        *args->ppInstance = NULL;
+        if (_gid) {
+            args->ppInstance = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppInstance) return;
+            *args->ppInstance = NULL;
+        } else {
+            args->ppInstance = NULL;
+        }
     }
     /* Allocate temp storage for output-only parameters */
 

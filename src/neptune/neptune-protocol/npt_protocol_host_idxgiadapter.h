@@ -44,9 +44,13 @@ npt_decode_IDXGIAdapter_EnumOutputs_args_temp(struct npt_cs_decoder *dec,
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppOutput = _gid;
-        args->ppOutput = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppOutput) return;
-        *args->ppOutput = NULL;
+        if (_gid) {
+            args->ppOutput = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppOutput) return;
+            *args->ppOutput = NULL;
+        } else {
+            args->ppOutput = NULL;
+        }
     }
     /* Allocate temp storage for output-only parameters */
 

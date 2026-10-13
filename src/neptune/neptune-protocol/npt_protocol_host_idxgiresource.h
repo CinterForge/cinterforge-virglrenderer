@@ -530,9 +530,13 @@ npt_decode_IDXGIResource1_CreateSubresourceSurface_args_temp(struct npt_cs_decod
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppSurface = _gid;
-        args->ppSurface = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppSurface) return;
-        *args->ppSurface = NULL;
+        if (_gid) {
+            args->ppSurface = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppSurface) return;
+            *args->ppSurface = NULL;
+        } else {
+            args->ppSurface = NULL;
+        }
     }
     /* Allocate temp storage for output-only parameters */
 

@@ -32,10 +32,12 @@ static inline void
 npt_decode_ID3D11DeviceContext_VSSetConstantBuffers_args_temp(struct npt_cs_decoder *dec,
                                                               struct npt_command_ID3D11DeviceContext_VSSetConstantBuffers *args)
 {
+    uint64_t _cnt_ppConstantBuffers = 0; int _has_cnt_ppConstantBuffers = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->StartSlot);
     npt_decode_UINT(dec, &args->NumBuffers);
-    uint64_t _cnt_ppConstantBuffers = npt_decode_array_count_unchecked(dec);
+    _cnt_ppConstantBuffers = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppConstantBuffers = _cnt_ppConstantBuffers != 0;
     if (_cnt_ppConstantBuffers) {
         args->ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppConstantBuffers);
         if (!args->ppConstantBuffers) return;
@@ -47,8 +49,8 @@ npt_decode_ID3D11DeviceContext_VSSetConstantBuffers_args_temp(struct npt_cs_deco
     } else {
         args->ppConstantBuffers = NULL;
     }
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_ppConstantBuffers && _cnt_ppConstantBuffers < (uint64_t)(args->NumBuffers)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppConstantBuffers > 0 && _cnt_ppConstantBuffers < (uint64_t)(args->NumBuffers))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -177,10 +179,12 @@ static inline void
 npt_decode_ID3D11DeviceContext_PSSetShaderResources_args_temp(struct npt_cs_decoder *dec,
                                                               struct npt_command_ID3D11DeviceContext_PSSetShaderResources *args)
 {
+    uint64_t _cnt_ppShaderResourceViews = 0; int _has_cnt_ppShaderResourceViews = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->StartSlot);
     npt_decode_UINT(dec, &args->NumViews);
-    uint64_t _cnt_ppShaderResourceViews = npt_decode_array_count_unchecked(dec);
+    _cnt_ppShaderResourceViews = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppShaderResourceViews = _cnt_ppShaderResourceViews != 0;
     if (_cnt_ppShaderResourceViews) {
         args->ppShaderResourceViews = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppShaderResourceViews);
         if (!args->ppShaderResourceViews) return;
@@ -192,8 +196,8 @@ npt_decode_ID3D11DeviceContext_PSSetShaderResources_args_temp(struct npt_cs_deco
     } else {
         args->ppShaderResourceViews = NULL;
     }
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_ppShaderResourceViews && _cnt_ppShaderResourceViews < (uint64_t)(args->NumViews)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppShaderResourceViews > 0 && _cnt_ppShaderResourceViews < (uint64_t)(args->NumViews))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -322,13 +326,15 @@ static inline void
 npt_decode_ID3D11DeviceContext_PSSetShader_args_temp(struct npt_cs_decoder *dec,
                                                      struct npt_command_ID3D11DeviceContext_PSSetShader *args)
 {
+    uint64_t _cnt_ppClassInstances = 0; int _has_cnt_ppClassInstances = -1;
     /* Decode input parameters from the wire */
     {
         npt_object_id _id;
         npt_decode_uint64_t(dec, &_id);
         args->pPixelShader = (ID3D11PixelShader *)npt_object_from_id(_id);
     }
-    uint64_t _cnt_ppClassInstances = npt_decode_array_count_unchecked(dec);
+    _cnt_ppClassInstances = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppClassInstances = _cnt_ppClassInstances != 0;
     if (_cnt_ppClassInstances) {
         args->ppClassInstances = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppClassInstances);
         if (!args->ppClassInstances) return;
@@ -341,8 +347,8 @@ npt_decode_ID3D11DeviceContext_PSSetShader_args_temp(struct npt_cs_decoder *dec,
         args->ppClassInstances = NULL;
     }
     npt_decode_UINT(dec, &args->NumClassInstances);
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_ppClassInstances && _cnt_ppClassInstances < (uint64_t)(args->NumClassInstances)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppClassInstances > 0 && _cnt_ppClassInstances < (uint64_t)(args->NumClassInstances))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -472,10 +478,12 @@ static inline void
 npt_decode_ID3D11DeviceContext_PSSetSamplers_args_temp(struct npt_cs_decoder *dec,
                                                        struct npt_command_ID3D11DeviceContext_PSSetSamplers *args)
 {
+    uint64_t _cnt_ppSamplers = 0; int _has_cnt_ppSamplers = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->StartSlot);
     npt_decode_UINT(dec, &args->NumSamplers);
-    uint64_t _cnt_ppSamplers = npt_decode_array_count_unchecked(dec);
+    _cnt_ppSamplers = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppSamplers = _cnt_ppSamplers != 0;
     if (_cnt_ppSamplers) {
         args->ppSamplers = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppSamplers);
         if (!args->ppSamplers) return;
@@ -487,8 +495,8 @@ npt_decode_ID3D11DeviceContext_PSSetSamplers_args_temp(struct npt_cs_decoder *de
     } else {
         args->ppSamplers = NULL;
     }
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_ppSamplers && _cnt_ppSamplers < (uint64_t)(args->NumSamplers)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppSamplers > 0 && _cnt_ppSamplers < (uint64_t)(args->NumSamplers))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -617,13 +625,15 @@ static inline void
 npt_decode_ID3D11DeviceContext_VSSetShader_args_temp(struct npt_cs_decoder *dec,
                                                      struct npt_command_ID3D11DeviceContext_VSSetShader *args)
 {
+    uint64_t _cnt_ppClassInstances = 0; int _has_cnt_ppClassInstances = -1;
     /* Decode input parameters from the wire */
     {
         npt_object_id _id;
         npt_decode_uint64_t(dec, &_id);
         args->pVertexShader = (ID3D11VertexShader *)npt_object_from_id(_id);
     }
-    uint64_t _cnt_ppClassInstances = npt_decode_array_count_unchecked(dec);
+    _cnt_ppClassInstances = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppClassInstances = _cnt_ppClassInstances != 0;
     if (_cnt_ppClassInstances) {
         args->ppClassInstances = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppClassInstances);
         if (!args->ppClassInstances) return;
@@ -636,8 +646,8 @@ npt_decode_ID3D11DeviceContext_VSSetShader_args_temp(struct npt_cs_decoder *dec,
         args->ppClassInstances = NULL;
     }
     npt_decode_UINT(dec, &args->NumClassInstances);
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_ppClassInstances && _cnt_ppClassInstances < (uint64_t)(args->NumClassInstances)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppClassInstances > 0 && _cnt_ppClassInstances < (uint64_t)(args->NumClassInstances))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -1278,10 +1288,12 @@ static inline void
 npt_decode_ID3D11DeviceContext_PSSetConstantBuffers_args_temp(struct npt_cs_decoder *dec,
                                                               struct npt_command_ID3D11DeviceContext_PSSetConstantBuffers *args)
 {
+    uint64_t _cnt_ppConstantBuffers = 0; int _has_cnt_ppConstantBuffers = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->StartSlot);
     npt_decode_UINT(dec, &args->NumBuffers);
-    uint64_t _cnt_ppConstantBuffers = npt_decode_array_count_unchecked(dec);
+    _cnt_ppConstantBuffers = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppConstantBuffers = _cnt_ppConstantBuffers != 0;
     if (_cnt_ppConstantBuffers) {
         args->ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppConstantBuffers);
         if (!args->ppConstantBuffers) return;
@@ -1293,8 +1305,8 @@ npt_decode_ID3D11DeviceContext_PSSetConstantBuffers_args_temp(struct npt_cs_deco
     } else {
         args->ppConstantBuffers = NULL;
     }
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_ppConstantBuffers && _cnt_ppConstantBuffers < (uint64_t)(args->NumBuffers)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppConstantBuffers > 0 && _cnt_ppConstantBuffers < (uint64_t)(args->NumBuffers))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -1548,10 +1560,14 @@ static inline void
 npt_decode_ID3D11DeviceContext_IASetVertexBuffers_args_temp(struct npt_cs_decoder *dec,
                                                             struct npt_command_ID3D11DeviceContext_IASetVertexBuffers *args)
 {
+    uint64_t _cnt_ppVertexBuffers = 0; int _has_cnt_ppVertexBuffers = -1;
+    uint64_t _cnt_pStrides = 0; int _has_cnt_pStrides = -1;
+    uint64_t _cnt_pOffsets = 0; int _has_cnt_pOffsets = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->StartSlot);
     npt_decode_UINT(dec, &args->NumBuffers);
-    uint64_t _cnt_ppVertexBuffers = npt_decode_array_count_unchecked(dec);
+    _cnt_ppVertexBuffers = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppVertexBuffers = _cnt_ppVertexBuffers != 0;
     if (_cnt_ppVertexBuffers) {
         args->ppVertexBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppVertexBuffers);
         if (!args->ppVertexBuffers) return;
@@ -1563,32 +1579,34 @@ npt_decode_ID3D11DeviceContext_IASetVertexBuffers_args_temp(struct npt_cs_decode
     } else {
         args->ppVertexBuffers = NULL;
     }
-    uint64_t _cnt_pStrides = 0;
+    _has_cnt_pStrides = 0;
     if (npt_decode_counted_pointer_count(dec, &_cnt_pStrides)) {
+        _has_cnt_pStrides = 1;
         args->pStrides = npt_cs_decoder_alloc_temp_array(dec, sizeof(UINT), _cnt_pStrides ? _cnt_pStrides : 1);
         if (!args->pStrides) return;
         npt_decode_UINT_array(dec, (UINT *)args->pStrides, _cnt_pStrides);
     } else {
         args->pStrides = NULL;
     }
-    uint64_t _cnt_pOffsets = 0;
+    _has_cnt_pOffsets = 0;
     if (npt_decode_counted_pointer_count(dec, &_cnt_pOffsets)) {
+        _has_cnt_pOffsets = 1;
         args->pOffsets = npt_cs_decoder_alloc_temp_array(dec, sizeof(UINT), _cnt_pOffsets ? _cnt_pOffsets : 1);
         if (!args->pOffsets) return;
         npt_decode_UINT_array(dec, (UINT *)args->pOffsets, _cnt_pOffsets);
     } else {
         args->pOffsets = NULL;
     }
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_ppVertexBuffers && _cnt_ppVertexBuffers < (uint64_t)(args->NumBuffers)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppVertexBuffers > 0 && _cnt_ppVertexBuffers < (uint64_t)(args->NumBuffers))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
-    if (_cnt_pStrides && _cnt_pStrides < (uint64_t)(args->NumBuffers)) {
+    if ((_has_cnt_pStrides > 0 && _cnt_pStrides < (uint64_t)(args->NumBuffers))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
-    if (_cnt_pOffsets && _cnt_pOffsets < (uint64_t)(args->NumBuffers)) {
+    if ((_has_cnt_pOffsets > 0 && _cnt_pOffsets < (uint64_t)(args->NumBuffers))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -2105,10 +2123,12 @@ static inline void
 npt_decode_ID3D11DeviceContext_GSSetConstantBuffers_args_temp(struct npt_cs_decoder *dec,
                                                               struct npt_command_ID3D11DeviceContext_GSSetConstantBuffers *args)
 {
+    uint64_t _cnt_ppConstantBuffers = 0; int _has_cnt_ppConstantBuffers = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->StartSlot);
     npt_decode_UINT(dec, &args->NumBuffers);
-    uint64_t _cnt_ppConstantBuffers = npt_decode_array_count_unchecked(dec);
+    _cnt_ppConstantBuffers = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppConstantBuffers = _cnt_ppConstantBuffers != 0;
     if (_cnt_ppConstantBuffers) {
         args->ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppConstantBuffers);
         if (!args->ppConstantBuffers) return;
@@ -2120,8 +2140,8 @@ npt_decode_ID3D11DeviceContext_GSSetConstantBuffers_args_temp(struct npt_cs_deco
     } else {
         args->ppConstantBuffers = NULL;
     }
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_ppConstantBuffers && _cnt_ppConstantBuffers < (uint64_t)(args->NumBuffers)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppConstantBuffers > 0 && _cnt_ppConstantBuffers < (uint64_t)(args->NumBuffers))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -2250,13 +2270,15 @@ static inline void
 npt_decode_ID3D11DeviceContext_GSSetShader_args_temp(struct npt_cs_decoder *dec,
                                                      struct npt_command_ID3D11DeviceContext_GSSetShader *args)
 {
+    uint64_t _cnt_ppClassInstances = 0; int _has_cnt_ppClassInstances = -1;
     /* Decode input parameters from the wire */
     {
         npt_object_id _id;
         npt_decode_uint64_t(dec, &_id);
         args->pShader = (ID3D11GeometryShader *)npt_object_from_id(_id);
     }
-    uint64_t _cnt_ppClassInstances = npt_decode_array_count_unchecked(dec);
+    _cnt_ppClassInstances = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppClassInstances = _cnt_ppClassInstances != 0;
     if (_cnt_ppClassInstances) {
         args->ppClassInstances = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppClassInstances);
         if (!args->ppClassInstances) return;
@@ -2269,8 +2291,8 @@ npt_decode_ID3D11DeviceContext_GSSetShader_args_temp(struct npt_cs_decoder *dec,
         args->ppClassInstances = NULL;
     }
     npt_decode_UINT(dec, &args->NumClassInstances);
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_ppClassInstances && _cnt_ppClassInstances < (uint64_t)(args->NumClassInstances)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppClassInstances > 0 && _cnt_ppClassInstances < (uint64_t)(args->NumClassInstances))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -2518,10 +2540,12 @@ static inline void
 npt_decode_ID3D11DeviceContext_VSSetShaderResources_args_temp(struct npt_cs_decoder *dec,
                                                               struct npt_command_ID3D11DeviceContext_VSSetShaderResources *args)
 {
+    uint64_t _cnt_ppShaderResourceViews = 0; int _has_cnt_ppShaderResourceViews = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->StartSlot);
     npt_decode_UINT(dec, &args->NumViews);
-    uint64_t _cnt_ppShaderResourceViews = npt_decode_array_count_unchecked(dec);
+    _cnt_ppShaderResourceViews = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppShaderResourceViews = _cnt_ppShaderResourceViews != 0;
     if (_cnt_ppShaderResourceViews) {
         args->ppShaderResourceViews = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppShaderResourceViews);
         if (!args->ppShaderResourceViews) return;
@@ -2533,8 +2557,8 @@ npt_decode_ID3D11DeviceContext_VSSetShaderResources_args_temp(struct npt_cs_deco
     } else {
         args->ppShaderResourceViews = NULL;
     }
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_ppShaderResourceViews && _cnt_ppShaderResourceViews < (uint64_t)(args->NumViews)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppShaderResourceViews > 0 && _cnt_ppShaderResourceViews < (uint64_t)(args->NumViews))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -2663,10 +2687,12 @@ static inline void
 npt_decode_ID3D11DeviceContext_VSSetSamplers_args_temp(struct npt_cs_decoder *dec,
                                                        struct npt_command_ID3D11DeviceContext_VSSetSamplers *args)
 {
+    uint64_t _cnt_ppSamplers = 0; int _has_cnt_ppSamplers = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->StartSlot);
     npt_decode_UINT(dec, &args->NumSamplers);
-    uint64_t _cnt_ppSamplers = npt_decode_array_count_unchecked(dec);
+    _cnt_ppSamplers = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppSamplers = _cnt_ppSamplers != 0;
     if (_cnt_ppSamplers) {
         args->ppSamplers = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppSamplers);
         if (!args->ppSamplers) return;
@@ -2678,8 +2704,8 @@ npt_decode_ID3D11DeviceContext_VSSetSamplers_args_temp(struct npt_cs_decoder *de
     } else {
         args->ppSamplers = NULL;
     }
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_ppSamplers && _cnt_ppSamplers < (uint64_t)(args->NumSamplers)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppSamplers > 0 && _cnt_ppSamplers < (uint64_t)(args->NumSamplers))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -3325,10 +3351,12 @@ static inline void
 npt_decode_ID3D11DeviceContext_GSSetShaderResources_args_temp(struct npt_cs_decoder *dec,
                                                               struct npt_command_ID3D11DeviceContext_GSSetShaderResources *args)
 {
+    uint64_t _cnt_ppShaderResourceViews = 0; int _has_cnt_ppShaderResourceViews = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->StartSlot);
     npt_decode_UINT(dec, &args->NumViews);
-    uint64_t _cnt_ppShaderResourceViews = npt_decode_array_count_unchecked(dec);
+    _cnt_ppShaderResourceViews = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppShaderResourceViews = _cnt_ppShaderResourceViews != 0;
     if (_cnt_ppShaderResourceViews) {
         args->ppShaderResourceViews = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppShaderResourceViews);
         if (!args->ppShaderResourceViews) return;
@@ -3340,8 +3368,8 @@ npt_decode_ID3D11DeviceContext_GSSetShaderResources_args_temp(struct npt_cs_deco
     } else {
         args->ppShaderResourceViews = NULL;
     }
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_ppShaderResourceViews && _cnt_ppShaderResourceViews < (uint64_t)(args->NumViews)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppShaderResourceViews > 0 && _cnt_ppShaderResourceViews < (uint64_t)(args->NumViews))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -3470,10 +3498,12 @@ static inline void
 npt_decode_ID3D11DeviceContext_GSSetSamplers_args_temp(struct npt_cs_decoder *dec,
                                                        struct npt_command_ID3D11DeviceContext_GSSetSamplers *args)
 {
+    uint64_t _cnt_ppSamplers = 0; int _has_cnt_ppSamplers = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->StartSlot);
     npt_decode_UINT(dec, &args->NumSamplers);
-    uint64_t _cnt_ppSamplers = npt_decode_array_count_unchecked(dec);
+    _cnt_ppSamplers = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppSamplers = _cnt_ppSamplers != 0;
     if (_cnt_ppSamplers) {
         args->ppSamplers = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppSamplers);
         if (!args->ppSamplers) return;
@@ -3485,8 +3515,8 @@ npt_decode_ID3D11DeviceContext_GSSetSamplers_args_temp(struct npt_cs_decoder *de
     } else {
         args->ppSamplers = NULL;
     }
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_ppSamplers && _cnt_ppSamplers < (uint64_t)(args->NumSamplers)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppSamplers > 0 && _cnt_ppSamplers < (uint64_t)(args->NumSamplers))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -3615,9 +3645,11 @@ static inline void
 npt_decode_ID3D11DeviceContext_OMSetRenderTargets_args_temp(struct npt_cs_decoder *dec,
                                                             struct npt_command_ID3D11DeviceContext_OMSetRenderTargets *args)
 {
+    uint64_t _cnt_ppRenderTargetViews = 0; int _has_cnt_ppRenderTargetViews = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->NumViews);
-    uint64_t _cnt_ppRenderTargetViews = npt_decode_array_count_unchecked(dec);
+    _cnt_ppRenderTargetViews = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppRenderTargetViews = _cnt_ppRenderTargetViews != 0;
     if (_cnt_ppRenderTargetViews) {
         args->ppRenderTargetViews = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppRenderTargetViews);
         if (!args->ppRenderTargetViews) return;
@@ -3634,8 +3666,8 @@ npt_decode_ID3D11DeviceContext_OMSetRenderTargets_args_temp(struct npt_cs_decode
         npt_decode_uint64_t(dec, &_id);
         args->pDepthStencilView = (ID3D11DepthStencilView *)npt_object_from_id(_id);
     }
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_ppRenderTargetViews && _cnt_ppRenderTargetViews < (uint64_t)(args->NumViews)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppRenderTargetViews > 0 && _cnt_ppRenderTargetViews < (uint64_t)(args->NumViews))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -3769,9 +3801,13 @@ static inline void
 npt_decode_ID3D11DeviceContext_OMSetRenderTargetsAndUnorderedAccessViews_args_temp(struct npt_cs_decoder *dec,
                                                                                    struct npt_command_ID3D11DeviceContext_OMSetRenderTargetsAndUnorderedAccessViews *args)
 {
+    uint64_t _cnt_ppRenderTargetViews = 0; int _has_cnt_ppRenderTargetViews = -1;
+    uint64_t _cnt_ppUnorderedAccessViews = 0; int _has_cnt_ppUnorderedAccessViews = -1;
+    uint64_t _cnt_pUAVInitialCounts = 0; int _has_cnt_pUAVInitialCounts = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->NumRTVs);
-    uint64_t _cnt_ppRenderTargetViews = npt_decode_array_count_unchecked(dec);
+    _cnt_ppRenderTargetViews = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppRenderTargetViews = _cnt_ppRenderTargetViews != 0;
     if (_cnt_ppRenderTargetViews) {
         args->ppRenderTargetViews = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppRenderTargetViews);
         if (!args->ppRenderTargetViews) return;
@@ -3790,7 +3826,8 @@ npt_decode_ID3D11DeviceContext_OMSetRenderTargetsAndUnorderedAccessViews_args_te
     }
     npt_decode_UINT(dec, &args->UAVStartSlot);
     npt_decode_UINT(dec, &args->NumUAVs);
-    uint64_t _cnt_ppUnorderedAccessViews = npt_decode_array_count_unchecked(dec);
+    _cnt_ppUnorderedAccessViews = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppUnorderedAccessViews = _cnt_ppUnorderedAccessViews != 0;
     if (_cnt_ppUnorderedAccessViews) {
         args->ppUnorderedAccessViews = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppUnorderedAccessViews);
         if (!args->ppUnorderedAccessViews) return;
@@ -3802,24 +3839,25 @@ npt_decode_ID3D11DeviceContext_OMSetRenderTargetsAndUnorderedAccessViews_args_te
     } else {
         args->ppUnorderedAccessViews = NULL;
     }
-    uint64_t _cnt_pUAVInitialCounts = 0;
+    _has_cnt_pUAVInitialCounts = 0;
     if (npt_decode_counted_pointer_count(dec, &_cnt_pUAVInitialCounts)) {
+        _has_cnt_pUAVInitialCounts = 1;
         args->pUAVInitialCounts = npt_cs_decoder_alloc_temp_array(dec, sizeof(UINT), _cnt_pUAVInitialCounts ? _cnt_pUAVInitialCounts : 1);
         if (!args->pUAVInitialCounts) return;
         npt_decode_UINT_array(dec, (UINT *)args->pUAVInitialCounts, _cnt_pUAVInitialCounts);
     } else {
         args->pUAVInitialCounts = NULL;
     }
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_ppRenderTargetViews && _cnt_ppRenderTargetViews < (uint64_t)(args->NumRTVs)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppRenderTargetViews > 0 && _cnt_ppRenderTargetViews < (uint64_t)(args->NumRTVs))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
-    if (_cnt_ppUnorderedAccessViews && _cnt_ppUnorderedAccessViews < (uint64_t)(args->NumUAVs)) {
+    if ((_has_cnt_ppUnorderedAccessViews > 0 && _cnt_ppUnorderedAccessViews < (uint64_t)(args->NumUAVs))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
-    if (_cnt_pUAVInitialCounts && _cnt_pUAVInitialCounts < (uint64_t)(args->NumUAVs)) {
+    if ((_has_cnt_pUAVInitialCounts > 0 && _cnt_pUAVInitialCounts < (uint64_t)(args->NumUAVs))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -4223,9 +4261,12 @@ static inline void
 npt_decode_ID3D11DeviceContext_SOSetTargets_args_temp(struct npt_cs_decoder *dec,
                                                       struct npt_command_ID3D11DeviceContext_SOSetTargets *args)
 {
+    uint64_t _cnt_ppSOTargets = 0; int _has_cnt_ppSOTargets = -1;
+    uint64_t _cnt_pOffsets = 0; int _has_cnt_pOffsets = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->NumBuffers);
-    uint64_t _cnt_ppSOTargets = npt_decode_array_count_unchecked(dec);
+    _cnt_ppSOTargets = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppSOTargets = _cnt_ppSOTargets != 0;
     if (_cnt_ppSOTargets) {
         args->ppSOTargets = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppSOTargets);
         if (!args->ppSOTargets) return;
@@ -4237,20 +4278,21 @@ npt_decode_ID3D11DeviceContext_SOSetTargets_args_temp(struct npt_cs_decoder *dec
     } else {
         args->ppSOTargets = NULL;
     }
-    uint64_t _cnt_pOffsets = 0;
+    _has_cnt_pOffsets = 0;
     if (npt_decode_counted_pointer_count(dec, &_cnt_pOffsets)) {
+        _has_cnt_pOffsets = 1;
         args->pOffsets = npt_cs_decoder_alloc_temp_array(dec, sizeof(UINT), _cnt_pOffsets ? _cnt_pOffsets : 1);
         if (!args->pOffsets) return;
         npt_decode_UINT_array(dec, (UINT *)args->pOffsets, _cnt_pOffsets);
     } else {
         args->pOffsets = NULL;
     }
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_ppSOTargets && _cnt_ppSOTargets < (uint64_t)(args->NumBuffers)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppSOTargets > 0 && _cnt_ppSOTargets < (uint64_t)(args->NumBuffers))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
-    if (_cnt_pOffsets && _cnt_pOffsets < (uint64_t)(args->NumBuffers)) {
+    if ((_has_cnt_pOffsets > 0 && _cnt_pOffsets < (uint64_t)(args->NumBuffers))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -4377,6 +4419,7 @@ npt_decode_ID3D11DeviceContext_DrawAuto_args_temp(struct npt_cs_decoder *dec,
                                                   struct npt_command_ID3D11DeviceContext_DrawAuto *args)
 {
     /* Decode input parameters from the wire */
+
     /* Allocate temp storage for output-only parameters */
 }
 
@@ -5118,10 +5161,12 @@ static inline void
 npt_decode_ID3D11DeviceContext_RSSetViewports_args_temp(struct npt_cs_decoder *dec,
                                                         struct npt_command_ID3D11DeviceContext_RSSetViewports *args)
 {
+    uint64_t _cnt_pViewports = 0; int _has_cnt_pViewports = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->NumViewports);
-    uint64_t _cnt_pViewports = 0;
+    _has_cnt_pViewports = 0;
     if (npt_decode_counted_pointer_count(dec, &_cnt_pViewports)) {
+        _has_cnt_pViewports = 1;
         args->pViewports = npt_cs_decoder_alloc_temp_array(dec, sizeof(D3D11_VIEWPORT), _cnt_pViewports ? _cnt_pViewports : 1);
         if (!args->pViewports) return;
         for (uint32_t _i = 0; _i < (uint32_t)_cnt_pViewports; _i++)
@@ -5129,8 +5174,8 @@ npt_decode_ID3D11DeviceContext_RSSetViewports_args_temp(struct npt_cs_decoder *d
     } else {
         args->pViewports = NULL;
     }
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_pViewports && _cnt_pViewports < (uint64_t)(args->NumViewports)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_pViewports > 0 && _cnt_pViewports < (uint64_t)(args->NumViewports))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -5252,10 +5297,12 @@ static inline void
 npt_decode_ID3D11DeviceContext_RSSetScissorRects_args_temp(struct npt_cs_decoder *dec,
                                                            struct npt_command_ID3D11DeviceContext_RSSetScissorRects *args)
 {
+    uint64_t _cnt_pRects = 0; int _has_cnt_pRects = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->NumRects);
-    uint64_t _cnt_pRects = 0;
+    _has_cnt_pRects = 0;
     if (npt_decode_counted_pointer_count(dec, &_cnt_pRects)) {
+        _has_cnt_pRects = 1;
         args->pRects = npt_cs_decoder_alloc_temp_array(dec, sizeof(D3D11_RECT), _cnt_pRects ? _cnt_pRects : 1);
         if (!args->pRects) return;
         for (uint32_t _i = 0; _i < (uint32_t)_cnt_pRects; _i++)
@@ -5263,8 +5310,8 @@ npt_decode_ID3D11DeviceContext_RSSetScissorRects_args_temp(struct npt_cs_decoder
     } else {
         args->pRects = NULL;
     }
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_pRects && _cnt_pRects < (uint64_t)(args->NumRects)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_pRects > 0 && _cnt_pRects < (uint64_t)(args->NumRects))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -7110,10 +7157,12 @@ static inline void
 npt_decode_ID3D11DeviceContext_HSSetShaderResources_args_temp(struct npt_cs_decoder *dec,
                                                               struct npt_command_ID3D11DeviceContext_HSSetShaderResources *args)
 {
+    uint64_t _cnt_ppShaderResourceViews = 0; int _has_cnt_ppShaderResourceViews = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->StartSlot);
     npt_decode_UINT(dec, &args->NumViews);
-    uint64_t _cnt_ppShaderResourceViews = npt_decode_array_count_unchecked(dec);
+    _cnt_ppShaderResourceViews = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppShaderResourceViews = _cnt_ppShaderResourceViews != 0;
     if (_cnt_ppShaderResourceViews) {
         args->ppShaderResourceViews = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppShaderResourceViews);
         if (!args->ppShaderResourceViews) return;
@@ -7125,8 +7174,8 @@ npt_decode_ID3D11DeviceContext_HSSetShaderResources_args_temp(struct npt_cs_deco
     } else {
         args->ppShaderResourceViews = NULL;
     }
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_ppShaderResourceViews && _cnt_ppShaderResourceViews < (uint64_t)(args->NumViews)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppShaderResourceViews > 0 && _cnt_ppShaderResourceViews < (uint64_t)(args->NumViews))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -7255,13 +7304,15 @@ static inline void
 npt_decode_ID3D11DeviceContext_HSSetShader_args_temp(struct npt_cs_decoder *dec,
                                                      struct npt_command_ID3D11DeviceContext_HSSetShader *args)
 {
+    uint64_t _cnt_ppClassInstances = 0; int _has_cnt_ppClassInstances = -1;
     /* Decode input parameters from the wire */
     {
         npt_object_id _id;
         npt_decode_uint64_t(dec, &_id);
         args->pHullShader = (ID3D11HullShader *)npt_object_from_id(_id);
     }
-    uint64_t _cnt_ppClassInstances = npt_decode_array_count_unchecked(dec);
+    _cnt_ppClassInstances = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppClassInstances = _cnt_ppClassInstances != 0;
     if (_cnt_ppClassInstances) {
         args->ppClassInstances = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppClassInstances);
         if (!args->ppClassInstances) return;
@@ -7274,8 +7325,8 @@ npt_decode_ID3D11DeviceContext_HSSetShader_args_temp(struct npt_cs_decoder *dec,
         args->ppClassInstances = NULL;
     }
     npt_decode_UINT(dec, &args->NumClassInstances);
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_ppClassInstances && _cnt_ppClassInstances < (uint64_t)(args->NumClassInstances)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppClassInstances > 0 && _cnt_ppClassInstances < (uint64_t)(args->NumClassInstances))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -7405,10 +7456,12 @@ static inline void
 npt_decode_ID3D11DeviceContext_HSSetSamplers_args_temp(struct npt_cs_decoder *dec,
                                                        struct npt_command_ID3D11DeviceContext_HSSetSamplers *args)
 {
+    uint64_t _cnt_ppSamplers = 0; int _has_cnt_ppSamplers = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->StartSlot);
     npt_decode_UINT(dec, &args->NumSamplers);
-    uint64_t _cnt_ppSamplers = npt_decode_array_count_unchecked(dec);
+    _cnt_ppSamplers = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppSamplers = _cnt_ppSamplers != 0;
     if (_cnt_ppSamplers) {
         args->ppSamplers = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppSamplers);
         if (!args->ppSamplers) return;
@@ -7420,8 +7473,8 @@ npt_decode_ID3D11DeviceContext_HSSetSamplers_args_temp(struct npt_cs_decoder *de
     } else {
         args->ppSamplers = NULL;
     }
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_ppSamplers && _cnt_ppSamplers < (uint64_t)(args->NumSamplers)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppSamplers > 0 && _cnt_ppSamplers < (uint64_t)(args->NumSamplers))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -7550,10 +7603,12 @@ static inline void
 npt_decode_ID3D11DeviceContext_HSSetConstantBuffers_args_temp(struct npt_cs_decoder *dec,
                                                               struct npt_command_ID3D11DeviceContext_HSSetConstantBuffers *args)
 {
+    uint64_t _cnt_ppConstantBuffers = 0; int _has_cnt_ppConstantBuffers = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->StartSlot);
     npt_decode_UINT(dec, &args->NumBuffers);
-    uint64_t _cnt_ppConstantBuffers = npt_decode_array_count_unchecked(dec);
+    _cnt_ppConstantBuffers = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppConstantBuffers = _cnt_ppConstantBuffers != 0;
     if (_cnt_ppConstantBuffers) {
         args->ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppConstantBuffers);
         if (!args->ppConstantBuffers) return;
@@ -7565,8 +7620,8 @@ npt_decode_ID3D11DeviceContext_HSSetConstantBuffers_args_temp(struct npt_cs_deco
     } else {
         args->ppConstantBuffers = NULL;
     }
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_ppConstantBuffers && _cnt_ppConstantBuffers < (uint64_t)(args->NumBuffers)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppConstantBuffers > 0 && _cnt_ppConstantBuffers < (uint64_t)(args->NumBuffers))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -7695,10 +7750,12 @@ static inline void
 npt_decode_ID3D11DeviceContext_DSSetShaderResources_args_temp(struct npt_cs_decoder *dec,
                                                               struct npt_command_ID3D11DeviceContext_DSSetShaderResources *args)
 {
+    uint64_t _cnt_ppShaderResourceViews = 0; int _has_cnt_ppShaderResourceViews = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->StartSlot);
     npt_decode_UINT(dec, &args->NumViews);
-    uint64_t _cnt_ppShaderResourceViews = npt_decode_array_count_unchecked(dec);
+    _cnt_ppShaderResourceViews = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppShaderResourceViews = _cnt_ppShaderResourceViews != 0;
     if (_cnt_ppShaderResourceViews) {
         args->ppShaderResourceViews = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppShaderResourceViews);
         if (!args->ppShaderResourceViews) return;
@@ -7710,8 +7767,8 @@ npt_decode_ID3D11DeviceContext_DSSetShaderResources_args_temp(struct npt_cs_deco
     } else {
         args->ppShaderResourceViews = NULL;
     }
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_ppShaderResourceViews && _cnt_ppShaderResourceViews < (uint64_t)(args->NumViews)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppShaderResourceViews > 0 && _cnt_ppShaderResourceViews < (uint64_t)(args->NumViews))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -7840,13 +7897,15 @@ static inline void
 npt_decode_ID3D11DeviceContext_DSSetShader_args_temp(struct npt_cs_decoder *dec,
                                                      struct npt_command_ID3D11DeviceContext_DSSetShader *args)
 {
+    uint64_t _cnt_ppClassInstances = 0; int _has_cnt_ppClassInstances = -1;
     /* Decode input parameters from the wire */
     {
         npt_object_id _id;
         npt_decode_uint64_t(dec, &_id);
         args->pDomainShader = (ID3D11DomainShader *)npt_object_from_id(_id);
     }
-    uint64_t _cnt_ppClassInstances = npt_decode_array_count_unchecked(dec);
+    _cnt_ppClassInstances = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppClassInstances = _cnt_ppClassInstances != 0;
     if (_cnt_ppClassInstances) {
         args->ppClassInstances = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppClassInstances);
         if (!args->ppClassInstances) return;
@@ -7859,8 +7918,8 @@ npt_decode_ID3D11DeviceContext_DSSetShader_args_temp(struct npt_cs_decoder *dec,
         args->ppClassInstances = NULL;
     }
     npt_decode_UINT(dec, &args->NumClassInstances);
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_ppClassInstances && _cnt_ppClassInstances < (uint64_t)(args->NumClassInstances)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppClassInstances > 0 && _cnt_ppClassInstances < (uint64_t)(args->NumClassInstances))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -7990,10 +8049,12 @@ static inline void
 npt_decode_ID3D11DeviceContext_DSSetSamplers_args_temp(struct npt_cs_decoder *dec,
                                                        struct npt_command_ID3D11DeviceContext_DSSetSamplers *args)
 {
+    uint64_t _cnt_ppSamplers = 0; int _has_cnt_ppSamplers = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->StartSlot);
     npt_decode_UINT(dec, &args->NumSamplers);
-    uint64_t _cnt_ppSamplers = npt_decode_array_count_unchecked(dec);
+    _cnt_ppSamplers = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppSamplers = _cnt_ppSamplers != 0;
     if (_cnt_ppSamplers) {
         args->ppSamplers = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppSamplers);
         if (!args->ppSamplers) return;
@@ -8005,8 +8066,8 @@ npt_decode_ID3D11DeviceContext_DSSetSamplers_args_temp(struct npt_cs_decoder *de
     } else {
         args->ppSamplers = NULL;
     }
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_ppSamplers && _cnt_ppSamplers < (uint64_t)(args->NumSamplers)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppSamplers > 0 && _cnt_ppSamplers < (uint64_t)(args->NumSamplers))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -8135,10 +8196,12 @@ static inline void
 npt_decode_ID3D11DeviceContext_DSSetConstantBuffers_args_temp(struct npt_cs_decoder *dec,
                                                               struct npt_command_ID3D11DeviceContext_DSSetConstantBuffers *args)
 {
+    uint64_t _cnt_ppConstantBuffers = 0; int _has_cnt_ppConstantBuffers = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->StartSlot);
     npt_decode_UINT(dec, &args->NumBuffers);
-    uint64_t _cnt_ppConstantBuffers = npt_decode_array_count_unchecked(dec);
+    _cnt_ppConstantBuffers = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppConstantBuffers = _cnt_ppConstantBuffers != 0;
     if (_cnt_ppConstantBuffers) {
         args->ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppConstantBuffers);
         if (!args->ppConstantBuffers) return;
@@ -8150,8 +8213,8 @@ npt_decode_ID3D11DeviceContext_DSSetConstantBuffers_args_temp(struct npt_cs_deco
     } else {
         args->ppConstantBuffers = NULL;
     }
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_ppConstantBuffers && _cnt_ppConstantBuffers < (uint64_t)(args->NumBuffers)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppConstantBuffers > 0 && _cnt_ppConstantBuffers < (uint64_t)(args->NumBuffers))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -8280,10 +8343,12 @@ static inline void
 npt_decode_ID3D11DeviceContext_CSSetShaderResources_args_temp(struct npt_cs_decoder *dec,
                                                               struct npt_command_ID3D11DeviceContext_CSSetShaderResources *args)
 {
+    uint64_t _cnt_ppShaderResourceViews = 0; int _has_cnt_ppShaderResourceViews = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->StartSlot);
     npt_decode_UINT(dec, &args->NumViews);
-    uint64_t _cnt_ppShaderResourceViews = npt_decode_array_count_unchecked(dec);
+    _cnt_ppShaderResourceViews = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppShaderResourceViews = _cnt_ppShaderResourceViews != 0;
     if (_cnt_ppShaderResourceViews) {
         args->ppShaderResourceViews = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppShaderResourceViews);
         if (!args->ppShaderResourceViews) return;
@@ -8295,8 +8360,8 @@ npt_decode_ID3D11DeviceContext_CSSetShaderResources_args_temp(struct npt_cs_deco
     } else {
         args->ppShaderResourceViews = NULL;
     }
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_ppShaderResourceViews && _cnt_ppShaderResourceViews < (uint64_t)(args->NumViews)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppShaderResourceViews > 0 && _cnt_ppShaderResourceViews < (uint64_t)(args->NumViews))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -8426,10 +8491,13 @@ static inline void
 npt_decode_ID3D11DeviceContext_CSSetUnorderedAccessViews_args_temp(struct npt_cs_decoder *dec,
                                                                    struct npt_command_ID3D11DeviceContext_CSSetUnorderedAccessViews *args)
 {
+    uint64_t _cnt_ppUnorderedAccessViews = 0; int _has_cnt_ppUnorderedAccessViews = -1;
+    uint64_t _cnt_pUAVInitialCounts = 0; int _has_cnt_pUAVInitialCounts = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->StartSlot);
     npt_decode_UINT(dec, &args->NumUAVs);
-    uint64_t _cnt_ppUnorderedAccessViews = npt_decode_array_count_unchecked(dec);
+    _cnt_ppUnorderedAccessViews = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppUnorderedAccessViews = _cnt_ppUnorderedAccessViews != 0;
     if (_cnt_ppUnorderedAccessViews) {
         args->ppUnorderedAccessViews = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppUnorderedAccessViews);
         if (!args->ppUnorderedAccessViews) return;
@@ -8441,20 +8509,21 @@ npt_decode_ID3D11DeviceContext_CSSetUnorderedAccessViews_args_temp(struct npt_cs
     } else {
         args->ppUnorderedAccessViews = NULL;
     }
-    uint64_t _cnt_pUAVInitialCounts = 0;
+    _has_cnt_pUAVInitialCounts = 0;
     if (npt_decode_counted_pointer_count(dec, &_cnt_pUAVInitialCounts)) {
+        _has_cnt_pUAVInitialCounts = 1;
         args->pUAVInitialCounts = npt_cs_decoder_alloc_temp_array(dec, sizeof(UINT), _cnt_pUAVInitialCounts ? _cnt_pUAVInitialCounts : 1);
         if (!args->pUAVInitialCounts) return;
         npt_decode_UINT_array(dec, (UINT *)args->pUAVInitialCounts, _cnt_pUAVInitialCounts);
     } else {
         args->pUAVInitialCounts = NULL;
     }
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_ppUnorderedAccessViews && _cnt_ppUnorderedAccessViews < (uint64_t)(args->NumUAVs)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppUnorderedAccessViews > 0 && _cnt_ppUnorderedAccessViews < (uint64_t)(args->NumUAVs))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
-    if (_cnt_pUAVInitialCounts && _cnt_pUAVInitialCounts < (uint64_t)(args->NumUAVs)) {
+    if ((_has_cnt_pUAVInitialCounts > 0 && _cnt_pUAVInitialCounts < (uint64_t)(args->NumUAVs))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -8584,13 +8653,15 @@ static inline void
 npt_decode_ID3D11DeviceContext_CSSetShader_args_temp(struct npt_cs_decoder *dec,
                                                      struct npt_command_ID3D11DeviceContext_CSSetShader *args)
 {
+    uint64_t _cnt_ppClassInstances = 0; int _has_cnt_ppClassInstances = -1;
     /* Decode input parameters from the wire */
     {
         npt_object_id _id;
         npt_decode_uint64_t(dec, &_id);
         args->pComputeShader = (ID3D11ComputeShader *)npt_object_from_id(_id);
     }
-    uint64_t _cnt_ppClassInstances = npt_decode_array_count_unchecked(dec);
+    _cnt_ppClassInstances = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppClassInstances = _cnt_ppClassInstances != 0;
     if (_cnt_ppClassInstances) {
         args->ppClassInstances = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppClassInstances);
         if (!args->ppClassInstances) return;
@@ -8603,8 +8674,8 @@ npt_decode_ID3D11DeviceContext_CSSetShader_args_temp(struct npt_cs_decoder *dec,
         args->ppClassInstances = NULL;
     }
     npt_decode_UINT(dec, &args->NumClassInstances);
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_ppClassInstances && _cnt_ppClassInstances < (uint64_t)(args->NumClassInstances)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppClassInstances > 0 && _cnt_ppClassInstances < (uint64_t)(args->NumClassInstances))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -8734,10 +8805,12 @@ static inline void
 npt_decode_ID3D11DeviceContext_CSSetSamplers_args_temp(struct npt_cs_decoder *dec,
                                                        struct npt_command_ID3D11DeviceContext_CSSetSamplers *args)
 {
+    uint64_t _cnt_ppSamplers = 0; int _has_cnt_ppSamplers = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->StartSlot);
     npt_decode_UINT(dec, &args->NumSamplers);
-    uint64_t _cnt_ppSamplers = npt_decode_array_count_unchecked(dec);
+    _cnt_ppSamplers = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppSamplers = _cnt_ppSamplers != 0;
     if (_cnt_ppSamplers) {
         args->ppSamplers = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppSamplers);
         if (!args->ppSamplers) return;
@@ -8749,8 +8822,8 @@ npt_decode_ID3D11DeviceContext_CSSetSamplers_args_temp(struct npt_cs_decoder *de
     } else {
         args->ppSamplers = NULL;
     }
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_ppSamplers && _cnt_ppSamplers < (uint64_t)(args->NumSamplers)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppSamplers > 0 && _cnt_ppSamplers < (uint64_t)(args->NumSamplers))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -8879,10 +8952,12 @@ static inline void
 npt_decode_ID3D11DeviceContext_CSSetConstantBuffers_args_temp(struct npt_cs_decoder *dec,
                                                               struct npt_command_ID3D11DeviceContext_CSSetConstantBuffers *args)
 {
+    uint64_t _cnt_ppConstantBuffers = 0; int _has_cnt_ppConstantBuffers = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->StartSlot);
     npt_decode_UINT(dec, &args->NumBuffers);
-    uint64_t _cnt_ppConstantBuffers = npt_decode_array_count_unchecked(dec);
+    _cnt_ppConstantBuffers = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppConstantBuffers = _cnt_ppConstantBuffers != 0;
     if (_cnt_ppConstantBuffers) {
         args->ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppConstantBuffers);
         if (!args->ppConstantBuffers) return;
@@ -8894,8 +8969,8 @@ npt_decode_ID3D11DeviceContext_CSSetConstantBuffers_args_temp(struct npt_cs_deco
     } else {
         args->ppConstantBuffers = NULL;
     }
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_ppConstantBuffers && _cnt_ppConstantBuffers < (uint64_t)(args->NumBuffers)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppConstantBuffers > 0 && _cnt_ppConstantBuffers < (uint64_t)(args->NumBuffers))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -9030,24 +9105,30 @@ static inline void
 npt_decode_ID3D11DeviceContext_VSGetConstantBuffers_args_temp(struct npt_cs_decoder *dec,
                                                               struct npt_command_ID3D11DeviceContext_VSGetConstantBuffers *args)
 {
+    uint64_t _cnt_ppConstantBuffers = 0; int _has_cnt_ppConstantBuffers = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->StartSlot);
     npt_decode_UINT(dec, &args->NumBuffers);
-    {
-        const uint64_t _cnt = npt_decode_array_count_unchecked(dec);
-        args->ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt);
-        args->_guest_ids_ppConstantBuffers = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt) : NULL;
-        args->_guest_id_count_ppConstantBuffers = (uint32_t)_cnt;
-        if (_cnt && (!args->ppConstantBuffers || !args->_guest_ids_ppConstantBuffers)) return;
-        if (_cnt) memset(args->ppConstantBuffers, 0, sizeof(void *) * _cnt);
-        args->_refs_ppConstantBuffers = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
-        if (_cnt && !args->_refs_ppConstantBuffers) return;
-        if (_cnt) memset(args->_refs_ppConstantBuffers, 0, sizeof(struct npt_wire_object_ref) * _cnt);
-        for (uint64_t _i = 0; _i < _cnt; _i++) {
-            uint64_t _gid;
-            npt_decode_uint64_t(dec, &_gid);
-            args->_guest_ids_ppConstantBuffers[_i] = _gid;
-        }
+    _cnt_ppConstantBuffers = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppConstantBuffers = _cnt_ppConstantBuffers != 0;
+    args->_guest_id_count_ppConstantBuffers = (uint32_t)_cnt_ppConstantBuffers;
+    if (_cnt_ppConstantBuffers) {
+        args->ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppConstantBuffers);
+        args->_guest_ids_ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt_ppConstantBuffers);
+        if (!args->ppConstantBuffers || !args->_guest_ids_ppConstantBuffers) return;
+        memset(args->ppConstantBuffers, 0, sizeof(void *) * _cnt_ppConstantBuffers);
+        args->_refs_ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt_ppConstantBuffers);
+        if (!args->_refs_ppConstantBuffers) return;
+        memset(args->_refs_ppConstantBuffers, 0, sizeof(struct npt_wire_object_ref) * _cnt_ppConstantBuffers);
+        for (uint64_t _i = 0; _i < _cnt_ppConstantBuffers; _i++)
+            npt_decode_uint64_t(dec, &args->_guest_ids_ppConstantBuffers[_i]);
+    } else {
+        args->ppConstantBuffers = NULL;
+    }
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppConstantBuffers > 0 && _cnt_ppConstantBuffers != (uint64_t)(args->NumBuffers))) {
+        npt_cs_decoder_set_fatal(dec);
+        return;
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -9189,24 +9270,30 @@ static inline void
 npt_decode_ID3D11DeviceContext_PSGetShaderResources_args_temp(struct npt_cs_decoder *dec,
                                                               struct npt_command_ID3D11DeviceContext_PSGetShaderResources *args)
 {
+    uint64_t _cnt_ppShaderResourceViews = 0; int _has_cnt_ppShaderResourceViews = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->StartSlot);
     npt_decode_UINT(dec, &args->NumViews);
-    {
-        const uint64_t _cnt = npt_decode_array_count_unchecked(dec);
-        args->ppShaderResourceViews = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt);
-        args->_guest_ids_ppShaderResourceViews = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt) : NULL;
-        args->_guest_id_count_ppShaderResourceViews = (uint32_t)_cnt;
-        if (_cnt && (!args->ppShaderResourceViews || !args->_guest_ids_ppShaderResourceViews)) return;
-        if (_cnt) memset(args->ppShaderResourceViews, 0, sizeof(void *) * _cnt);
-        args->_refs_ppShaderResourceViews = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
-        if (_cnt && !args->_refs_ppShaderResourceViews) return;
-        if (_cnt) memset(args->_refs_ppShaderResourceViews, 0, sizeof(struct npt_wire_object_ref) * _cnt);
-        for (uint64_t _i = 0; _i < _cnt; _i++) {
-            uint64_t _gid;
-            npt_decode_uint64_t(dec, &_gid);
-            args->_guest_ids_ppShaderResourceViews[_i] = _gid;
-        }
+    _cnt_ppShaderResourceViews = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppShaderResourceViews = _cnt_ppShaderResourceViews != 0;
+    args->_guest_id_count_ppShaderResourceViews = (uint32_t)_cnt_ppShaderResourceViews;
+    if (_cnt_ppShaderResourceViews) {
+        args->ppShaderResourceViews = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppShaderResourceViews);
+        args->_guest_ids_ppShaderResourceViews = npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt_ppShaderResourceViews);
+        if (!args->ppShaderResourceViews || !args->_guest_ids_ppShaderResourceViews) return;
+        memset(args->ppShaderResourceViews, 0, sizeof(void *) * _cnt_ppShaderResourceViews);
+        args->_refs_ppShaderResourceViews = npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt_ppShaderResourceViews);
+        if (!args->_refs_ppShaderResourceViews) return;
+        memset(args->_refs_ppShaderResourceViews, 0, sizeof(struct npt_wire_object_ref) * _cnt_ppShaderResourceViews);
+        for (uint64_t _i = 0; _i < _cnt_ppShaderResourceViews; _i++)
+            npt_decode_uint64_t(dec, &args->_guest_ids_ppShaderResourceViews[_i]);
+    } else {
+        args->ppShaderResourceViews = NULL;
+    }
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppShaderResourceViews > 0 && _cnt_ppShaderResourceViews != (uint64_t)(args->NumViews))) {
+        npt_cs_decoder_set_fatal(dec);
+        return;
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -9354,30 +9441,35 @@ static inline void
 npt_decode_ID3D11DeviceContext_PSGetShader_args_temp(struct npt_cs_decoder *dec,
                                                      struct npt_command_ID3D11DeviceContext_PSGetShader *args)
 {
+    uint64_t _cnt_ppClassInstances = 0; int _has_cnt_ppClassInstances = -1;
     /* Decode input parameters from the wire */
     {
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppPixelShader = _gid;
-        args->ppPixelShader = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppPixelShader) return;
-        *args->ppPixelShader = NULL;
-    }
-    {
-        const uint64_t _cnt = npt_decode_array_count_unchecked(dec);
-        args->ppClassInstances = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt);
-        args->_guest_ids_ppClassInstances = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt) : NULL;
-        args->_guest_id_count_ppClassInstances = (uint32_t)_cnt;
-        if (_cnt && (!args->ppClassInstances || !args->_guest_ids_ppClassInstances)) return;
-        if (_cnt) memset(args->ppClassInstances, 0, sizeof(void *) * _cnt);
-        args->_refs_ppClassInstances = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
-        if (_cnt && !args->_refs_ppClassInstances) return;
-        if (_cnt) memset(args->_refs_ppClassInstances, 0, sizeof(struct npt_wire_object_ref) * _cnt);
-        for (uint64_t _i = 0; _i < _cnt; _i++) {
-            uint64_t _gid;
-            npt_decode_uint64_t(dec, &_gid);
-            args->_guest_ids_ppClassInstances[_i] = _gid;
+        if (_gid) {
+            args->ppPixelShader = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppPixelShader) return;
+            *args->ppPixelShader = NULL;
+        } else {
+            args->ppPixelShader = NULL;
         }
+    }
+    _cnt_ppClassInstances = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppClassInstances = _cnt_ppClassInstances != 0;
+    args->_guest_id_count_ppClassInstances = (uint32_t)_cnt_ppClassInstances;
+    if (_cnt_ppClassInstances) {
+        args->ppClassInstances = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppClassInstances);
+        args->_guest_ids_ppClassInstances = npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt_ppClassInstances);
+        if (!args->ppClassInstances || !args->_guest_ids_ppClassInstances) return;
+        memset(args->ppClassInstances, 0, sizeof(void *) * _cnt_ppClassInstances);
+        args->_refs_ppClassInstances = npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt_ppClassInstances);
+        if (!args->_refs_ppClassInstances) return;
+        memset(args->_refs_ppClassInstances, 0, sizeof(struct npt_wire_object_ref) * _cnt_ppClassInstances);
+        for (uint64_t _i = 0; _i < _cnt_ppClassInstances; _i++)
+            npt_decode_uint64_t(dec, &args->_guest_ids_ppClassInstances[_i]);
+    } else {
+        args->ppClassInstances = NULL;
     }
     if (npt_decode_simple_pointer(dec)) {
         args->pNumClassInstances = npt_cs_decoder_alloc_temp(dec, sizeof(UINT));
@@ -9385,6 +9477,11 @@ npt_decode_ID3D11DeviceContext_PSGetShader_args_temp(struct npt_cs_decoder *dec,
         npt_decode_UINT(dec, (UINT *)args->pNumClassInstances);
     } else {
         args->pNumClassInstances = NULL;
+    }
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppClassInstances > 0 && _cnt_ppClassInstances != (uint64_t)((args->pNumClassInstances ? *args->pNumClassInstances : 0)))) {
+        npt_cs_decoder_set_fatal(dec);
+        return;
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -9533,24 +9630,30 @@ static inline void
 npt_decode_ID3D11DeviceContext_PSGetSamplers_args_temp(struct npt_cs_decoder *dec,
                                                        struct npt_command_ID3D11DeviceContext_PSGetSamplers *args)
 {
+    uint64_t _cnt_ppSamplers = 0; int _has_cnt_ppSamplers = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->StartSlot);
     npt_decode_UINT(dec, &args->NumSamplers);
-    {
-        const uint64_t _cnt = npt_decode_array_count_unchecked(dec);
-        args->ppSamplers = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt);
-        args->_guest_ids_ppSamplers = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt) : NULL;
-        args->_guest_id_count_ppSamplers = (uint32_t)_cnt;
-        if (_cnt && (!args->ppSamplers || !args->_guest_ids_ppSamplers)) return;
-        if (_cnt) memset(args->ppSamplers, 0, sizeof(void *) * _cnt);
-        args->_refs_ppSamplers = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
-        if (_cnt && !args->_refs_ppSamplers) return;
-        if (_cnt) memset(args->_refs_ppSamplers, 0, sizeof(struct npt_wire_object_ref) * _cnt);
-        for (uint64_t _i = 0; _i < _cnt; _i++) {
-            uint64_t _gid;
-            npt_decode_uint64_t(dec, &_gid);
-            args->_guest_ids_ppSamplers[_i] = _gid;
-        }
+    _cnt_ppSamplers = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppSamplers = _cnt_ppSamplers != 0;
+    args->_guest_id_count_ppSamplers = (uint32_t)_cnt_ppSamplers;
+    if (_cnt_ppSamplers) {
+        args->ppSamplers = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppSamplers);
+        args->_guest_ids_ppSamplers = npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt_ppSamplers);
+        if (!args->ppSamplers || !args->_guest_ids_ppSamplers) return;
+        memset(args->ppSamplers, 0, sizeof(void *) * _cnt_ppSamplers);
+        args->_refs_ppSamplers = npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt_ppSamplers);
+        if (!args->_refs_ppSamplers) return;
+        memset(args->_refs_ppSamplers, 0, sizeof(struct npt_wire_object_ref) * _cnt_ppSamplers);
+        for (uint64_t _i = 0; _i < _cnt_ppSamplers; _i++)
+            npt_decode_uint64_t(dec, &args->_guest_ids_ppSamplers[_i]);
+    } else {
+        args->ppSamplers = NULL;
+    }
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppSamplers > 0 && _cnt_ppSamplers != (uint64_t)(args->NumSamplers))) {
+        npt_cs_decoder_set_fatal(dec);
+        return;
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -9698,30 +9801,35 @@ static inline void
 npt_decode_ID3D11DeviceContext_VSGetShader_args_temp(struct npt_cs_decoder *dec,
                                                      struct npt_command_ID3D11DeviceContext_VSGetShader *args)
 {
+    uint64_t _cnt_ppClassInstances = 0; int _has_cnt_ppClassInstances = -1;
     /* Decode input parameters from the wire */
     {
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppVertexShader = _gid;
-        args->ppVertexShader = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppVertexShader) return;
-        *args->ppVertexShader = NULL;
-    }
-    {
-        const uint64_t _cnt = npt_decode_array_count_unchecked(dec);
-        args->ppClassInstances = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt);
-        args->_guest_ids_ppClassInstances = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt) : NULL;
-        args->_guest_id_count_ppClassInstances = (uint32_t)_cnt;
-        if (_cnt && (!args->ppClassInstances || !args->_guest_ids_ppClassInstances)) return;
-        if (_cnt) memset(args->ppClassInstances, 0, sizeof(void *) * _cnt);
-        args->_refs_ppClassInstances = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
-        if (_cnt && !args->_refs_ppClassInstances) return;
-        if (_cnt) memset(args->_refs_ppClassInstances, 0, sizeof(struct npt_wire_object_ref) * _cnt);
-        for (uint64_t _i = 0; _i < _cnt; _i++) {
-            uint64_t _gid;
-            npt_decode_uint64_t(dec, &_gid);
-            args->_guest_ids_ppClassInstances[_i] = _gid;
+        if (_gid) {
+            args->ppVertexShader = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppVertexShader) return;
+            *args->ppVertexShader = NULL;
+        } else {
+            args->ppVertexShader = NULL;
         }
+    }
+    _cnt_ppClassInstances = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppClassInstances = _cnt_ppClassInstances != 0;
+    args->_guest_id_count_ppClassInstances = (uint32_t)_cnt_ppClassInstances;
+    if (_cnt_ppClassInstances) {
+        args->ppClassInstances = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppClassInstances);
+        args->_guest_ids_ppClassInstances = npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt_ppClassInstances);
+        if (!args->ppClassInstances || !args->_guest_ids_ppClassInstances) return;
+        memset(args->ppClassInstances, 0, sizeof(void *) * _cnt_ppClassInstances);
+        args->_refs_ppClassInstances = npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt_ppClassInstances);
+        if (!args->_refs_ppClassInstances) return;
+        memset(args->_refs_ppClassInstances, 0, sizeof(struct npt_wire_object_ref) * _cnt_ppClassInstances);
+        for (uint64_t _i = 0; _i < _cnt_ppClassInstances; _i++)
+            npt_decode_uint64_t(dec, &args->_guest_ids_ppClassInstances[_i]);
+    } else {
+        args->ppClassInstances = NULL;
     }
     if (npt_decode_simple_pointer(dec)) {
         args->pNumClassInstances = npt_cs_decoder_alloc_temp(dec, sizeof(UINT));
@@ -9729,6 +9837,11 @@ npt_decode_ID3D11DeviceContext_VSGetShader_args_temp(struct npt_cs_decoder *dec,
         npt_decode_UINT(dec, (UINT *)args->pNumClassInstances);
     } else {
         args->pNumClassInstances = NULL;
+    }
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppClassInstances > 0 && _cnt_ppClassInstances != (uint64_t)((args->pNumClassInstances ? *args->pNumClassInstances : 0)))) {
+        npt_cs_decoder_set_fatal(dec);
+        return;
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -9877,24 +9990,30 @@ static inline void
 npt_decode_ID3D11DeviceContext_PSGetConstantBuffers_args_temp(struct npt_cs_decoder *dec,
                                                               struct npt_command_ID3D11DeviceContext_PSGetConstantBuffers *args)
 {
+    uint64_t _cnt_ppConstantBuffers = 0; int _has_cnt_ppConstantBuffers = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->StartSlot);
     npt_decode_UINT(dec, &args->NumBuffers);
-    {
-        const uint64_t _cnt = npt_decode_array_count_unchecked(dec);
-        args->ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt);
-        args->_guest_ids_ppConstantBuffers = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt) : NULL;
-        args->_guest_id_count_ppConstantBuffers = (uint32_t)_cnt;
-        if (_cnt && (!args->ppConstantBuffers || !args->_guest_ids_ppConstantBuffers)) return;
-        if (_cnt) memset(args->ppConstantBuffers, 0, sizeof(void *) * _cnt);
-        args->_refs_ppConstantBuffers = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
-        if (_cnt && !args->_refs_ppConstantBuffers) return;
-        if (_cnt) memset(args->_refs_ppConstantBuffers, 0, sizeof(struct npt_wire_object_ref) * _cnt);
-        for (uint64_t _i = 0; _i < _cnt; _i++) {
-            uint64_t _gid;
-            npt_decode_uint64_t(dec, &_gid);
-            args->_guest_ids_ppConstantBuffers[_i] = _gid;
-        }
+    _cnt_ppConstantBuffers = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppConstantBuffers = _cnt_ppConstantBuffers != 0;
+    args->_guest_id_count_ppConstantBuffers = (uint32_t)_cnt_ppConstantBuffers;
+    if (_cnt_ppConstantBuffers) {
+        args->ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppConstantBuffers);
+        args->_guest_ids_ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt_ppConstantBuffers);
+        if (!args->ppConstantBuffers || !args->_guest_ids_ppConstantBuffers) return;
+        memset(args->ppConstantBuffers, 0, sizeof(void *) * _cnt_ppConstantBuffers);
+        args->_refs_ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt_ppConstantBuffers);
+        if (!args->_refs_ppConstantBuffers) return;
+        memset(args->_refs_ppConstantBuffers, 0, sizeof(struct npt_wire_object_ref) * _cnt_ppConstantBuffers);
+        for (uint64_t _i = 0; _i < _cnt_ppConstantBuffers; _i++)
+            npt_decode_uint64_t(dec, &args->_guest_ids_ppConstantBuffers[_i]);
+    } else {
+        args->ppConstantBuffers = NULL;
+    }
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppConstantBuffers > 0 && _cnt_ppConstantBuffers != (uint64_t)(args->NumBuffers))) {
+        npt_cs_decoder_set_fatal(dec);
+        return;
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -10039,9 +10158,13 @@ npt_decode_ID3D11DeviceContext_IAGetInputLayout_args_temp(struct npt_cs_decoder 
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppInputLayout = _gid;
-        args->ppInputLayout = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppInputLayout) return;
-        *args->ppInputLayout = NULL;
+        if (_gid) {
+            args->ppInputLayout = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppInputLayout) return;
+            *args->ppInputLayout = NULL;
+        } else {
+            args->ppInputLayout = NULL;
+        }
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -10172,27 +10295,33 @@ static inline void
 npt_decode_ID3D11DeviceContext_IAGetVertexBuffers_args_temp(struct npt_cs_decoder *dec,
                                                             struct npt_command_ID3D11DeviceContext_IAGetVertexBuffers *args)
 {
+    uint64_t _cnt_ppVertexBuffers = 0; int _has_cnt_ppVertexBuffers = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->StartSlot);
     npt_decode_UINT(dec, &args->NumBuffers);
-    {
-        const uint64_t _cnt = npt_decode_array_count_unchecked(dec);
-        args->ppVertexBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt);
-        args->_guest_ids_ppVertexBuffers = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt) : NULL;
-        args->_guest_id_count_ppVertexBuffers = (uint32_t)_cnt;
-        if (_cnt && (!args->ppVertexBuffers || !args->_guest_ids_ppVertexBuffers)) return;
-        if (_cnt) memset(args->ppVertexBuffers, 0, sizeof(void *) * _cnt);
-        args->_refs_ppVertexBuffers = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
-        if (_cnt && !args->_refs_ppVertexBuffers) return;
-        if (_cnt) memset(args->_refs_ppVertexBuffers, 0, sizeof(struct npt_wire_object_ref) * _cnt);
-        for (uint64_t _i = 0; _i < _cnt; _i++) {
-            uint64_t _gid;
-            npt_decode_uint64_t(dec, &_gid);
-            args->_guest_ids_ppVertexBuffers[_i] = _gid;
-        }
+    _cnt_ppVertexBuffers = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppVertexBuffers = _cnt_ppVertexBuffers != 0;
+    args->_guest_id_count_ppVertexBuffers = (uint32_t)_cnt_ppVertexBuffers;
+    if (_cnt_ppVertexBuffers) {
+        args->ppVertexBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppVertexBuffers);
+        args->_guest_ids_ppVertexBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt_ppVertexBuffers);
+        if (!args->ppVertexBuffers || !args->_guest_ids_ppVertexBuffers) return;
+        memset(args->ppVertexBuffers, 0, sizeof(void *) * _cnt_ppVertexBuffers);
+        args->_refs_ppVertexBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt_ppVertexBuffers);
+        if (!args->_refs_ppVertexBuffers) return;
+        memset(args->_refs_ppVertexBuffers, 0, sizeof(struct npt_wire_object_ref) * _cnt_ppVertexBuffers);
+        for (uint64_t _i = 0; _i < _cnt_ppVertexBuffers; _i++)
+            npt_decode_uint64_t(dec, &args->_guest_ids_ppVertexBuffers[_i]);
+    } else {
+        args->ppVertexBuffers = NULL;
     }
 
 
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppVertexBuffers > 0 && _cnt_ppVertexBuffers != (uint64_t)(args->NumBuffers))) {
+        npt_cs_decoder_set_fatal(dec);
+        return;
+    }
     /* Allocate temp storage for output-only parameters */
 
 
@@ -10364,9 +10493,13 @@ npt_decode_ID3D11DeviceContext_IAGetIndexBuffer_args_temp(struct npt_cs_decoder 
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_pIndexBuffer = _gid;
-        args->pIndexBuffer = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->pIndexBuffer) return;
-        *args->pIndexBuffer = NULL;
+        if (_gid) {
+            args->pIndexBuffer = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->pIndexBuffer) return;
+            *args->pIndexBuffer = NULL;
+        } else {
+            args->pIndexBuffer = NULL;
+        }
     }
 
 
@@ -10507,24 +10640,30 @@ static inline void
 npt_decode_ID3D11DeviceContext_GSGetConstantBuffers_args_temp(struct npt_cs_decoder *dec,
                                                               struct npt_command_ID3D11DeviceContext_GSGetConstantBuffers *args)
 {
+    uint64_t _cnt_ppConstantBuffers = 0; int _has_cnt_ppConstantBuffers = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->StartSlot);
     npt_decode_UINT(dec, &args->NumBuffers);
-    {
-        const uint64_t _cnt = npt_decode_array_count_unchecked(dec);
-        args->ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt);
-        args->_guest_ids_ppConstantBuffers = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt) : NULL;
-        args->_guest_id_count_ppConstantBuffers = (uint32_t)_cnt;
-        if (_cnt && (!args->ppConstantBuffers || !args->_guest_ids_ppConstantBuffers)) return;
-        if (_cnt) memset(args->ppConstantBuffers, 0, sizeof(void *) * _cnt);
-        args->_refs_ppConstantBuffers = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
-        if (_cnt && !args->_refs_ppConstantBuffers) return;
-        if (_cnt) memset(args->_refs_ppConstantBuffers, 0, sizeof(struct npt_wire_object_ref) * _cnt);
-        for (uint64_t _i = 0; _i < _cnt; _i++) {
-            uint64_t _gid;
-            npt_decode_uint64_t(dec, &_gid);
-            args->_guest_ids_ppConstantBuffers[_i] = _gid;
-        }
+    _cnt_ppConstantBuffers = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppConstantBuffers = _cnt_ppConstantBuffers != 0;
+    args->_guest_id_count_ppConstantBuffers = (uint32_t)_cnt_ppConstantBuffers;
+    if (_cnt_ppConstantBuffers) {
+        args->ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppConstantBuffers);
+        args->_guest_ids_ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt_ppConstantBuffers);
+        if (!args->ppConstantBuffers || !args->_guest_ids_ppConstantBuffers) return;
+        memset(args->ppConstantBuffers, 0, sizeof(void *) * _cnt_ppConstantBuffers);
+        args->_refs_ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt_ppConstantBuffers);
+        if (!args->_refs_ppConstantBuffers) return;
+        memset(args->_refs_ppConstantBuffers, 0, sizeof(struct npt_wire_object_ref) * _cnt_ppConstantBuffers);
+        for (uint64_t _i = 0; _i < _cnt_ppConstantBuffers; _i++)
+            npt_decode_uint64_t(dec, &args->_guest_ids_ppConstantBuffers[_i]);
+    } else {
+        args->ppConstantBuffers = NULL;
+    }
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppConstantBuffers > 0 && _cnt_ppConstantBuffers != (uint64_t)(args->NumBuffers))) {
+        npt_cs_decoder_set_fatal(dec);
+        return;
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -10672,30 +10811,35 @@ static inline void
 npt_decode_ID3D11DeviceContext_GSGetShader_args_temp(struct npt_cs_decoder *dec,
                                                      struct npt_command_ID3D11DeviceContext_GSGetShader *args)
 {
+    uint64_t _cnt_ppClassInstances = 0; int _has_cnt_ppClassInstances = -1;
     /* Decode input parameters from the wire */
     {
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppGeometryShader = _gid;
-        args->ppGeometryShader = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppGeometryShader) return;
-        *args->ppGeometryShader = NULL;
-    }
-    {
-        const uint64_t _cnt = npt_decode_array_count_unchecked(dec);
-        args->ppClassInstances = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt);
-        args->_guest_ids_ppClassInstances = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt) : NULL;
-        args->_guest_id_count_ppClassInstances = (uint32_t)_cnt;
-        if (_cnt && (!args->ppClassInstances || !args->_guest_ids_ppClassInstances)) return;
-        if (_cnt) memset(args->ppClassInstances, 0, sizeof(void *) * _cnt);
-        args->_refs_ppClassInstances = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
-        if (_cnt && !args->_refs_ppClassInstances) return;
-        if (_cnt) memset(args->_refs_ppClassInstances, 0, sizeof(struct npt_wire_object_ref) * _cnt);
-        for (uint64_t _i = 0; _i < _cnt; _i++) {
-            uint64_t _gid;
-            npt_decode_uint64_t(dec, &_gid);
-            args->_guest_ids_ppClassInstances[_i] = _gid;
+        if (_gid) {
+            args->ppGeometryShader = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppGeometryShader) return;
+            *args->ppGeometryShader = NULL;
+        } else {
+            args->ppGeometryShader = NULL;
         }
+    }
+    _cnt_ppClassInstances = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppClassInstances = _cnt_ppClassInstances != 0;
+    args->_guest_id_count_ppClassInstances = (uint32_t)_cnt_ppClassInstances;
+    if (_cnt_ppClassInstances) {
+        args->ppClassInstances = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppClassInstances);
+        args->_guest_ids_ppClassInstances = npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt_ppClassInstances);
+        if (!args->ppClassInstances || !args->_guest_ids_ppClassInstances) return;
+        memset(args->ppClassInstances, 0, sizeof(void *) * _cnt_ppClassInstances);
+        args->_refs_ppClassInstances = npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt_ppClassInstances);
+        if (!args->_refs_ppClassInstances) return;
+        memset(args->_refs_ppClassInstances, 0, sizeof(struct npt_wire_object_ref) * _cnt_ppClassInstances);
+        for (uint64_t _i = 0; _i < _cnt_ppClassInstances; _i++)
+            npt_decode_uint64_t(dec, &args->_guest_ids_ppClassInstances[_i]);
+    } else {
+        args->ppClassInstances = NULL;
     }
     if (npt_decode_simple_pointer(dec)) {
         args->pNumClassInstances = npt_cs_decoder_alloc_temp(dec, sizeof(UINT));
@@ -10703,6 +10847,11 @@ npt_decode_ID3D11DeviceContext_GSGetShader_args_temp(struct npt_cs_decoder *dec,
         npt_decode_UINT(dec, (UINT *)args->pNumClassInstances);
     } else {
         args->pNumClassInstances = NULL;
+    }
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppClassInstances > 0 && _cnt_ppClassInstances != (uint64_t)((args->pNumClassInstances ? *args->pNumClassInstances : 0)))) {
+        npt_cs_decoder_set_fatal(dec);
+        return;
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -10973,24 +11122,30 @@ static inline void
 npt_decode_ID3D11DeviceContext_VSGetShaderResources_args_temp(struct npt_cs_decoder *dec,
                                                               struct npt_command_ID3D11DeviceContext_VSGetShaderResources *args)
 {
+    uint64_t _cnt_ppShaderResourceViews = 0; int _has_cnt_ppShaderResourceViews = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->StartSlot);
     npt_decode_UINT(dec, &args->NumViews);
-    {
-        const uint64_t _cnt = npt_decode_array_count_unchecked(dec);
-        args->ppShaderResourceViews = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt);
-        args->_guest_ids_ppShaderResourceViews = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt) : NULL;
-        args->_guest_id_count_ppShaderResourceViews = (uint32_t)_cnt;
-        if (_cnt && (!args->ppShaderResourceViews || !args->_guest_ids_ppShaderResourceViews)) return;
-        if (_cnt) memset(args->ppShaderResourceViews, 0, sizeof(void *) * _cnt);
-        args->_refs_ppShaderResourceViews = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
-        if (_cnt && !args->_refs_ppShaderResourceViews) return;
-        if (_cnt) memset(args->_refs_ppShaderResourceViews, 0, sizeof(struct npt_wire_object_ref) * _cnt);
-        for (uint64_t _i = 0; _i < _cnt; _i++) {
-            uint64_t _gid;
-            npt_decode_uint64_t(dec, &_gid);
-            args->_guest_ids_ppShaderResourceViews[_i] = _gid;
-        }
+    _cnt_ppShaderResourceViews = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppShaderResourceViews = _cnt_ppShaderResourceViews != 0;
+    args->_guest_id_count_ppShaderResourceViews = (uint32_t)_cnt_ppShaderResourceViews;
+    if (_cnt_ppShaderResourceViews) {
+        args->ppShaderResourceViews = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppShaderResourceViews);
+        args->_guest_ids_ppShaderResourceViews = npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt_ppShaderResourceViews);
+        if (!args->ppShaderResourceViews || !args->_guest_ids_ppShaderResourceViews) return;
+        memset(args->ppShaderResourceViews, 0, sizeof(void *) * _cnt_ppShaderResourceViews);
+        args->_refs_ppShaderResourceViews = npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt_ppShaderResourceViews);
+        if (!args->_refs_ppShaderResourceViews) return;
+        memset(args->_refs_ppShaderResourceViews, 0, sizeof(struct npt_wire_object_ref) * _cnt_ppShaderResourceViews);
+        for (uint64_t _i = 0; _i < _cnt_ppShaderResourceViews; _i++)
+            npt_decode_uint64_t(dec, &args->_guest_ids_ppShaderResourceViews[_i]);
+    } else {
+        args->ppShaderResourceViews = NULL;
+    }
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppShaderResourceViews > 0 && _cnt_ppShaderResourceViews != (uint64_t)(args->NumViews))) {
+        npt_cs_decoder_set_fatal(dec);
+        return;
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -11132,24 +11287,30 @@ static inline void
 npt_decode_ID3D11DeviceContext_VSGetSamplers_args_temp(struct npt_cs_decoder *dec,
                                                        struct npt_command_ID3D11DeviceContext_VSGetSamplers *args)
 {
+    uint64_t _cnt_ppSamplers = 0; int _has_cnt_ppSamplers = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->StartSlot);
     npt_decode_UINT(dec, &args->NumSamplers);
-    {
-        const uint64_t _cnt = npt_decode_array_count_unchecked(dec);
-        args->ppSamplers = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt);
-        args->_guest_ids_ppSamplers = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt) : NULL;
-        args->_guest_id_count_ppSamplers = (uint32_t)_cnt;
-        if (_cnt && (!args->ppSamplers || !args->_guest_ids_ppSamplers)) return;
-        if (_cnt) memset(args->ppSamplers, 0, sizeof(void *) * _cnt);
-        args->_refs_ppSamplers = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
-        if (_cnt && !args->_refs_ppSamplers) return;
-        if (_cnt) memset(args->_refs_ppSamplers, 0, sizeof(struct npt_wire_object_ref) * _cnt);
-        for (uint64_t _i = 0; _i < _cnt; _i++) {
-            uint64_t _gid;
-            npt_decode_uint64_t(dec, &_gid);
-            args->_guest_ids_ppSamplers[_i] = _gid;
-        }
+    _cnt_ppSamplers = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppSamplers = _cnt_ppSamplers != 0;
+    args->_guest_id_count_ppSamplers = (uint32_t)_cnt_ppSamplers;
+    if (_cnt_ppSamplers) {
+        args->ppSamplers = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppSamplers);
+        args->_guest_ids_ppSamplers = npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt_ppSamplers);
+        if (!args->ppSamplers || !args->_guest_ids_ppSamplers) return;
+        memset(args->ppSamplers, 0, sizeof(void *) * _cnt_ppSamplers);
+        args->_refs_ppSamplers = npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt_ppSamplers);
+        if (!args->_refs_ppSamplers) return;
+        memset(args->_refs_ppSamplers, 0, sizeof(struct npt_wire_object_ref) * _cnt_ppSamplers);
+        for (uint64_t _i = 0; _i < _cnt_ppSamplers; _i++)
+            npt_decode_uint64_t(dec, &args->_guest_ids_ppSamplers[_i]);
+    } else {
+        args->ppSamplers = NULL;
+    }
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppSamplers > 0 && _cnt_ppSamplers != (uint64_t)(args->NumSamplers))) {
+        npt_cs_decoder_set_fatal(dec);
+        return;
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -11295,9 +11456,13 @@ npt_decode_ID3D11DeviceContext_GetPredication_args_temp(struct npt_cs_decoder *d
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppPredicate = _gid;
-        args->ppPredicate = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppPredicate) return;
-        *args->ppPredicate = NULL;
+        if (_gid) {
+            args->ppPredicate = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppPredicate) return;
+            *args->ppPredicate = NULL;
+        } else {
+            args->ppPredicate = NULL;
+        }
     }
 
     /* Allocate temp storage for output-only parameters */
@@ -11432,24 +11597,30 @@ static inline void
 npt_decode_ID3D11DeviceContext_GSGetShaderResources_args_temp(struct npt_cs_decoder *dec,
                                                               struct npt_command_ID3D11DeviceContext_GSGetShaderResources *args)
 {
+    uint64_t _cnt_ppShaderResourceViews = 0; int _has_cnt_ppShaderResourceViews = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->StartSlot);
     npt_decode_UINT(dec, &args->NumViews);
-    {
-        const uint64_t _cnt = npt_decode_array_count_unchecked(dec);
-        args->ppShaderResourceViews = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt);
-        args->_guest_ids_ppShaderResourceViews = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt) : NULL;
-        args->_guest_id_count_ppShaderResourceViews = (uint32_t)_cnt;
-        if (_cnt && (!args->ppShaderResourceViews || !args->_guest_ids_ppShaderResourceViews)) return;
-        if (_cnt) memset(args->ppShaderResourceViews, 0, sizeof(void *) * _cnt);
-        args->_refs_ppShaderResourceViews = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
-        if (_cnt && !args->_refs_ppShaderResourceViews) return;
-        if (_cnt) memset(args->_refs_ppShaderResourceViews, 0, sizeof(struct npt_wire_object_ref) * _cnt);
-        for (uint64_t _i = 0; _i < _cnt; _i++) {
-            uint64_t _gid;
-            npt_decode_uint64_t(dec, &_gid);
-            args->_guest_ids_ppShaderResourceViews[_i] = _gid;
-        }
+    _cnt_ppShaderResourceViews = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppShaderResourceViews = _cnt_ppShaderResourceViews != 0;
+    args->_guest_id_count_ppShaderResourceViews = (uint32_t)_cnt_ppShaderResourceViews;
+    if (_cnt_ppShaderResourceViews) {
+        args->ppShaderResourceViews = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppShaderResourceViews);
+        args->_guest_ids_ppShaderResourceViews = npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt_ppShaderResourceViews);
+        if (!args->ppShaderResourceViews || !args->_guest_ids_ppShaderResourceViews) return;
+        memset(args->ppShaderResourceViews, 0, sizeof(void *) * _cnt_ppShaderResourceViews);
+        args->_refs_ppShaderResourceViews = npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt_ppShaderResourceViews);
+        if (!args->_refs_ppShaderResourceViews) return;
+        memset(args->_refs_ppShaderResourceViews, 0, sizeof(struct npt_wire_object_ref) * _cnt_ppShaderResourceViews);
+        for (uint64_t _i = 0; _i < _cnt_ppShaderResourceViews; _i++)
+            npt_decode_uint64_t(dec, &args->_guest_ids_ppShaderResourceViews[_i]);
+    } else {
+        args->ppShaderResourceViews = NULL;
+    }
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppShaderResourceViews > 0 && _cnt_ppShaderResourceViews != (uint64_t)(args->NumViews))) {
+        npt_cs_decoder_set_fatal(dec);
+        return;
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -11591,24 +11762,30 @@ static inline void
 npt_decode_ID3D11DeviceContext_GSGetSamplers_args_temp(struct npt_cs_decoder *dec,
                                                        struct npt_command_ID3D11DeviceContext_GSGetSamplers *args)
 {
+    uint64_t _cnt_ppSamplers = 0; int _has_cnt_ppSamplers = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->StartSlot);
     npt_decode_UINT(dec, &args->NumSamplers);
-    {
-        const uint64_t _cnt = npt_decode_array_count_unchecked(dec);
-        args->ppSamplers = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt);
-        args->_guest_ids_ppSamplers = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt) : NULL;
-        args->_guest_id_count_ppSamplers = (uint32_t)_cnt;
-        if (_cnt && (!args->ppSamplers || !args->_guest_ids_ppSamplers)) return;
-        if (_cnt) memset(args->ppSamplers, 0, sizeof(void *) * _cnt);
-        args->_refs_ppSamplers = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
-        if (_cnt && !args->_refs_ppSamplers) return;
-        if (_cnt) memset(args->_refs_ppSamplers, 0, sizeof(struct npt_wire_object_ref) * _cnt);
-        for (uint64_t _i = 0; _i < _cnt; _i++) {
-            uint64_t _gid;
-            npt_decode_uint64_t(dec, &_gid);
-            args->_guest_ids_ppSamplers[_i] = _gid;
-        }
+    _cnt_ppSamplers = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppSamplers = _cnt_ppSamplers != 0;
+    args->_guest_id_count_ppSamplers = (uint32_t)_cnt_ppSamplers;
+    if (_cnt_ppSamplers) {
+        args->ppSamplers = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppSamplers);
+        args->_guest_ids_ppSamplers = npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt_ppSamplers);
+        if (!args->ppSamplers || !args->_guest_ids_ppSamplers) return;
+        memset(args->ppSamplers, 0, sizeof(void *) * _cnt_ppSamplers);
+        args->_refs_ppSamplers = npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt_ppSamplers);
+        if (!args->_refs_ppSamplers) return;
+        memset(args->_refs_ppSamplers, 0, sizeof(struct npt_wire_object_ref) * _cnt_ppSamplers);
+        for (uint64_t _i = 0; _i < _cnt_ppSamplers; _i++)
+            npt_decode_uint64_t(dec, &args->_guest_ids_ppSamplers[_i]);
+    } else {
+        args->ppSamplers = NULL;
+    }
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppSamplers > 0 && _cnt_ppSamplers != (uint64_t)(args->NumSamplers))) {
+        npt_cs_decoder_set_fatal(dec);
+        return;
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -11756,31 +11933,41 @@ static inline void
 npt_decode_ID3D11DeviceContext_OMGetRenderTargets_args_temp(struct npt_cs_decoder *dec,
                                                             struct npt_command_ID3D11DeviceContext_OMGetRenderTargets *args)
 {
+    uint64_t _cnt_ppRenderTargetViews = 0; int _has_cnt_ppRenderTargetViews = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->NumViews);
-    {
-        const uint64_t _cnt = npt_decode_array_count_unchecked(dec);
-        args->ppRenderTargetViews = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt);
-        args->_guest_ids_ppRenderTargetViews = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt) : NULL;
-        args->_guest_id_count_ppRenderTargetViews = (uint32_t)_cnt;
-        if (_cnt && (!args->ppRenderTargetViews || !args->_guest_ids_ppRenderTargetViews)) return;
-        if (_cnt) memset(args->ppRenderTargetViews, 0, sizeof(void *) * _cnt);
-        args->_refs_ppRenderTargetViews = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
-        if (_cnt && !args->_refs_ppRenderTargetViews) return;
-        if (_cnt) memset(args->_refs_ppRenderTargetViews, 0, sizeof(struct npt_wire_object_ref) * _cnt);
-        for (uint64_t _i = 0; _i < _cnt; _i++) {
-            uint64_t _gid;
-            npt_decode_uint64_t(dec, &_gid);
-            args->_guest_ids_ppRenderTargetViews[_i] = _gid;
-        }
+    _cnt_ppRenderTargetViews = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppRenderTargetViews = _cnt_ppRenderTargetViews != 0;
+    args->_guest_id_count_ppRenderTargetViews = (uint32_t)_cnt_ppRenderTargetViews;
+    if (_cnt_ppRenderTargetViews) {
+        args->ppRenderTargetViews = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppRenderTargetViews);
+        args->_guest_ids_ppRenderTargetViews = npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt_ppRenderTargetViews);
+        if (!args->ppRenderTargetViews || !args->_guest_ids_ppRenderTargetViews) return;
+        memset(args->ppRenderTargetViews, 0, sizeof(void *) * _cnt_ppRenderTargetViews);
+        args->_refs_ppRenderTargetViews = npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt_ppRenderTargetViews);
+        if (!args->_refs_ppRenderTargetViews) return;
+        memset(args->_refs_ppRenderTargetViews, 0, sizeof(struct npt_wire_object_ref) * _cnt_ppRenderTargetViews);
+        for (uint64_t _i = 0; _i < _cnt_ppRenderTargetViews; _i++)
+            npt_decode_uint64_t(dec, &args->_guest_ids_ppRenderTargetViews[_i]);
+    } else {
+        args->ppRenderTargetViews = NULL;
     }
     {
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppDepthStencilView = _gid;
-        args->ppDepthStencilView = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppDepthStencilView) return;
-        *args->ppDepthStencilView = NULL;
+        if (_gid) {
+            args->ppDepthStencilView = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppDepthStencilView) return;
+            *args->ppDepthStencilView = NULL;
+        } else {
+            args->ppDepthStencilView = NULL;
+        }
+    }
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppRenderTargetViews > 0 && _cnt_ppRenderTargetViews != (uint64_t)(args->NumViews))) {
+        npt_cs_decoder_set_fatal(dec);
+        return;
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -11942,49 +12129,64 @@ static inline void
 npt_decode_ID3D11DeviceContext_OMGetRenderTargetsAndUnorderedAccessViews_args_temp(struct npt_cs_decoder *dec,
                                                                                    struct npt_command_ID3D11DeviceContext_OMGetRenderTargetsAndUnorderedAccessViews *args)
 {
+    uint64_t _cnt_ppRenderTargetViews = 0; int _has_cnt_ppRenderTargetViews = -1;
+    uint64_t _cnt_ppUnorderedAccessViews = 0; int _has_cnt_ppUnorderedAccessViews = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->NumRTVs);
-    {
-        const uint64_t _cnt = npt_decode_array_count_unchecked(dec);
-        args->ppRenderTargetViews = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt);
-        args->_guest_ids_ppRenderTargetViews = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt) : NULL;
-        args->_guest_id_count_ppRenderTargetViews = (uint32_t)_cnt;
-        if (_cnt && (!args->ppRenderTargetViews || !args->_guest_ids_ppRenderTargetViews)) return;
-        if (_cnt) memset(args->ppRenderTargetViews, 0, sizeof(void *) * _cnt);
-        args->_refs_ppRenderTargetViews = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
-        if (_cnt && !args->_refs_ppRenderTargetViews) return;
-        if (_cnt) memset(args->_refs_ppRenderTargetViews, 0, sizeof(struct npt_wire_object_ref) * _cnt);
-        for (uint64_t _i = 0; _i < _cnt; _i++) {
-            uint64_t _gid;
-            npt_decode_uint64_t(dec, &_gid);
-            args->_guest_ids_ppRenderTargetViews[_i] = _gid;
-        }
+    _cnt_ppRenderTargetViews = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppRenderTargetViews = _cnt_ppRenderTargetViews != 0;
+    args->_guest_id_count_ppRenderTargetViews = (uint32_t)_cnt_ppRenderTargetViews;
+    if (_cnt_ppRenderTargetViews) {
+        args->ppRenderTargetViews = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppRenderTargetViews);
+        args->_guest_ids_ppRenderTargetViews = npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt_ppRenderTargetViews);
+        if (!args->ppRenderTargetViews || !args->_guest_ids_ppRenderTargetViews) return;
+        memset(args->ppRenderTargetViews, 0, sizeof(void *) * _cnt_ppRenderTargetViews);
+        args->_refs_ppRenderTargetViews = npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt_ppRenderTargetViews);
+        if (!args->_refs_ppRenderTargetViews) return;
+        memset(args->_refs_ppRenderTargetViews, 0, sizeof(struct npt_wire_object_ref) * _cnt_ppRenderTargetViews);
+        for (uint64_t _i = 0; _i < _cnt_ppRenderTargetViews; _i++)
+            npt_decode_uint64_t(dec, &args->_guest_ids_ppRenderTargetViews[_i]);
+    } else {
+        args->ppRenderTargetViews = NULL;
     }
     {
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppDepthStencilView = _gid;
-        args->ppDepthStencilView = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppDepthStencilView) return;
-        *args->ppDepthStencilView = NULL;
+        if (_gid) {
+            args->ppDepthStencilView = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppDepthStencilView) return;
+            *args->ppDepthStencilView = NULL;
+        } else {
+            args->ppDepthStencilView = NULL;
+        }
     }
     npt_decode_UINT(dec, &args->UAVStartSlot);
     npt_decode_UINT(dec, &args->NumUAVs);
-    {
-        const uint64_t _cnt = npt_decode_array_count_unchecked(dec);
-        args->ppUnorderedAccessViews = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt);
-        args->_guest_ids_ppUnorderedAccessViews = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt) : NULL;
-        args->_guest_id_count_ppUnorderedAccessViews = (uint32_t)_cnt;
-        if (_cnt && (!args->ppUnorderedAccessViews || !args->_guest_ids_ppUnorderedAccessViews)) return;
-        if (_cnt) memset(args->ppUnorderedAccessViews, 0, sizeof(void *) * _cnt);
-        args->_refs_ppUnorderedAccessViews = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
-        if (_cnt && !args->_refs_ppUnorderedAccessViews) return;
-        if (_cnt) memset(args->_refs_ppUnorderedAccessViews, 0, sizeof(struct npt_wire_object_ref) * _cnt);
-        for (uint64_t _i = 0; _i < _cnt; _i++) {
-            uint64_t _gid;
-            npt_decode_uint64_t(dec, &_gid);
-            args->_guest_ids_ppUnorderedAccessViews[_i] = _gid;
-        }
+    _cnt_ppUnorderedAccessViews = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppUnorderedAccessViews = _cnt_ppUnorderedAccessViews != 0;
+    args->_guest_id_count_ppUnorderedAccessViews = (uint32_t)_cnt_ppUnorderedAccessViews;
+    if (_cnt_ppUnorderedAccessViews) {
+        args->ppUnorderedAccessViews = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppUnorderedAccessViews);
+        args->_guest_ids_ppUnorderedAccessViews = npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt_ppUnorderedAccessViews);
+        if (!args->ppUnorderedAccessViews || !args->_guest_ids_ppUnorderedAccessViews) return;
+        memset(args->ppUnorderedAccessViews, 0, sizeof(void *) * _cnt_ppUnorderedAccessViews);
+        args->_refs_ppUnorderedAccessViews = npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt_ppUnorderedAccessViews);
+        if (!args->_refs_ppUnorderedAccessViews) return;
+        memset(args->_refs_ppUnorderedAccessViews, 0, sizeof(struct npt_wire_object_ref) * _cnt_ppUnorderedAccessViews);
+        for (uint64_t _i = 0; _i < _cnt_ppUnorderedAccessViews; _i++)
+            npt_decode_uint64_t(dec, &args->_guest_ids_ppUnorderedAccessViews[_i]);
+    } else {
+        args->ppUnorderedAccessViews = NULL;
+    }
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppRenderTargetViews > 0 && _cnt_ppRenderTargetViews != (uint64_t)(args->NumRTVs))) {
+        npt_cs_decoder_set_fatal(dec);
+        return;
+    }
+    if ((_has_cnt_ppUnorderedAccessViews > 0 && _cnt_ppUnorderedAccessViews != (uint64_t)(args->NumUAVs))) {
+        npt_cs_decoder_set_fatal(dec);
+        return;
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -12155,9 +12357,13 @@ npt_decode_ID3D11DeviceContext_OMGetBlendState_args_temp(struct npt_cs_decoder *
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppBlendState = _gid;
-        args->ppBlendState = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppBlendState) return;
-        *args->ppBlendState = NULL;
+        if (_gid) {
+            args->ppBlendState = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppBlendState) return;
+            *args->ppBlendState = NULL;
+        } else {
+            args->ppBlendState = NULL;
+        }
     }
 
 
@@ -12306,9 +12512,13 @@ npt_decode_ID3D11DeviceContext_OMGetDepthStencilState_args_temp(struct npt_cs_de
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppDepthStencilState = _gid;
-        args->ppDepthStencilState = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppDepthStencilState) return;
-        *args->ppDepthStencilState = NULL;
+        if (_gid) {
+            args->ppDepthStencilState = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppDepthStencilState) return;
+            *args->ppDepthStencilState = NULL;
+        } else {
+            args->ppDepthStencilState = NULL;
+        }
     }
 
     /* Allocate temp storage for output-only parameters */
@@ -12442,23 +12652,29 @@ static inline void
 npt_decode_ID3D11DeviceContext_SOGetTargets_args_temp(struct npt_cs_decoder *dec,
                                                       struct npt_command_ID3D11DeviceContext_SOGetTargets *args)
 {
+    uint64_t _cnt_ppSOTargets = 0; int _has_cnt_ppSOTargets = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->NumBuffers);
-    {
-        const uint64_t _cnt = npt_decode_array_count_unchecked(dec);
-        args->ppSOTargets = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt);
-        args->_guest_ids_ppSOTargets = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt) : NULL;
-        args->_guest_id_count_ppSOTargets = (uint32_t)_cnt;
-        if (_cnt && (!args->ppSOTargets || !args->_guest_ids_ppSOTargets)) return;
-        if (_cnt) memset(args->ppSOTargets, 0, sizeof(void *) * _cnt);
-        args->_refs_ppSOTargets = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
-        if (_cnt && !args->_refs_ppSOTargets) return;
-        if (_cnt) memset(args->_refs_ppSOTargets, 0, sizeof(struct npt_wire_object_ref) * _cnt);
-        for (uint64_t _i = 0; _i < _cnt; _i++) {
-            uint64_t _gid;
-            npt_decode_uint64_t(dec, &_gid);
-            args->_guest_ids_ppSOTargets[_i] = _gid;
-        }
+    _cnt_ppSOTargets = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppSOTargets = _cnt_ppSOTargets != 0;
+    args->_guest_id_count_ppSOTargets = (uint32_t)_cnt_ppSOTargets;
+    if (_cnt_ppSOTargets) {
+        args->ppSOTargets = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppSOTargets);
+        args->_guest_ids_ppSOTargets = npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt_ppSOTargets);
+        if (!args->ppSOTargets || !args->_guest_ids_ppSOTargets) return;
+        memset(args->ppSOTargets, 0, sizeof(void *) * _cnt_ppSOTargets);
+        args->_refs_ppSOTargets = npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt_ppSOTargets);
+        if (!args->_refs_ppSOTargets) return;
+        memset(args->_refs_ppSOTargets, 0, sizeof(struct npt_wire_object_ref) * _cnt_ppSOTargets);
+        for (uint64_t _i = 0; _i < _cnt_ppSOTargets; _i++)
+            npt_decode_uint64_t(dec, &args->_guest_ids_ppSOTargets[_i]);
+    } else {
+        args->ppSOTargets = NULL;
+    }
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppSOTargets > 0 && _cnt_ppSOTargets != (uint64_t)(args->NumBuffers))) {
+        npt_cs_decoder_set_fatal(dec);
+        return;
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -12602,9 +12818,13 @@ npt_decode_ID3D11DeviceContext_RSGetState_args_temp(struct npt_cs_decoder *dec,
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppRasterizerState = _gid;
-        args->ppRasterizerState = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppRasterizerState) return;
-        *args->ppRasterizerState = NULL;
+        if (_gid) {
+            args->ppRasterizerState = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppRasterizerState) return;
+            *args->ppRasterizerState = NULL;
+        } else {
+            args->ppRasterizerState = NULL;
+        }
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -13021,24 +13241,30 @@ static inline void
 npt_decode_ID3D11DeviceContext_HSGetShaderResources_args_temp(struct npt_cs_decoder *dec,
                                                               struct npt_command_ID3D11DeviceContext_HSGetShaderResources *args)
 {
+    uint64_t _cnt_ppShaderResourceViews = 0; int _has_cnt_ppShaderResourceViews = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->StartSlot);
     npt_decode_UINT(dec, &args->NumViews);
-    {
-        const uint64_t _cnt = npt_decode_array_count_unchecked(dec);
-        args->ppShaderResourceViews = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt);
-        args->_guest_ids_ppShaderResourceViews = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt) : NULL;
-        args->_guest_id_count_ppShaderResourceViews = (uint32_t)_cnt;
-        if (_cnt && (!args->ppShaderResourceViews || !args->_guest_ids_ppShaderResourceViews)) return;
-        if (_cnt) memset(args->ppShaderResourceViews, 0, sizeof(void *) * _cnt);
-        args->_refs_ppShaderResourceViews = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
-        if (_cnt && !args->_refs_ppShaderResourceViews) return;
-        if (_cnt) memset(args->_refs_ppShaderResourceViews, 0, sizeof(struct npt_wire_object_ref) * _cnt);
-        for (uint64_t _i = 0; _i < _cnt; _i++) {
-            uint64_t _gid;
-            npt_decode_uint64_t(dec, &_gid);
-            args->_guest_ids_ppShaderResourceViews[_i] = _gid;
-        }
+    _cnt_ppShaderResourceViews = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppShaderResourceViews = _cnt_ppShaderResourceViews != 0;
+    args->_guest_id_count_ppShaderResourceViews = (uint32_t)_cnt_ppShaderResourceViews;
+    if (_cnt_ppShaderResourceViews) {
+        args->ppShaderResourceViews = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppShaderResourceViews);
+        args->_guest_ids_ppShaderResourceViews = npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt_ppShaderResourceViews);
+        if (!args->ppShaderResourceViews || !args->_guest_ids_ppShaderResourceViews) return;
+        memset(args->ppShaderResourceViews, 0, sizeof(void *) * _cnt_ppShaderResourceViews);
+        args->_refs_ppShaderResourceViews = npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt_ppShaderResourceViews);
+        if (!args->_refs_ppShaderResourceViews) return;
+        memset(args->_refs_ppShaderResourceViews, 0, sizeof(struct npt_wire_object_ref) * _cnt_ppShaderResourceViews);
+        for (uint64_t _i = 0; _i < _cnt_ppShaderResourceViews; _i++)
+            npt_decode_uint64_t(dec, &args->_guest_ids_ppShaderResourceViews[_i]);
+    } else {
+        args->ppShaderResourceViews = NULL;
+    }
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppShaderResourceViews > 0 && _cnt_ppShaderResourceViews != (uint64_t)(args->NumViews))) {
+        npt_cs_decoder_set_fatal(dec);
+        return;
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -13186,30 +13412,35 @@ static inline void
 npt_decode_ID3D11DeviceContext_HSGetShader_args_temp(struct npt_cs_decoder *dec,
                                                      struct npt_command_ID3D11DeviceContext_HSGetShader *args)
 {
+    uint64_t _cnt_ppClassInstances = 0; int _has_cnt_ppClassInstances = -1;
     /* Decode input parameters from the wire */
     {
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppHullShader = _gid;
-        args->ppHullShader = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppHullShader) return;
-        *args->ppHullShader = NULL;
-    }
-    {
-        const uint64_t _cnt = npt_decode_array_count_unchecked(dec);
-        args->ppClassInstances = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt);
-        args->_guest_ids_ppClassInstances = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt) : NULL;
-        args->_guest_id_count_ppClassInstances = (uint32_t)_cnt;
-        if (_cnt && (!args->ppClassInstances || !args->_guest_ids_ppClassInstances)) return;
-        if (_cnt) memset(args->ppClassInstances, 0, sizeof(void *) * _cnt);
-        args->_refs_ppClassInstances = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
-        if (_cnt && !args->_refs_ppClassInstances) return;
-        if (_cnt) memset(args->_refs_ppClassInstances, 0, sizeof(struct npt_wire_object_ref) * _cnt);
-        for (uint64_t _i = 0; _i < _cnt; _i++) {
-            uint64_t _gid;
-            npt_decode_uint64_t(dec, &_gid);
-            args->_guest_ids_ppClassInstances[_i] = _gid;
+        if (_gid) {
+            args->ppHullShader = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppHullShader) return;
+            *args->ppHullShader = NULL;
+        } else {
+            args->ppHullShader = NULL;
         }
+    }
+    _cnt_ppClassInstances = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppClassInstances = _cnt_ppClassInstances != 0;
+    args->_guest_id_count_ppClassInstances = (uint32_t)_cnt_ppClassInstances;
+    if (_cnt_ppClassInstances) {
+        args->ppClassInstances = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppClassInstances);
+        args->_guest_ids_ppClassInstances = npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt_ppClassInstances);
+        if (!args->ppClassInstances || !args->_guest_ids_ppClassInstances) return;
+        memset(args->ppClassInstances, 0, sizeof(void *) * _cnt_ppClassInstances);
+        args->_refs_ppClassInstances = npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt_ppClassInstances);
+        if (!args->_refs_ppClassInstances) return;
+        memset(args->_refs_ppClassInstances, 0, sizeof(struct npt_wire_object_ref) * _cnt_ppClassInstances);
+        for (uint64_t _i = 0; _i < _cnt_ppClassInstances; _i++)
+            npt_decode_uint64_t(dec, &args->_guest_ids_ppClassInstances[_i]);
+    } else {
+        args->ppClassInstances = NULL;
     }
     if (npt_decode_simple_pointer(dec)) {
         args->pNumClassInstances = npt_cs_decoder_alloc_temp(dec, sizeof(UINT));
@@ -13217,6 +13448,11 @@ npt_decode_ID3D11DeviceContext_HSGetShader_args_temp(struct npt_cs_decoder *dec,
         npt_decode_UINT(dec, (UINT *)args->pNumClassInstances);
     } else {
         args->pNumClassInstances = NULL;
+    }
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppClassInstances > 0 && _cnt_ppClassInstances != (uint64_t)((args->pNumClassInstances ? *args->pNumClassInstances : 0)))) {
+        npt_cs_decoder_set_fatal(dec);
+        return;
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -13365,24 +13601,30 @@ static inline void
 npt_decode_ID3D11DeviceContext_HSGetSamplers_args_temp(struct npt_cs_decoder *dec,
                                                        struct npt_command_ID3D11DeviceContext_HSGetSamplers *args)
 {
+    uint64_t _cnt_ppSamplers = 0; int _has_cnt_ppSamplers = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->StartSlot);
     npt_decode_UINT(dec, &args->NumSamplers);
-    {
-        const uint64_t _cnt = npt_decode_array_count_unchecked(dec);
-        args->ppSamplers = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt);
-        args->_guest_ids_ppSamplers = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt) : NULL;
-        args->_guest_id_count_ppSamplers = (uint32_t)_cnt;
-        if (_cnt && (!args->ppSamplers || !args->_guest_ids_ppSamplers)) return;
-        if (_cnt) memset(args->ppSamplers, 0, sizeof(void *) * _cnt);
-        args->_refs_ppSamplers = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
-        if (_cnt && !args->_refs_ppSamplers) return;
-        if (_cnt) memset(args->_refs_ppSamplers, 0, sizeof(struct npt_wire_object_ref) * _cnt);
-        for (uint64_t _i = 0; _i < _cnt; _i++) {
-            uint64_t _gid;
-            npt_decode_uint64_t(dec, &_gid);
-            args->_guest_ids_ppSamplers[_i] = _gid;
-        }
+    _cnt_ppSamplers = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppSamplers = _cnt_ppSamplers != 0;
+    args->_guest_id_count_ppSamplers = (uint32_t)_cnt_ppSamplers;
+    if (_cnt_ppSamplers) {
+        args->ppSamplers = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppSamplers);
+        args->_guest_ids_ppSamplers = npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt_ppSamplers);
+        if (!args->ppSamplers || !args->_guest_ids_ppSamplers) return;
+        memset(args->ppSamplers, 0, sizeof(void *) * _cnt_ppSamplers);
+        args->_refs_ppSamplers = npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt_ppSamplers);
+        if (!args->_refs_ppSamplers) return;
+        memset(args->_refs_ppSamplers, 0, sizeof(struct npt_wire_object_ref) * _cnt_ppSamplers);
+        for (uint64_t _i = 0; _i < _cnt_ppSamplers; _i++)
+            npt_decode_uint64_t(dec, &args->_guest_ids_ppSamplers[_i]);
+    } else {
+        args->ppSamplers = NULL;
+    }
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppSamplers > 0 && _cnt_ppSamplers != (uint64_t)(args->NumSamplers))) {
+        npt_cs_decoder_set_fatal(dec);
+        return;
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -13524,24 +13766,30 @@ static inline void
 npt_decode_ID3D11DeviceContext_HSGetConstantBuffers_args_temp(struct npt_cs_decoder *dec,
                                                               struct npt_command_ID3D11DeviceContext_HSGetConstantBuffers *args)
 {
+    uint64_t _cnt_ppConstantBuffers = 0; int _has_cnt_ppConstantBuffers = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->StartSlot);
     npt_decode_UINT(dec, &args->NumBuffers);
-    {
-        const uint64_t _cnt = npt_decode_array_count_unchecked(dec);
-        args->ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt);
-        args->_guest_ids_ppConstantBuffers = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt) : NULL;
-        args->_guest_id_count_ppConstantBuffers = (uint32_t)_cnt;
-        if (_cnt && (!args->ppConstantBuffers || !args->_guest_ids_ppConstantBuffers)) return;
-        if (_cnt) memset(args->ppConstantBuffers, 0, sizeof(void *) * _cnt);
-        args->_refs_ppConstantBuffers = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
-        if (_cnt && !args->_refs_ppConstantBuffers) return;
-        if (_cnt) memset(args->_refs_ppConstantBuffers, 0, sizeof(struct npt_wire_object_ref) * _cnt);
-        for (uint64_t _i = 0; _i < _cnt; _i++) {
-            uint64_t _gid;
-            npt_decode_uint64_t(dec, &_gid);
-            args->_guest_ids_ppConstantBuffers[_i] = _gid;
-        }
+    _cnt_ppConstantBuffers = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppConstantBuffers = _cnt_ppConstantBuffers != 0;
+    args->_guest_id_count_ppConstantBuffers = (uint32_t)_cnt_ppConstantBuffers;
+    if (_cnt_ppConstantBuffers) {
+        args->ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppConstantBuffers);
+        args->_guest_ids_ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt_ppConstantBuffers);
+        if (!args->ppConstantBuffers || !args->_guest_ids_ppConstantBuffers) return;
+        memset(args->ppConstantBuffers, 0, sizeof(void *) * _cnt_ppConstantBuffers);
+        args->_refs_ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt_ppConstantBuffers);
+        if (!args->_refs_ppConstantBuffers) return;
+        memset(args->_refs_ppConstantBuffers, 0, sizeof(struct npt_wire_object_ref) * _cnt_ppConstantBuffers);
+        for (uint64_t _i = 0; _i < _cnt_ppConstantBuffers; _i++)
+            npt_decode_uint64_t(dec, &args->_guest_ids_ppConstantBuffers[_i]);
+    } else {
+        args->ppConstantBuffers = NULL;
+    }
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppConstantBuffers > 0 && _cnt_ppConstantBuffers != (uint64_t)(args->NumBuffers))) {
+        npt_cs_decoder_set_fatal(dec);
+        return;
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -13683,24 +13931,30 @@ static inline void
 npt_decode_ID3D11DeviceContext_DSGetShaderResources_args_temp(struct npt_cs_decoder *dec,
                                                               struct npt_command_ID3D11DeviceContext_DSGetShaderResources *args)
 {
+    uint64_t _cnt_ppShaderResourceViews = 0; int _has_cnt_ppShaderResourceViews = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->StartSlot);
     npt_decode_UINT(dec, &args->NumViews);
-    {
-        const uint64_t _cnt = npt_decode_array_count_unchecked(dec);
-        args->ppShaderResourceViews = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt);
-        args->_guest_ids_ppShaderResourceViews = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt) : NULL;
-        args->_guest_id_count_ppShaderResourceViews = (uint32_t)_cnt;
-        if (_cnt && (!args->ppShaderResourceViews || !args->_guest_ids_ppShaderResourceViews)) return;
-        if (_cnt) memset(args->ppShaderResourceViews, 0, sizeof(void *) * _cnt);
-        args->_refs_ppShaderResourceViews = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
-        if (_cnt && !args->_refs_ppShaderResourceViews) return;
-        if (_cnt) memset(args->_refs_ppShaderResourceViews, 0, sizeof(struct npt_wire_object_ref) * _cnt);
-        for (uint64_t _i = 0; _i < _cnt; _i++) {
-            uint64_t _gid;
-            npt_decode_uint64_t(dec, &_gid);
-            args->_guest_ids_ppShaderResourceViews[_i] = _gid;
-        }
+    _cnt_ppShaderResourceViews = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppShaderResourceViews = _cnt_ppShaderResourceViews != 0;
+    args->_guest_id_count_ppShaderResourceViews = (uint32_t)_cnt_ppShaderResourceViews;
+    if (_cnt_ppShaderResourceViews) {
+        args->ppShaderResourceViews = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppShaderResourceViews);
+        args->_guest_ids_ppShaderResourceViews = npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt_ppShaderResourceViews);
+        if (!args->ppShaderResourceViews || !args->_guest_ids_ppShaderResourceViews) return;
+        memset(args->ppShaderResourceViews, 0, sizeof(void *) * _cnt_ppShaderResourceViews);
+        args->_refs_ppShaderResourceViews = npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt_ppShaderResourceViews);
+        if (!args->_refs_ppShaderResourceViews) return;
+        memset(args->_refs_ppShaderResourceViews, 0, sizeof(struct npt_wire_object_ref) * _cnt_ppShaderResourceViews);
+        for (uint64_t _i = 0; _i < _cnt_ppShaderResourceViews; _i++)
+            npt_decode_uint64_t(dec, &args->_guest_ids_ppShaderResourceViews[_i]);
+    } else {
+        args->ppShaderResourceViews = NULL;
+    }
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppShaderResourceViews > 0 && _cnt_ppShaderResourceViews != (uint64_t)(args->NumViews))) {
+        npt_cs_decoder_set_fatal(dec);
+        return;
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -13848,30 +14102,35 @@ static inline void
 npt_decode_ID3D11DeviceContext_DSGetShader_args_temp(struct npt_cs_decoder *dec,
                                                      struct npt_command_ID3D11DeviceContext_DSGetShader *args)
 {
+    uint64_t _cnt_ppClassInstances = 0; int _has_cnt_ppClassInstances = -1;
     /* Decode input parameters from the wire */
     {
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppDomainShader = _gid;
-        args->ppDomainShader = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppDomainShader) return;
-        *args->ppDomainShader = NULL;
-    }
-    {
-        const uint64_t _cnt = npt_decode_array_count_unchecked(dec);
-        args->ppClassInstances = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt);
-        args->_guest_ids_ppClassInstances = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt) : NULL;
-        args->_guest_id_count_ppClassInstances = (uint32_t)_cnt;
-        if (_cnt && (!args->ppClassInstances || !args->_guest_ids_ppClassInstances)) return;
-        if (_cnt) memset(args->ppClassInstances, 0, sizeof(void *) * _cnt);
-        args->_refs_ppClassInstances = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
-        if (_cnt && !args->_refs_ppClassInstances) return;
-        if (_cnt) memset(args->_refs_ppClassInstances, 0, sizeof(struct npt_wire_object_ref) * _cnt);
-        for (uint64_t _i = 0; _i < _cnt; _i++) {
-            uint64_t _gid;
-            npt_decode_uint64_t(dec, &_gid);
-            args->_guest_ids_ppClassInstances[_i] = _gid;
+        if (_gid) {
+            args->ppDomainShader = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppDomainShader) return;
+            *args->ppDomainShader = NULL;
+        } else {
+            args->ppDomainShader = NULL;
         }
+    }
+    _cnt_ppClassInstances = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppClassInstances = _cnt_ppClassInstances != 0;
+    args->_guest_id_count_ppClassInstances = (uint32_t)_cnt_ppClassInstances;
+    if (_cnt_ppClassInstances) {
+        args->ppClassInstances = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppClassInstances);
+        args->_guest_ids_ppClassInstances = npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt_ppClassInstances);
+        if (!args->ppClassInstances || !args->_guest_ids_ppClassInstances) return;
+        memset(args->ppClassInstances, 0, sizeof(void *) * _cnt_ppClassInstances);
+        args->_refs_ppClassInstances = npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt_ppClassInstances);
+        if (!args->_refs_ppClassInstances) return;
+        memset(args->_refs_ppClassInstances, 0, sizeof(struct npt_wire_object_ref) * _cnt_ppClassInstances);
+        for (uint64_t _i = 0; _i < _cnt_ppClassInstances; _i++)
+            npt_decode_uint64_t(dec, &args->_guest_ids_ppClassInstances[_i]);
+    } else {
+        args->ppClassInstances = NULL;
     }
     if (npt_decode_simple_pointer(dec)) {
         args->pNumClassInstances = npt_cs_decoder_alloc_temp(dec, sizeof(UINT));
@@ -13879,6 +14138,11 @@ npt_decode_ID3D11DeviceContext_DSGetShader_args_temp(struct npt_cs_decoder *dec,
         npt_decode_UINT(dec, (UINT *)args->pNumClassInstances);
     } else {
         args->pNumClassInstances = NULL;
+    }
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppClassInstances > 0 && _cnt_ppClassInstances != (uint64_t)((args->pNumClassInstances ? *args->pNumClassInstances : 0)))) {
+        npt_cs_decoder_set_fatal(dec);
+        return;
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -14027,24 +14291,30 @@ static inline void
 npt_decode_ID3D11DeviceContext_DSGetSamplers_args_temp(struct npt_cs_decoder *dec,
                                                        struct npt_command_ID3D11DeviceContext_DSGetSamplers *args)
 {
+    uint64_t _cnt_ppSamplers = 0; int _has_cnt_ppSamplers = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->StartSlot);
     npt_decode_UINT(dec, &args->NumSamplers);
-    {
-        const uint64_t _cnt = npt_decode_array_count_unchecked(dec);
-        args->ppSamplers = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt);
-        args->_guest_ids_ppSamplers = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt) : NULL;
-        args->_guest_id_count_ppSamplers = (uint32_t)_cnt;
-        if (_cnt && (!args->ppSamplers || !args->_guest_ids_ppSamplers)) return;
-        if (_cnt) memset(args->ppSamplers, 0, sizeof(void *) * _cnt);
-        args->_refs_ppSamplers = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
-        if (_cnt && !args->_refs_ppSamplers) return;
-        if (_cnt) memset(args->_refs_ppSamplers, 0, sizeof(struct npt_wire_object_ref) * _cnt);
-        for (uint64_t _i = 0; _i < _cnt; _i++) {
-            uint64_t _gid;
-            npt_decode_uint64_t(dec, &_gid);
-            args->_guest_ids_ppSamplers[_i] = _gid;
-        }
+    _cnt_ppSamplers = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppSamplers = _cnt_ppSamplers != 0;
+    args->_guest_id_count_ppSamplers = (uint32_t)_cnt_ppSamplers;
+    if (_cnt_ppSamplers) {
+        args->ppSamplers = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppSamplers);
+        args->_guest_ids_ppSamplers = npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt_ppSamplers);
+        if (!args->ppSamplers || !args->_guest_ids_ppSamplers) return;
+        memset(args->ppSamplers, 0, sizeof(void *) * _cnt_ppSamplers);
+        args->_refs_ppSamplers = npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt_ppSamplers);
+        if (!args->_refs_ppSamplers) return;
+        memset(args->_refs_ppSamplers, 0, sizeof(struct npt_wire_object_ref) * _cnt_ppSamplers);
+        for (uint64_t _i = 0; _i < _cnt_ppSamplers; _i++)
+            npt_decode_uint64_t(dec, &args->_guest_ids_ppSamplers[_i]);
+    } else {
+        args->ppSamplers = NULL;
+    }
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppSamplers > 0 && _cnt_ppSamplers != (uint64_t)(args->NumSamplers))) {
+        npt_cs_decoder_set_fatal(dec);
+        return;
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -14186,24 +14456,30 @@ static inline void
 npt_decode_ID3D11DeviceContext_DSGetConstantBuffers_args_temp(struct npt_cs_decoder *dec,
                                                               struct npt_command_ID3D11DeviceContext_DSGetConstantBuffers *args)
 {
+    uint64_t _cnt_ppConstantBuffers = 0; int _has_cnt_ppConstantBuffers = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->StartSlot);
     npt_decode_UINT(dec, &args->NumBuffers);
-    {
-        const uint64_t _cnt = npt_decode_array_count_unchecked(dec);
-        args->ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt);
-        args->_guest_ids_ppConstantBuffers = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt) : NULL;
-        args->_guest_id_count_ppConstantBuffers = (uint32_t)_cnt;
-        if (_cnt && (!args->ppConstantBuffers || !args->_guest_ids_ppConstantBuffers)) return;
-        if (_cnt) memset(args->ppConstantBuffers, 0, sizeof(void *) * _cnt);
-        args->_refs_ppConstantBuffers = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
-        if (_cnt && !args->_refs_ppConstantBuffers) return;
-        if (_cnt) memset(args->_refs_ppConstantBuffers, 0, sizeof(struct npt_wire_object_ref) * _cnt);
-        for (uint64_t _i = 0; _i < _cnt; _i++) {
-            uint64_t _gid;
-            npt_decode_uint64_t(dec, &_gid);
-            args->_guest_ids_ppConstantBuffers[_i] = _gid;
-        }
+    _cnt_ppConstantBuffers = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppConstantBuffers = _cnt_ppConstantBuffers != 0;
+    args->_guest_id_count_ppConstantBuffers = (uint32_t)_cnt_ppConstantBuffers;
+    if (_cnt_ppConstantBuffers) {
+        args->ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppConstantBuffers);
+        args->_guest_ids_ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt_ppConstantBuffers);
+        if (!args->ppConstantBuffers || !args->_guest_ids_ppConstantBuffers) return;
+        memset(args->ppConstantBuffers, 0, sizeof(void *) * _cnt_ppConstantBuffers);
+        args->_refs_ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt_ppConstantBuffers);
+        if (!args->_refs_ppConstantBuffers) return;
+        memset(args->_refs_ppConstantBuffers, 0, sizeof(struct npt_wire_object_ref) * _cnt_ppConstantBuffers);
+        for (uint64_t _i = 0; _i < _cnt_ppConstantBuffers; _i++)
+            npt_decode_uint64_t(dec, &args->_guest_ids_ppConstantBuffers[_i]);
+    } else {
+        args->ppConstantBuffers = NULL;
+    }
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppConstantBuffers > 0 && _cnt_ppConstantBuffers != (uint64_t)(args->NumBuffers))) {
+        npt_cs_decoder_set_fatal(dec);
+        return;
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -14345,24 +14621,30 @@ static inline void
 npt_decode_ID3D11DeviceContext_CSGetShaderResources_args_temp(struct npt_cs_decoder *dec,
                                                               struct npt_command_ID3D11DeviceContext_CSGetShaderResources *args)
 {
+    uint64_t _cnt_ppShaderResourceViews = 0; int _has_cnt_ppShaderResourceViews = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->StartSlot);
     npt_decode_UINT(dec, &args->NumViews);
-    {
-        const uint64_t _cnt = npt_decode_array_count_unchecked(dec);
-        args->ppShaderResourceViews = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt);
-        args->_guest_ids_ppShaderResourceViews = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt) : NULL;
-        args->_guest_id_count_ppShaderResourceViews = (uint32_t)_cnt;
-        if (_cnt && (!args->ppShaderResourceViews || !args->_guest_ids_ppShaderResourceViews)) return;
-        if (_cnt) memset(args->ppShaderResourceViews, 0, sizeof(void *) * _cnt);
-        args->_refs_ppShaderResourceViews = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
-        if (_cnt && !args->_refs_ppShaderResourceViews) return;
-        if (_cnt) memset(args->_refs_ppShaderResourceViews, 0, sizeof(struct npt_wire_object_ref) * _cnt);
-        for (uint64_t _i = 0; _i < _cnt; _i++) {
-            uint64_t _gid;
-            npt_decode_uint64_t(dec, &_gid);
-            args->_guest_ids_ppShaderResourceViews[_i] = _gid;
-        }
+    _cnt_ppShaderResourceViews = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppShaderResourceViews = _cnt_ppShaderResourceViews != 0;
+    args->_guest_id_count_ppShaderResourceViews = (uint32_t)_cnt_ppShaderResourceViews;
+    if (_cnt_ppShaderResourceViews) {
+        args->ppShaderResourceViews = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppShaderResourceViews);
+        args->_guest_ids_ppShaderResourceViews = npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt_ppShaderResourceViews);
+        if (!args->ppShaderResourceViews || !args->_guest_ids_ppShaderResourceViews) return;
+        memset(args->ppShaderResourceViews, 0, sizeof(void *) * _cnt_ppShaderResourceViews);
+        args->_refs_ppShaderResourceViews = npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt_ppShaderResourceViews);
+        if (!args->_refs_ppShaderResourceViews) return;
+        memset(args->_refs_ppShaderResourceViews, 0, sizeof(struct npt_wire_object_ref) * _cnt_ppShaderResourceViews);
+        for (uint64_t _i = 0; _i < _cnt_ppShaderResourceViews; _i++)
+            npt_decode_uint64_t(dec, &args->_guest_ids_ppShaderResourceViews[_i]);
+    } else {
+        args->ppShaderResourceViews = NULL;
+    }
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppShaderResourceViews > 0 && _cnt_ppShaderResourceViews != (uint64_t)(args->NumViews))) {
+        npt_cs_decoder_set_fatal(dec);
+        return;
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -14504,24 +14786,30 @@ static inline void
 npt_decode_ID3D11DeviceContext_CSGetUnorderedAccessViews_args_temp(struct npt_cs_decoder *dec,
                                                                    struct npt_command_ID3D11DeviceContext_CSGetUnorderedAccessViews *args)
 {
+    uint64_t _cnt_ppUnorderedAccessViews = 0; int _has_cnt_ppUnorderedAccessViews = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->StartSlot);
     npt_decode_UINT(dec, &args->NumUAVs);
-    {
-        const uint64_t _cnt = npt_decode_array_count_unchecked(dec);
-        args->ppUnorderedAccessViews = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt);
-        args->_guest_ids_ppUnorderedAccessViews = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt) : NULL;
-        args->_guest_id_count_ppUnorderedAccessViews = (uint32_t)_cnt;
-        if (_cnt && (!args->ppUnorderedAccessViews || !args->_guest_ids_ppUnorderedAccessViews)) return;
-        if (_cnt) memset(args->ppUnorderedAccessViews, 0, sizeof(void *) * _cnt);
-        args->_refs_ppUnorderedAccessViews = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
-        if (_cnt && !args->_refs_ppUnorderedAccessViews) return;
-        if (_cnt) memset(args->_refs_ppUnorderedAccessViews, 0, sizeof(struct npt_wire_object_ref) * _cnt);
-        for (uint64_t _i = 0; _i < _cnt; _i++) {
-            uint64_t _gid;
-            npt_decode_uint64_t(dec, &_gid);
-            args->_guest_ids_ppUnorderedAccessViews[_i] = _gid;
-        }
+    _cnt_ppUnorderedAccessViews = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppUnorderedAccessViews = _cnt_ppUnorderedAccessViews != 0;
+    args->_guest_id_count_ppUnorderedAccessViews = (uint32_t)_cnt_ppUnorderedAccessViews;
+    if (_cnt_ppUnorderedAccessViews) {
+        args->ppUnorderedAccessViews = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppUnorderedAccessViews);
+        args->_guest_ids_ppUnorderedAccessViews = npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt_ppUnorderedAccessViews);
+        if (!args->ppUnorderedAccessViews || !args->_guest_ids_ppUnorderedAccessViews) return;
+        memset(args->ppUnorderedAccessViews, 0, sizeof(void *) * _cnt_ppUnorderedAccessViews);
+        args->_refs_ppUnorderedAccessViews = npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt_ppUnorderedAccessViews);
+        if (!args->_refs_ppUnorderedAccessViews) return;
+        memset(args->_refs_ppUnorderedAccessViews, 0, sizeof(struct npt_wire_object_ref) * _cnt_ppUnorderedAccessViews);
+        for (uint64_t _i = 0; _i < _cnt_ppUnorderedAccessViews; _i++)
+            npt_decode_uint64_t(dec, &args->_guest_ids_ppUnorderedAccessViews[_i]);
+    } else {
+        args->ppUnorderedAccessViews = NULL;
+    }
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppUnorderedAccessViews > 0 && _cnt_ppUnorderedAccessViews != (uint64_t)(args->NumUAVs))) {
+        npt_cs_decoder_set_fatal(dec);
+        return;
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -14669,30 +14957,35 @@ static inline void
 npt_decode_ID3D11DeviceContext_CSGetShader_args_temp(struct npt_cs_decoder *dec,
                                                      struct npt_command_ID3D11DeviceContext_CSGetShader *args)
 {
+    uint64_t _cnt_ppClassInstances = 0; int _has_cnt_ppClassInstances = -1;
     /* Decode input parameters from the wire */
     {
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppComputeShader = _gid;
-        args->ppComputeShader = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppComputeShader) return;
-        *args->ppComputeShader = NULL;
-    }
-    {
-        const uint64_t _cnt = npt_decode_array_count_unchecked(dec);
-        args->ppClassInstances = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt);
-        args->_guest_ids_ppClassInstances = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt) : NULL;
-        args->_guest_id_count_ppClassInstances = (uint32_t)_cnt;
-        if (_cnt && (!args->ppClassInstances || !args->_guest_ids_ppClassInstances)) return;
-        if (_cnt) memset(args->ppClassInstances, 0, sizeof(void *) * _cnt);
-        args->_refs_ppClassInstances = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
-        if (_cnt && !args->_refs_ppClassInstances) return;
-        if (_cnt) memset(args->_refs_ppClassInstances, 0, sizeof(struct npt_wire_object_ref) * _cnt);
-        for (uint64_t _i = 0; _i < _cnt; _i++) {
-            uint64_t _gid;
-            npt_decode_uint64_t(dec, &_gid);
-            args->_guest_ids_ppClassInstances[_i] = _gid;
+        if (_gid) {
+            args->ppComputeShader = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppComputeShader) return;
+            *args->ppComputeShader = NULL;
+        } else {
+            args->ppComputeShader = NULL;
         }
+    }
+    _cnt_ppClassInstances = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppClassInstances = _cnt_ppClassInstances != 0;
+    args->_guest_id_count_ppClassInstances = (uint32_t)_cnt_ppClassInstances;
+    if (_cnt_ppClassInstances) {
+        args->ppClassInstances = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppClassInstances);
+        args->_guest_ids_ppClassInstances = npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt_ppClassInstances);
+        if (!args->ppClassInstances || !args->_guest_ids_ppClassInstances) return;
+        memset(args->ppClassInstances, 0, sizeof(void *) * _cnt_ppClassInstances);
+        args->_refs_ppClassInstances = npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt_ppClassInstances);
+        if (!args->_refs_ppClassInstances) return;
+        memset(args->_refs_ppClassInstances, 0, sizeof(struct npt_wire_object_ref) * _cnt_ppClassInstances);
+        for (uint64_t _i = 0; _i < _cnt_ppClassInstances; _i++)
+            npt_decode_uint64_t(dec, &args->_guest_ids_ppClassInstances[_i]);
+    } else {
+        args->ppClassInstances = NULL;
     }
     if (npt_decode_simple_pointer(dec)) {
         args->pNumClassInstances = npt_cs_decoder_alloc_temp(dec, sizeof(UINT));
@@ -14700,6 +14993,11 @@ npt_decode_ID3D11DeviceContext_CSGetShader_args_temp(struct npt_cs_decoder *dec,
         npt_decode_UINT(dec, (UINT *)args->pNumClassInstances);
     } else {
         args->pNumClassInstances = NULL;
+    }
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppClassInstances > 0 && _cnt_ppClassInstances != (uint64_t)((args->pNumClassInstances ? *args->pNumClassInstances : 0)))) {
+        npt_cs_decoder_set_fatal(dec);
+        return;
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -14848,24 +15146,30 @@ static inline void
 npt_decode_ID3D11DeviceContext_CSGetSamplers_args_temp(struct npt_cs_decoder *dec,
                                                        struct npt_command_ID3D11DeviceContext_CSGetSamplers *args)
 {
+    uint64_t _cnt_ppSamplers = 0; int _has_cnt_ppSamplers = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->StartSlot);
     npt_decode_UINT(dec, &args->NumSamplers);
-    {
-        const uint64_t _cnt = npt_decode_array_count_unchecked(dec);
-        args->ppSamplers = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt);
-        args->_guest_ids_ppSamplers = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt) : NULL;
-        args->_guest_id_count_ppSamplers = (uint32_t)_cnt;
-        if (_cnt && (!args->ppSamplers || !args->_guest_ids_ppSamplers)) return;
-        if (_cnt) memset(args->ppSamplers, 0, sizeof(void *) * _cnt);
-        args->_refs_ppSamplers = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
-        if (_cnt && !args->_refs_ppSamplers) return;
-        if (_cnt) memset(args->_refs_ppSamplers, 0, sizeof(struct npt_wire_object_ref) * _cnt);
-        for (uint64_t _i = 0; _i < _cnt; _i++) {
-            uint64_t _gid;
-            npt_decode_uint64_t(dec, &_gid);
-            args->_guest_ids_ppSamplers[_i] = _gid;
-        }
+    _cnt_ppSamplers = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppSamplers = _cnt_ppSamplers != 0;
+    args->_guest_id_count_ppSamplers = (uint32_t)_cnt_ppSamplers;
+    if (_cnt_ppSamplers) {
+        args->ppSamplers = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppSamplers);
+        args->_guest_ids_ppSamplers = npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt_ppSamplers);
+        if (!args->ppSamplers || !args->_guest_ids_ppSamplers) return;
+        memset(args->ppSamplers, 0, sizeof(void *) * _cnt_ppSamplers);
+        args->_refs_ppSamplers = npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt_ppSamplers);
+        if (!args->_refs_ppSamplers) return;
+        memset(args->_refs_ppSamplers, 0, sizeof(struct npt_wire_object_ref) * _cnt_ppSamplers);
+        for (uint64_t _i = 0; _i < _cnt_ppSamplers; _i++)
+            npt_decode_uint64_t(dec, &args->_guest_ids_ppSamplers[_i]);
+    } else {
+        args->ppSamplers = NULL;
+    }
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppSamplers > 0 && _cnt_ppSamplers != (uint64_t)(args->NumSamplers))) {
+        npt_cs_decoder_set_fatal(dec);
+        return;
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -15007,24 +15311,30 @@ static inline void
 npt_decode_ID3D11DeviceContext_CSGetConstantBuffers_args_temp(struct npt_cs_decoder *dec,
                                                               struct npt_command_ID3D11DeviceContext_CSGetConstantBuffers *args)
 {
+    uint64_t _cnt_ppConstantBuffers = 0; int _has_cnt_ppConstantBuffers = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->StartSlot);
     npt_decode_UINT(dec, &args->NumBuffers);
-    {
-        const uint64_t _cnt = npt_decode_array_count_unchecked(dec);
-        args->ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt);
-        args->_guest_ids_ppConstantBuffers = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt) : NULL;
-        args->_guest_id_count_ppConstantBuffers = (uint32_t)_cnt;
-        if (_cnt && (!args->ppConstantBuffers || !args->_guest_ids_ppConstantBuffers)) return;
-        if (_cnt) memset(args->ppConstantBuffers, 0, sizeof(void *) * _cnt);
-        args->_refs_ppConstantBuffers = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
-        if (_cnt && !args->_refs_ppConstantBuffers) return;
-        if (_cnt) memset(args->_refs_ppConstantBuffers, 0, sizeof(struct npt_wire_object_ref) * _cnt);
-        for (uint64_t _i = 0; _i < _cnt; _i++) {
-            uint64_t _gid;
-            npt_decode_uint64_t(dec, &_gid);
-            args->_guest_ids_ppConstantBuffers[_i] = _gid;
-        }
+    _cnt_ppConstantBuffers = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppConstantBuffers = _cnt_ppConstantBuffers != 0;
+    args->_guest_id_count_ppConstantBuffers = (uint32_t)_cnt_ppConstantBuffers;
+    if (_cnt_ppConstantBuffers) {
+        args->ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppConstantBuffers);
+        args->_guest_ids_ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt_ppConstantBuffers);
+        if (!args->ppConstantBuffers || !args->_guest_ids_ppConstantBuffers) return;
+        memset(args->ppConstantBuffers, 0, sizeof(void *) * _cnt_ppConstantBuffers);
+        args->_refs_ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt_ppConstantBuffers);
+        if (!args->_refs_ppConstantBuffers) return;
+        memset(args->_refs_ppConstantBuffers, 0, sizeof(struct npt_wire_object_ref) * _cnt_ppConstantBuffers);
+        for (uint64_t _i = 0; _i < _cnt_ppConstantBuffers; _i++)
+            npt_decode_uint64_t(dec, &args->_guest_ids_ppConstantBuffers[_i]);
+    } else {
+        args->ppConstantBuffers = NULL;
+    }
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppConstantBuffers > 0 && _cnt_ppConstantBuffers != (uint64_t)(args->NumBuffers))) {
+        npt_cs_decoder_set_fatal(dec);
+        return;
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -15158,6 +15468,7 @@ npt_decode_ID3D11DeviceContext_ClearState_args_temp(struct npt_cs_decoder *dec,
                                                     struct npt_command_ID3D11DeviceContext_ClearState *args)
 {
     /* Decode input parameters from the wire */
+
     /* Allocate temp storage for output-only parameters */
 }
 
@@ -15273,6 +15584,7 @@ npt_decode_ID3D11DeviceContext_Flush_args_temp(struct npt_cs_decoder *dec,
                                                struct npt_command_ID3D11DeviceContext_Flush *args)
 {
     /* Decode input parameters from the wire */
+
     /* Allocate temp storage for output-only parameters */
 }
 
@@ -15389,6 +15701,7 @@ npt_decode_ID3D11DeviceContext_GetType_args_temp(struct npt_cs_decoder *dec,
                                                  struct npt_command_ID3D11DeviceContext_GetType *args)
 {
     /* Decode input parameters from the wire */
+
     /* Allocate temp storage for output-only parameters */
 }
 
@@ -15505,6 +15818,7 @@ npt_decode_ID3D11DeviceContext_GetContextFlags_args_temp(struct npt_cs_decoder *
                                                          struct npt_command_ID3D11DeviceContext_GetContextFlags *args)
 {
     /* Decode input parameters from the wire */
+
     /* Allocate temp storage for output-only parameters */
 }
 
@@ -15634,9 +15948,13 @@ npt_decode_ID3D11DeviceContext_FinishCommandList_args_temp(struct npt_cs_decoder
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppCommandList = _gid;
-        args->ppCommandList = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppCommandList) return;
-        *args->ppCommandList = NULL;
+        if (_gid) {
+            args->ppCommandList = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppCommandList) return;
+            *args->ppCommandList = NULL;
+        } else {
+            args->ppCommandList = NULL;
+        }
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -16314,10 +16632,14 @@ static inline void
 npt_decode_ID3D11DeviceContext1_VSSetConstantBuffers1_args_temp(struct npt_cs_decoder *dec,
                                                                 struct npt_command_ID3D11DeviceContext1_VSSetConstantBuffers1 *args)
 {
+    uint64_t _cnt_ppConstantBuffers = 0; int _has_cnt_ppConstantBuffers = -1;
+    uint64_t _cnt_pFirstConstant = 0; int _has_cnt_pFirstConstant = -1;
+    uint64_t _cnt_pNumConstants = 0; int _has_cnt_pNumConstants = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->StartSlot);
     npt_decode_UINT(dec, &args->NumBuffers);
-    uint64_t _cnt_ppConstantBuffers = npt_decode_array_count_unchecked(dec);
+    _cnt_ppConstantBuffers = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppConstantBuffers = _cnt_ppConstantBuffers != 0;
     if (_cnt_ppConstantBuffers) {
         args->ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppConstantBuffers);
         if (!args->ppConstantBuffers) return;
@@ -16329,32 +16651,34 @@ npt_decode_ID3D11DeviceContext1_VSSetConstantBuffers1_args_temp(struct npt_cs_de
     } else {
         args->ppConstantBuffers = NULL;
     }
-    uint64_t _cnt_pFirstConstant = 0;
+    _has_cnt_pFirstConstant = 0;
     if (npt_decode_counted_pointer_count(dec, &_cnt_pFirstConstant)) {
+        _has_cnt_pFirstConstant = 1;
         args->pFirstConstant = npt_cs_decoder_alloc_temp_array(dec, sizeof(UINT), _cnt_pFirstConstant ? _cnt_pFirstConstant : 1);
         if (!args->pFirstConstant) return;
         npt_decode_UINT_array(dec, (UINT *)args->pFirstConstant, _cnt_pFirstConstant);
     } else {
         args->pFirstConstant = NULL;
     }
-    uint64_t _cnt_pNumConstants = 0;
+    _has_cnt_pNumConstants = 0;
     if (npt_decode_counted_pointer_count(dec, &_cnt_pNumConstants)) {
+        _has_cnt_pNumConstants = 1;
         args->pNumConstants = npt_cs_decoder_alloc_temp_array(dec, sizeof(UINT), _cnt_pNumConstants ? _cnt_pNumConstants : 1);
         if (!args->pNumConstants) return;
         npt_decode_UINT_array(dec, (UINT *)args->pNumConstants, _cnt_pNumConstants);
     } else {
         args->pNumConstants = NULL;
     }
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_ppConstantBuffers && _cnt_ppConstantBuffers < (uint64_t)(args->NumBuffers)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppConstantBuffers > 0 && _cnt_ppConstantBuffers < (uint64_t)(args->NumBuffers))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
-    if (_cnt_pFirstConstant && _cnt_pFirstConstant < (uint64_t)(args->NumBuffers)) {
+    if ((_has_cnt_pFirstConstant > 0 && _cnt_pFirstConstant < (uint64_t)(args->NumBuffers))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
-    if (_cnt_pNumConstants && _cnt_pNumConstants < (uint64_t)(args->NumBuffers)) {
+    if ((_has_cnt_pNumConstants > 0 && _cnt_pNumConstants < (uint64_t)(args->NumBuffers))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -16487,10 +16811,14 @@ static inline void
 npt_decode_ID3D11DeviceContext1_HSSetConstantBuffers1_args_temp(struct npt_cs_decoder *dec,
                                                                 struct npt_command_ID3D11DeviceContext1_HSSetConstantBuffers1 *args)
 {
+    uint64_t _cnt_ppConstantBuffers = 0; int _has_cnt_ppConstantBuffers = -1;
+    uint64_t _cnt_pFirstConstant = 0; int _has_cnt_pFirstConstant = -1;
+    uint64_t _cnt_pNumConstants = 0; int _has_cnt_pNumConstants = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->StartSlot);
     npt_decode_UINT(dec, &args->NumBuffers);
-    uint64_t _cnt_ppConstantBuffers = npt_decode_array_count_unchecked(dec);
+    _cnt_ppConstantBuffers = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppConstantBuffers = _cnt_ppConstantBuffers != 0;
     if (_cnt_ppConstantBuffers) {
         args->ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppConstantBuffers);
         if (!args->ppConstantBuffers) return;
@@ -16502,32 +16830,34 @@ npt_decode_ID3D11DeviceContext1_HSSetConstantBuffers1_args_temp(struct npt_cs_de
     } else {
         args->ppConstantBuffers = NULL;
     }
-    uint64_t _cnt_pFirstConstant = 0;
+    _has_cnt_pFirstConstant = 0;
     if (npt_decode_counted_pointer_count(dec, &_cnt_pFirstConstant)) {
+        _has_cnt_pFirstConstant = 1;
         args->pFirstConstant = npt_cs_decoder_alloc_temp_array(dec, sizeof(UINT), _cnt_pFirstConstant ? _cnt_pFirstConstant : 1);
         if (!args->pFirstConstant) return;
         npt_decode_UINT_array(dec, (UINT *)args->pFirstConstant, _cnt_pFirstConstant);
     } else {
         args->pFirstConstant = NULL;
     }
-    uint64_t _cnt_pNumConstants = 0;
+    _has_cnt_pNumConstants = 0;
     if (npt_decode_counted_pointer_count(dec, &_cnt_pNumConstants)) {
+        _has_cnt_pNumConstants = 1;
         args->pNumConstants = npt_cs_decoder_alloc_temp_array(dec, sizeof(UINT), _cnt_pNumConstants ? _cnt_pNumConstants : 1);
         if (!args->pNumConstants) return;
         npt_decode_UINT_array(dec, (UINT *)args->pNumConstants, _cnt_pNumConstants);
     } else {
         args->pNumConstants = NULL;
     }
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_ppConstantBuffers && _cnt_ppConstantBuffers < (uint64_t)(args->NumBuffers)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppConstantBuffers > 0 && _cnt_ppConstantBuffers < (uint64_t)(args->NumBuffers))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
-    if (_cnt_pFirstConstant && _cnt_pFirstConstant < (uint64_t)(args->NumBuffers)) {
+    if ((_has_cnt_pFirstConstant > 0 && _cnt_pFirstConstant < (uint64_t)(args->NumBuffers))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
-    if (_cnt_pNumConstants && _cnt_pNumConstants < (uint64_t)(args->NumBuffers)) {
+    if ((_has_cnt_pNumConstants > 0 && _cnt_pNumConstants < (uint64_t)(args->NumBuffers))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -16660,10 +16990,14 @@ static inline void
 npt_decode_ID3D11DeviceContext1_DSSetConstantBuffers1_args_temp(struct npt_cs_decoder *dec,
                                                                 struct npt_command_ID3D11DeviceContext1_DSSetConstantBuffers1 *args)
 {
+    uint64_t _cnt_ppConstantBuffers = 0; int _has_cnt_ppConstantBuffers = -1;
+    uint64_t _cnt_pFirstConstant = 0; int _has_cnt_pFirstConstant = -1;
+    uint64_t _cnt_pNumConstants = 0; int _has_cnt_pNumConstants = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->StartSlot);
     npt_decode_UINT(dec, &args->NumBuffers);
-    uint64_t _cnt_ppConstantBuffers = npt_decode_array_count_unchecked(dec);
+    _cnt_ppConstantBuffers = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppConstantBuffers = _cnt_ppConstantBuffers != 0;
     if (_cnt_ppConstantBuffers) {
         args->ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppConstantBuffers);
         if (!args->ppConstantBuffers) return;
@@ -16675,32 +17009,34 @@ npt_decode_ID3D11DeviceContext1_DSSetConstantBuffers1_args_temp(struct npt_cs_de
     } else {
         args->ppConstantBuffers = NULL;
     }
-    uint64_t _cnt_pFirstConstant = 0;
+    _has_cnt_pFirstConstant = 0;
     if (npt_decode_counted_pointer_count(dec, &_cnt_pFirstConstant)) {
+        _has_cnt_pFirstConstant = 1;
         args->pFirstConstant = npt_cs_decoder_alloc_temp_array(dec, sizeof(UINT), _cnt_pFirstConstant ? _cnt_pFirstConstant : 1);
         if (!args->pFirstConstant) return;
         npt_decode_UINT_array(dec, (UINT *)args->pFirstConstant, _cnt_pFirstConstant);
     } else {
         args->pFirstConstant = NULL;
     }
-    uint64_t _cnt_pNumConstants = 0;
+    _has_cnt_pNumConstants = 0;
     if (npt_decode_counted_pointer_count(dec, &_cnt_pNumConstants)) {
+        _has_cnt_pNumConstants = 1;
         args->pNumConstants = npt_cs_decoder_alloc_temp_array(dec, sizeof(UINT), _cnt_pNumConstants ? _cnt_pNumConstants : 1);
         if (!args->pNumConstants) return;
         npt_decode_UINT_array(dec, (UINT *)args->pNumConstants, _cnt_pNumConstants);
     } else {
         args->pNumConstants = NULL;
     }
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_ppConstantBuffers && _cnt_ppConstantBuffers < (uint64_t)(args->NumBuffers)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppConstantBuffers > 0 && _cnt_ppConstantBuffers < (uint64_t)(args->NumBuffers))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
-    if (_cnt_pFirstConstant && _cnt_pFirstConstant < (uint64_t)(args->NumBuffers)) {
+    if ((_has_cnt_pFirstConstant > 0 && _cnt_pFirstConstant < (uint64_t)(args->NumBuffers))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
-    if (_cnt_pNumConstants && _cnt_pNumConstants < (uint64_t)(args->NumBuffers)) {
+    if ((_has_cnt_pNumConstants > 0 && _cnt_pNumConstants < (uint64_t)(args->NumBuffers))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -16833,10 +17169,14 @@ static inline void
 npt_decode_ID3D11DeviceContext1_GSSetConstantBuffers1_args_temp(struct npt_cs_decoder *dec,
                                                                 struct npt_command_ID3D11DeviceContext1_GSSetConstantBuffers1 *args)
 {
+    uint64_t _cnt_ppConstantBuffers = 0; int _has_cnt_ppConstantBuffers = -1;
+    uint64_t _cnt_pFirstConstant = 0; int _has_cnt_pFirstConstant = -1;
+    uint64_t _cnt_pNumConstants = 0; int _has_cnt_pNumConstants = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->StartSlot);
     npt_decode_UINT(dec, &args->NumBuffers);
-    uint64_t _cnt_ppConstantBuffers = npt_decode_array_count_unchecked(dec);
+    _cnt_ppConstantBuffers = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppConstantBuffers = _cnt_ppConstantBuffers != 0;
     if (_cnt_ppConstantBuffers) {
         args->ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppConstantBuffers);
         if (!args->ppConstantBuffers) return;
@@ -16848,32 +17188,34 @@ npt_decode_ID3D11DeviceContext1_GSSetConstantBuffers1_args_temp(struct npt_cs_de
     } else {
         args->ppConstantBuffers = NULL;
     }
-    uint64_t _cnt_pFirstConstant = 0;
+    _has_cnt_pFirstConstant = 0;
     if (npt_decode_counted_pointer_count(dec, &_cnt_pFirstConstant)) {
+        _has_cnt_pFirstConstant = 1;
         args->pFirstConstant = npt_cs_decoder_alloc_temp_array(dec, sizeof(UINT), _cnt_pFirstConstant ? _cnt_pFirstConstant : 1);
         if (!args->pFirstConstant) return;
         npt_decode_UINT_array(dec, (UINT *)args->pFirstConstant, _cnt_pFirstConstant);
     } else {
         args->pFirstConstant = NULL;
     }
-    uint64_t _cnt_pNumConstants = 0;
+    _has_cnt_pNumConstants = 0;
     if (npt_decode_counted_pointer_count(dec, &_cnt_pNumConstants)) {
+        _has_cnt_pNumConstants = 1;
         args->pNumConstants = npt_cs_decoder_alloc_temp_array(dec, sizeof(UINT), _cnt_pNumConstants ? _cnt_pNumConstants : 1);
         if (!args->pNumConstants) return;
         npt_decode_UINT_array(dec, (UINT *)args->pNumConstants, _cnt_pNumConstants);
     } else {
         args->pNumConstants = NULL;
     }
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_ppConstantBuffers && _cnt_ppConstantBuffers < (uint64_t)(args->NumBuffers)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppConstantBuffers > 0 && _cnt_ppConstantBuffers < (uint64_t)(args->NumBuffers))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
-    if (_cnt_pFirstConstant && _cnt_pFirstConstant < (uint64_t)(args->NumBuffers)) {
+    if ((_has_cnt_pFirstConstant > 0 && _cnt_pFirstConstant < (uint64_t)(args->NumBuffers))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
-    if (_cnt_pNumConstants && _cnt_pNumConstants < (uint64_t)(args->NumBuffers)) {
+    if ((_has_cnt_pNumConstants > 0 && _cnt_pNumConstants < (uint64_t)(args->NumBuffers))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -17006,10 +17348,14 @@ static inline void
 npt_decode_ID3D11DeviceContext1_PSSetConstantBuffers1_args_temp(struct npt_cs_decoder *dec,
                                                                 struct npt_command_ID3D11DeviceContext1_PSSetConstantBuffers1 *args)
 {
+    uint64_t _cnt_ppConstantBuffers = 0; int _has_cnt_ppConstantBuffers = -1;
+    uint64_t _cnt_pFirstConstant = 0; int _has_cnt_pFirstConstant = -1;
+    uint64_t _cnt_pNumConstants = 0; int _has_cnt_pNumConstants = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->StartSlot);
     npt_decode_UINT(dec, &args->NumBuffers);
-    uint64_t _cnt_ppConstantBuffers = npt_decode_array_count_unchecked(dec);
+    _cnt_ppConstantBuffers = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppConstantBuffers = _cnt_ppConstantBuffers != 0;
     if (_cnt_ppConstantBuffers) {
         args->ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppConstantBuffers);
         if (!args->ppConstantBuffers) return;
@@ -17021,32 +17367,34 @@ npt_decode_ID3D11DeviceContext1_PSSetConstantBuffers1_args_temp(struct npt_cs_de
     } else {
         args->ppConstantBuffers = NULL;
     }
-    uint64_t _cnt_pFirstConstant = 0;
+    _has_cnt_pFirstConstant = 0;
     if (npt_decode_counted_pointer_count(dec, &_cnt_pFirstConstant)) {
+        _has_cnt_pFirstConstant = 1;
         args->pFirstConstant = npt_cs_decoder_alloc_temp_array(dec, sizeof(UINT), _cnt_pFirstConstant ? _cnt_pFirstConstant : 1);
         if (!args->pFirstConstant) return;
         npt_decode_UINT_array(dec, (UINT *)args->pFirstConstant, _cnt_pFirstConstant);
     } else {
         args->pFirstConstant = NULL;
     }
-    uint64_t _cnt_pNumConstants = 0;
+    _has_cnt_pNumConstants = 0;
     if (npt_decode_counted_pointer_count(dec, &_cnt_pNumConstants)) {
+        _has_cnt_pNumConstants = 1;
         args->pNumConstants = npt_cs_decoder_alloc_temp_array(dec, sizeof(UINT), _cnt_pNumConstants ? _cnt_pNumConstants : 1);
         if (!args->pNumConstants) return;
         npt_decode_UINT_array(dec, (UINT *)args->pNumConstants, _cnt_pNumConstants);
     } else {
         args->pNumConstants = NULL;
     }
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_ppConstantBuffers && _cnt_ppConstantBuffers < (uint64_t)(args->NumBuffers)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppConstantBuffers > 0 && _cnt_ppConstantBuffers < (uint64_t)(args->NumBuffers))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
-    if (_cnt_pFirstConstant && _cnt_pFirstConstant < (uint64_t)(args->NumBuffers)) {
+    if ((_has_cnt_pFirstConstant > 0 && _cnt_pFirstConstant < (uint64_t)(args->NumBuffers))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
-    if (_cnt_pNumConstants && _cnt_pNumConstants < (uint64_t)(args->NumBuffers)) {
+    if ((_has_cnt_pNumConstants > 0 && _cnt_pNumConstants < (uint64_t)(args->NumBuffers))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -17179,10 +17527,14 @@ static inline void
 npt_decode_ID3D11DeviceContext1_CSSetConstantBuffers1_args_temp(struct npt_cs_decoder *dec,
                                                                 struct npt_command_ID3D11DeviceContext1_CSSetConstantBuffers1 *args)
 {
+    uint64_t _cnt_ppConstantBuffers = 0; int _has_cnt_ppConstantBuffers = -1;
+    uint64_t _cnt_pFirstConstant = 0; int _has_cnt_pFirstConstant = -1;
+    uint64_t _cnt_pNumConstants = 0; int _has_cnt_pNumConstants = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->StartSlot);
     npt_decode_UINT(dec, &args->NumBuffers);
-    uint64_t _cnt_ppConstantBuffers = npt_decode_array_count_unchecked(dec);
+    _cnt_ppConstantBuffers = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppConstantBuffers = _cnt_ppConstantBuffers != 0;
     if (_cnt_ppConstantBuffers) {
         args->ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppConstantBuffers);
         if (!args->ppConstantBuffers) return;
@@ -17194,32 +17546,34 @@ npt_decode_ID3D11DeviceContext1_CSSetConstantBuffers1_args_temp(struct npt_cs_de
     } else {
         args->ppConstantBuffers = NULL;
     }
-    uint64_t _cnt_pFirstConstant = 0;
+    _has_cnt_pFirstConstant = 0;
     if (npt_decode_counted_pointer_count(dec, &_cnt_pFirstConstant)) {
+        _has_cnt_pFirstConstant = 1;
         args->pFirstConstant = npt_cs_decoder_alloc_temp_array(dec, sizeof(UINT), _cnt_pFirstConstant ? _cnt_pFirstConstant : 1);
         if (!args->pFirstConstant) return;
         npt_decode_UINT_array(dec, (UINT *)args->pFirstConstant, _cnt_pFirstConstant);
     } else {
         args->pFirstConstant = NULL;
     }
-    uint64_t _cnt_pNumConstants = 0;
+    _has_cnt_pNumConstants = 0;
     if (npt_decode_counted_pointer_count(dec, &_cnt_pNumConstants)) {
+        _has_cnt_pNumConstants = 1;
         args->pNumConstants = npt_cs_decoder_alloc_temp_array(dec, sizeof(UINT), _cnt_pNumConstants ? _cnt_pNumConstants : 1);
         if (!args->pNumConstants) return;
         npt_decode_UINT_array(dec, (UINT *)args->pNumConstants, _cnt_pNumConstants);
     } else {
         args->pNumConstants = NULL;
     }
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_ppConstantBuffers && _cnt_ppConstantBuffers < (uint64_t)(args->NumBuffers)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppConstantBuffers > 0 && _cnt_ppConstantBuffers < (uint64_t)(args->NumBuffers))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
-    if (_cnt_pFirstConstant && _cnt_pFirstConstant < (uint64_t)(args->NumBuffers)) {
+    if ((_has_cnt_pFirstConstant > 0 && _cnt_pFirstConstant < (uint64_t)(args->NumBuffers))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
-    if (_cnt_pNumConstants && _cnt_pNumConstants < (uint64_t)(args->NumBuffers)) {
+    if ((_has_cnt_pNumConstants > 0 && _cnt_pNumConstants < (uint64_t)(args->NumBuffers))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -17358,27 +17712,33 @@ static inline void
 npt_decode_ID3D11DeviceContext1_VSGetConstantBuffers1_args_temp(struct npt_cs_decoder *dec,
                                                                 struct npt_command_ID3D11DeviceContext1_VSGetConstantBuffers1 *args)
 {
+    uint64_t _cnt_ppConstantBuffers = 0; int _has_cnt_ppConstantBuffers = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->StartSlot);
     npt_decode_UINT(dec, &args->NumBuffers);
-    {
-        const uint64_t _cnt = npt_decode_array_count_unchecked(dec);
-        args->ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt);
-        args->_guest_ids_ppConstantBuffers = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt) : NULL;
-        args->_guest_id_count_ppConstantBuffers = (uint32_t)_cnt;
-        if (_cnt && (!args->ppConstantBuffers || !args->_guest_ids_ppConstantBuffers)) return;
-        if (_cnt) memset(args->ppConstantBuffers, 0, sizeof(void *) * _cnt);
-        args->_refs_ppConstantBuffers = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
-        if (_cnt && !args->_refs_ppConstantBuffers) return;
-        if (_cnt) memset(args->_refs_ppConstantBuffers, 0, sizeof(struct npt_wire_object_ref) * _cnt);
-        for (uint64_t _i = 0; _i < _cnt; _i++) {
-            uint64_t _gid;
-            npt_decode_uint64_t(dec, &_gid);
-            args->_guest_ids_ppConstantBuffers[_i] = _gid;
-        }
+    _cnt_ppConstantBuffers = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppConstantBuffers = _cnt_ppConstantBuffers != 0;
+    args->_guest_id_count_ppConstantBuffers = (uint32_t)_cnt_ppConstantBuffers;
+    if (_cnt_ppConstantBuffers) {
+        args->ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppConstantBuffers);
+        args->_guest_ids_ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt_ppConstantBuffers);
+        if (!args->ppConstantBuffers || !args->_guest_ids_ppConstantBuffers) return;
+        memset(args->ppConstantBuffers, 0, sizeof(void *) * _cnt_ppConstantBuffers);
+        args->_refs_ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt_ppConstantBuffers);
+        if (!args->_refs_ppConstantBuffers) return;
+        memset(args->_refs_ppConstantBuffers, 0, sizeof(struct npt_wire_object_ref) * _cnt_ppConstantBuffers);
+        for (uint64_t _i = 0; _i < _cnt_ppConstantBuffers; _i++)
+            npt_decode_uint64_t(dec, &args->_guest_ids_ppConstantBuffers[_i]);
+    } else {
+        args->ppConstantBuffers = NULL;
     }
 
 
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppConstantBuffers > 0 && _cnt_ppConstantBuffers != (uint64_t)(args->NumBuffers))) {
+        npt_cs_decoder_set_fatal(dec);
+        return;
+    }
     /* Allocate temp storage for output-only parameters */
 
 
@@ -17547,27 +17907,33 @@ static inline void
 npt_decode_ID3D11DeviceContext1_HSGetConstantBuffers1_args_temp(struct npt_cs_decoder *dec,
                                                                 struct npt_command_ID3D11DeviceContext1_HSGetConstantBuffers1 *args)
 {
+    uint64_t _cnt_ppConstantBuffers = 0; int _has_cnt_ppConstantBuffers = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->StartSlot);
     npt_decode_UINT(dec, &args->NumBuffers);
-    {
-        const uint64_t _cnt = npt_decode_array_count_unchecked(dec);
-        args->ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt);
-        args->_guest_ids_ppConstantBuffers = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt) : NULL;
-        args->_guest_id_count_ppConstantBuffers = (uint32_t)_cnt;
-        if (_cnt && (!args->ppConstantBuffers || !args->_guest_ids_ppConstantBuffers)) return;
-        if (_cnt) memset(args->ppConstantBuffers, 0, sizeof(void *) * _cnt);
-        args->_refs_ppConstantBuffers = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
-        if (_cnt && !args->_refs_ppConstantBuffers) return;
-        if (_cnt) memset(args->_refs_ppConstantBuffers, 0, sizeof(struct npt_wire_object_ref) * _cnt);
-        for (uint64_t _i = 0; _i < _cnt; _i++) {
-            uint64_t _gid;
-            npt_decode_uint64_t(dec, &_gid);
-            args->_guest_ids_ppConstantBuffers[_i] = _gid;
-        }
+    _cnt_ppConstantBuffers = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppConstantBuffers = _cnt_ppConstantBuffers != 0;
+    args->_guest_id_count_ppConstantBuffers = (uint32_t)_cnt_ppConstantBuffers;
+    if (_cnt_ppConstantBuffers) {
+        args->ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppConstantBuffers);
+        args->_guest_ids_ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt_ppConstantBuffers);
+        if (!args->ppConstantBuffers || !args->_guest_ids_ppConstantBuffers) return;
+        memset(args->ppConstantBuffers, 0, sizeof(void *) * _cnt_ppConstantBuffers);
+        args->_refs_ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt_ppConstantBuffers);
+        if (!args->_refs_ppConstantBuffers) return;
+        memset(args->_refs_ppConstantBuffers, 0, sizeof(struct npt_wire_object_ref) * _cnt_ppConstantBuffers);
+        for (uint64_t _i = 0; _i < _cnt_ppConstantBuffers; _i++)
+            npt_decode_uint64_t(dec, &args->_guest_ids_ppConstantBuffers[_i]);
+    } else {
+        args->ppConstantBuffers = NULL;
     }
 
 
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppConstantBuffers > 0 && _cnt_ppConstantBuffers != (uint64_t)(args->NumBuffers))) {
+        npt_cs_decoder_set_fatal(dec);
+        return;
+    }
     /* Allocate temp storage for output-only parameters */
 
 
@@ -17736,27 +18102,33 @@ static inline void
 npt_decode_ID3D11DeviceContext1_DSGetConstantBuffers1_args_temp(struct npt_cs_decoder *dec,
                                                                 struct npt_command_ID3D11DeviceContext1_DSGetConstantBuffers1 *args)
 {
+    uint64_t _cnt_ppConstantBuffers = 0; int _has_cnt_ppConstantBuffers = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->StartSlot);
     npt_decode_UINT(dec, &args->NumBuffers);
-    {
-        const uint64_t _cnt = npt_decode_array_count_unchecked(dec);
-        args->ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt);
-        args->_guest_ids_ppConstantBuffers = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt) : NULL;
-        args->_guest_id_count_ppConstantBuffers = (uint32_t)_cnt;
-        if (_cnt && (!args->ppConstantBuffers || !args->_guest_ids_ppConstantBuffers)) return;
-        if (_cnt) memset(args->ppConstantBuffers, 0, sizeof(void *) * _cnt);
-        args->_refs_ppConstantBuffers = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
-        if (_cnt && !args->_refs_ppConstantBuffers) return;
-        if (_cnt) memset(args->_refs_ppConstantBuffers, 0, sizeof(struct npt_wire_object_ref) * _cnt);
-        for (uint64_t _i = 0; _i < _cnt; _i++) {
-            uint64_t _gid;
-            npt_decode_uint64_t(dec, &_gid);
-            args->_guest_ids_ppConstantBuffers[_i] = _gid;
-        }
+    _cnt_ppConstantBuffers = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppConstantBuffers = _cnt_ppConstantBuffers != 0;
+    args->_guest_id_count_ppConstantBuffers = (uint32_t)_cnt_ppConstantBuffers;
+    if (_cnt_ppConstantBuffers) {
+        args->ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppConstantBuffers);
+        args->_guest_ids_ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt_ppConstantBuffers);
+        if (!args->ppConstantBuffers || !args->_guest_ids_ppConstantBuffers) return;
+        memset(args->ppConstantBuffers, 0, sizeof(void *) * _cnt_ppConstantBuffers);
+        args->_refs_ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt_ppConstantBuffers);
+        if (!args->_refs_ppConstantBuffers) return;
+        memset(args->_refs_ppConstantBuffers, 0, sizeof(struct npt_wire_object_ref) * _cnt_ppConstantBuffers);
+        for (uint64_t _i = 0; _i < _cnt_ppConstantBuffers; _i++)
+            npt_decode_uint64_t(dec, &args->_guest_ids_ppConstantBuffers[_i]);
+    } else {
+        args->ppConstantBuffers = NULL;
     }
 
 
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppConstantBuffers > 0 && _cnt_ppConstantBuffers != (uint64_t)(args->NumBuffers))) {
+        npt_cs_decoder_set_fatal(dec);
+        return;
+    }
     /* Allocate temp storage for output-only parameters */
 
 
@@ -17925,27 +18297,33 @@ static inline void
 npt_decode_ID3D11DeviceContext1_GSGetConstantBuffers1_args_temp(struct npt_cs_decoder *dec,
                                                                 struct npt_command_ID3D11DeviceContext1_GSGetConstantBuffers1 *args)
 {
+    uint64_t _cnt_ppConstantBuffers = 0; int _has_cnt_ppConstantBuffers = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->StartSlot);
     npt_decode_UINT(dec, &args->NumBuffers);
-    {
-        const uint64_t _cnt = npt_decode_array_count_unchecked(dec);
-        args->ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt);
-        args->_guest_ids_ppConstantBuffers = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt) : NULL;
-        args->_guest_id_count_ppConstantBuffers = (uint32_t)_cnt;
-        if (_cnt && (!args->ppConstantBuffers || !args->_guest_ids_ppConstantBuffers)) return;
-        if (_cnt) memset(args->ppConstantBuffers, 0, sizeof(void *) * _cnt);
-        args->_refs_ppConstantBuffers = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
-        if (_cnt && !args->_refs_ppConstantBuffers) return;
-        if (_cnt) memset(args->_refs_ppConstantBuffers, 0, sizeof(struct npt_wire_object_ref) * _cnt);
-        for (uint64_t _i = 0; _i < _cnt; _i++) {
-            uint64_t _gid;
-            npt_decode_uint64_t(dec, &_gid);
-            args->_guest_ids_ppConstantBuffers[_i] = _gid;
-        }
+    _cnt_ppConstantBuffers = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppConstantBuffers = _cnt_ppConstantBuffers != 0;
+    args->_guest_id_count_ppConstantBuffers = (uint32_t)_cnt_ppConstantBuffers;
+    if (_cnt_ppConstantBuffers) {
+        args->ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppConstantBuffers);
+        args->_guest_ids_ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt_ppConstantBuffers);
+        if (!args->ppConstantBuffers || !args->_guest_ids_ppConstantBuffers) return;
+        memset(args->ppConstantBuffers, 0, sizeof(void *) * _cnt_ppConstantBuffers);
+        args->_refs_ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt_ppConstantBuffers);
+        if (!args->_refs_ppConstantBuffers) return;
+        memset(args->_refs_ppConstantBuffers, 0, sizeof(struct npt_wire_object_ref) * _cnt_ppConstantBuffers);
+        for (uint64_t _i = 0; _i < _cnt_ppConstantBuffers; _i++)
+            npt_decode_uint64_t(dec, &args->_guest_ids_ppConstantBuffers[_i]);
+    } else {
+        args->ppConstantBuffers = NULL;
     }
 
 
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppConstantBuffers > 0 && _cnt_ppConstantBuffers != (uint64_t)(args->NumBuffers))) {
+        npt_cs_decoder_set_fatal(dec);
+        return;
+    }
     /* Allocate temp storage for output-only parameters */
 
 
@@ -18114,27 +18492,33 @@ static inline void
 npt_decode_ID3D11DeviceContext1_PSGetConstantBuffers1_args_temp(struct npt_cs_decoder *dec,
                                                                 struct npt_command_ID3D11DeviceContext1_PSGetConstantBuffers1 *args)
 {
+    uint64_t _cnt_ppConstantBuffers = 0; int _has_cnt_ppConstantBuffers = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->StartSlot);
     npt_decode_UINT(dec, &args->NumBuffers);
-    {
-        const uint64_t _cnt = npt_decode_array_count_unchecked(dec);
-        args->ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt);
-        args->_guest_ids_ppConstantBuffers = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt) : NULL;
-        args->_guest_id_count_ppConstantBuffers = (uint32_t)_cnt;
-        if (_cnt && (!args->ppConstantBuffers || !args->_guest_ids_ppConstantBuffers)) return;
-        if (_cnt) memset(args->ppConstantBuffers, 0, sizeof(void *) * _cnt);
-        args->_refs_ppConstantBuffers = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
-        if (_cnt && !args->_refs_ppConstantBuffers) return;
-        if (_cnt) memset(args->_refs_ppConstantBuffers, 0, sizeof(struct npt_wire_object_ref) * _cnt);
-        for (uint64_t _i = 0; _i < _cnt; _i++) {
-            uint64_t _gid;
-            npt_decode_uint64_t(dec, &_gid);
-            args->_guest_ids_ppConstantBuffers[_i] = _gid;
-        }
+    _cnt_ppConstantBuffers = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppConstantBuffers = _cnt_ppConstantBuffers != 0;
+    args->_guest_id_count_ppConstantBuffers = (uint32_t)_cnt_ppConstantBuffers;
+    if (_cnt_ppConstantBuffers) {
+        args->ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppConstantBuffers);
+        args->_guest_ids_ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt_ppConstantBuffers);
+        if (!args->ppConstantBuffers || !args->_guest_ids_ppConstantBuffers) return;
+        memset(args->ppConstantBuffers, 0, sizeof(void *) * _cnt_ppConstantBuffers);
+        args->_refs_ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt_ppConstantBuffers);
+        if (!args->_refs_ppConstantBuffers) return;
+        memset(args->_refs_ppConstantBuffers, 0, sizeof(struct npt_wire_object_ref) * _cnt_ppConstantBuffers);
+        for (uint64_t _i = 0; _i < _cnt_ppConstantBuffers; _i++)
+            npt_decode_uint64_t(dec, &args->_guest_ids_ppConstantBuffers[_i]);
+    } else {
+        args->ppConstantBuffers = NULL;
     }
 
 
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppConstantBuffers > 0 && _cnt_ppConstantBuffers != (uint64_t)(args->NumBuffers))) {
+        npt_cs_decoder_set_fatal(dec);
+        return;
+    }
     /* Allocate temp storage for output-only parameters */
 
 
@@ -18303,27 +18687,33 @@ static inline void
 npt_decode_ID3D11DeviceContext1_CSGetConstantBuffers1_args_temp(struct npt_cs_decoder *dec,
                                                                 struct npt_command_ID3D11DeviceContext1_CSGetConstantBuffers1 *args)
 {
+    uint64_t _cnt_ppConstantBuffers = 0; int _has_cnt_ppConstantBuffers = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->StartSlot);
     npt_decode_UINT(dec, &args->NumBuffers);
-    {
-        const uint64_t _cnt = npt_decode_array_count_unchecked(dec);
-        args->ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt);
-        args->_guest_ids_ppConstantBuffers = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt) : NULL;
-        args->_guest_id_count_ppConstantBuffers = (uint32_t)_cnt;
-        if (_cnt && (!args->ppConstantBuffers || !args->_guest_ids_ppConstantBuffers)) return;
-        if (_cnt) memset(args->ppConstantBuffers, 0, sizeof(void *) * _cnt);
-        args->_refs_ppConstantBuffers = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt) : NULL;
-        if (_cnt && !args->_refs_ppConstantBuffers) return;
-        if (_cnt) memset(args->_refs_ppConstantBuffers, 0, sizeof(struct npt_wire_object_ref) * _cnt);
-        for (uint64_t _i = 0; _i < _cnt; _i++) {
-            uint64_t _gid;
-            npt_decode_uint64_t(dec, &_gid);
-            args->_guest_ids_ppConstantBuffers[_i] = _gid;
-        }
+    _cnt_ppConstantBuffers = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppConstantBuffers = _cnt_ppConstantBuffers != 0;
+    args->_guest_id_count_ppConstantBuffers = (uint32_t)_cnt_ppConstantBuffers;
+    if (_cnt_ppConstantBuffers) {
+        args->ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppConstantBuffers);
+        args->_guest_ids_ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt_ppConstantBuffers);
+        if (!args->ppConstantBuffers || !args->_guest_ids_ppConstantBuffers) return;
+        memset(args->ppConstantBuffers, 0, sizeof(void *) * _cnt_ppConstantBuffers);
+        args->_refs_ppConstantBuffers = npt_cs_decoder_alloc_temp_array(dec, sizeof(struct npt_wire_object_ref), _cnt_ppConstantBuffers);
+        if (!args->_refs_ppConstantBuffers) return;
+        memset(args->_refs_ppConstantBuffers, 0, sizeof(struct npt_wire_object_ref) * _cnt_ppConstantBuffers);
+        for (uint64_t _i = 0; _i < _cnt_ppConstantBuffers; _i++)
+            npt_decode_uint64_t(dec, &args->_guest_ids_ppConstantBuffers[_i]);
+    } else {
+        args->ppConstantBuffers = NULL;
     }
 
 
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppConstantBuffers > 0 && _cnt_ppConstantBuffers != (uint64_t)(args->NumBuffers))) {
+        npt_cs_decoder_set_fatal(dec);
+        return;
+    }
     /* Allocate temp storage for output-only parameters */
 
 
@@ -18499,9 +18889,13 @@ npt_decode_ID3D11DeviceContext1_SwapDeviceContextState_args_temp(struct npt_cs_d
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppPreviousState = _gid;
-        args->ppPreviousState = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppPreviousState) return;
-        *args->ppPreviousState = NULL;
+        if (_gid) {
+            args->ppPreviousState = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppPreviousState) return;
+            *args->ppPreviousState = NULL;
+        } else {
+            args->ppPreviousState = NULL;
+        }
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -18627,6 +19021,7 @@ static inline void
 npt_decode_ID3D11DeviceContext1_ClearView_args_temp(struct npt_cs_decoder *dec,
                                                     struct npt_command_ID3D11DeviceContext1_ClearView *args)
 {
+    uint64_t _cnt_pRect = 0; int _has_cnt_pRect = -1;
     /* Decode input parameters from the wire */
     {
         npt_object_id _id;
@@ -18637,8 +19032,9 @@ npt_decode_ID3D11DeviceContext1_ClearView_args_temp(struct npt_cs_decoder *dec,
     args->Color = npt_cs_decoder_alloc_temp_array(dec, sizeof(FLOAT), (4));
     if (!args->Color) return;
     npt_decode_FLOAT_array(dec, (FLOAT *)args->Color, 4);
-    uint64_t _cnt_pRect = 0;
+    _has_cnt_pRect = 0;
     if (npt_decode_counted_pointer_count(dec, &_cnt_pRect)) {
+        _has_cnt_pRect = 1;
         args->pRect = npt_cs_decoder_alloc_temp_array(dec, sizeof(D3D11_RECT), _cnt_pRect ? _cnt_pRect : 1);
         if (!args->pRect) return;
         for (uint32_t _i = 0; _i < (uint32_t)_cnt_pRect; _i++)
@@ -18647,8 +19043,8 @@ npt_decode_ID3D11DeviceContext1_ClearView_args_temp(struct npt_cs_decoder *dec,
         args->pRect = NULL;
     }
     npt_decode_UINT(dec, &args->NumRects);
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_pRect && _cnt_pRect < (uint64_t)(args->NumRects)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_pRect > 0 && _cnt_pRect < (uint64_t)(args->NumRects))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -18774,14 +19170,16 @@ static inline void
 npt_decode_ID3D11DeviceContext1_DiscardView1_args_temp(struct npt_cs_decoder *dec,
                                                        struct npt_command_ID3D11DeviceContext1_DiscardView1 *args)
 {
+    uint64_t _cnt_pRects = 0; int _has_cnt_pRects = -1;
     /* Decode input parameters from the wire */
     {
         npt_object_id _id;
         npt_decode_uint64_t(dec, &_id);
         args->pResourceView = (ID3D11View *)npt_object_from_id(_id);
     }
-    uint64_t _cnt_pRects = 0;
+    _has_cnt_pRects = 0;
     if (npt_decode_counted_pointer_count(dec, &_cnt_pRects)) {
+        _has_cnt_pRects = 1;
         args->pRects = npt_cs_decoder_alloc_temp_array(dec, sizeof(D3D11_RECT), _cnt_pRects ? _cnt_pRects : 1);
         if (!args->pRects) return;
         for (uint32_t _i = 0; _i < (uint32_t)_cnt_pRects; _i++)
@@ -18790,8 +19188,8 @@ npt_decode_ID3D11DeviceContext1_DiscardView1_args_temp(struct npt_cs_decoder *de
         args->pRects = NULL;
     }
     npt_decode_UINT(dec, &args->NumRects);
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_pRects && _cnt_pRects < (uint64_t)(args->NumRects)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_pRects > 0 && _cnt_pRects < (uint64_t)(args->NumRects))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -18924,6 +19322,11 @@ static inline void
 npt_decode_ID3D11DeviceContext2_UpdateTileMappings_args_temp(struct npt_cs_decoder *dec,
                                                              struct npt_command_ID3D11DeviceContext2_UpdateTileMappings *args)
 {
+    uint64_t _cnt_pTiledResourceRegionStartCoordinates = 0; int _has_cnt_pTiledResourceRegionStartCoordinates = -1;
+    uint64_t _cnt_pTiledResourceRegionSizes = 0; int _has_cnt_pTiledResourceRegionSizes = -1;
+    uint64_t _cnt_pRangeFlags = 0; int _has_cnt_pRangeFlags = -1;
+    uint64_t _cnt_pTilePoolStartOffsets = 0; int _has_cnt_pTilePoolStartOffsets = -1;
+    uint64_t _cnt_pRangeTileCounts = 0; int _has_cnt_pRangeTileCounts = -1;
     /* Decode input parameters from the wire */
     {
         npt_object_id _id;
@@ -18931,8 +19334,9 @@ npt_decode_ID3D11DeviceContext2_UpdateTileMappings_args_temp(struct npt_cs_decod
         args->pTiledResource = (ID3D11Resource *)npt_object_from_id(_id);
     }
     npt_decode_UINT(dec, &args->NumTiledResourceRegions);
-    uint64_t _cnt_pTiledResourceRegionStartCoordinates = 0;
+    _has_cnt_pTiledResourceRegionStartCoordinates = 0;
     if (npt_decode_counted_pointer_count(dec, &_cnt_pTiledResourceRegionStartCoordinates)) {
+        _has_cnt_pTiledResourceRegionStartCoordinates = 1;
         args->pTiledResourceRegionStartCoordinates = npt_cs_decoder_alloc_temp_array(dec, sizeof(D3D11_TILED_RESOURCE_COORDINATE), _cnt_pTiledResourceRegionStartCoordinates ? _cnt_pTiledResourceRegionStartCoordinates : 1);
         if (!args->pTiledResourceRegionStartCoordinates) return;
         for (uint32_t _i = 0; _i < (uint32_t)_cnt_pTiledResourceRegionStartCoordinates; _i++)
@@ -18940,8 +19344,9 @@ npt_decode_ID3D11DeviceContext2_UpdateTileMappings_args_temp(struct npt_cs_decod
     } else {
         args->pTiledResourceRegionStartCoordinates = NULL;
     }
-    uint64_t _cnt_pTiledResourceRegionSizes = 0;
+    _has_cnt_pTiledResourceRegionSizes = 0;
     if (npt_decode_counted_pointer_count(dec, &_cnt_pTiledResourceRegionSizes)) {
+        _has_cnt_pTiledResourceRegionSizes = 1;
         args->pTiledResourceRegionSizes = npt_cs_decoder_alloc_temp_array(dec, sizeof(D3D11_TILE_REGION_SIZE), _cnt_pTiledResourceRegionSizes ? _cnt_pTiledResourceRegionSizes : 1);
         if (!args->pTiledResourceRegionSizes) return;
         for (uint32_t _i = 0; _i < (uint32_t)_cnt_pTiledResourceRegionSizes; _i++)
@@ -18955,24 +19360,27 @@ npt_decode_ID3D11DeviceContext2_UpdateTileMappings_args_temp(struct npt_cs_decod
         args->pTilePool = (ID3D11Buffer *)npt_object_from_id(_id);
     }
     npt_decode_UINT(dec, &args->NumRanges);
-    uint64_t _cnt_pRangeFlags = 0;
+    _has_cnt_pRangeFlags = 0;
     if (npt_decode_counted_pointer_count(dec, &_cnt_pRangeFlags)) {
+        _has_cnt_pRangeFlags = 1;
         args->pRangeFlags = npt_cs_decoder_alloc_temp_array(dec, sizeof(UINT), _cnt_pRangeFlags ? _cnt_pRangeFlags : 1);
         if (!args->pRangeFlags) return;
         npt_decode_UINT_array(dec, (UINT *)args->pRangeFlags, _cnt_pRangeFlags);
     } else {
         args->pRangeFlags = NULL;
     }
-    uint64_t _cnt_pTilePoolStartOffsets = 0;
+    _has_cnt_pTilePoolStartOffsets = 0;
     if (npt_decode_counted_pointer_count(dec, &_cnt_pTilePoolStartOffsets)) {
+        _has_cnt_pTilePoolStartOffsets = 1;
         args->pTilePoolStartOffsets = npt_cs_decoder_alloc_temp_array(dec, sizeof(UINT), _cnt_pTilePoolStartOffsets ? _cnt_pTilePoolStartOffsets : 1);
         if (!args->pTilePoolStartOffsets) return;
         npt_decode_UINT_array(dec, (UINT *)args->pTilePoolStartOffsets, _cnt_pTilePoolStartOffsets);
     } else {
         args->pTilePoolStartOffsets = NULL;
     }
-    uint64_t _cnt_pRangeTileCounts = 0;
+    _has_cnt_pRangeTileCounts = 0;
     if (npt_decode_counted_pointer_count(dec, &_cnt_pRangeTileCounts)) {
+        _has_cnt_pRangeTileCounts = 1;
         args->pRangeTileCounts = npt_cs_decoder_alloc_temp_array(dec, sizeof(UINT), _cnt_pRangeTileCounts ? _cnt_pRangeTileCounts : 1);
         if (!args->pRangeTileCounts) return;
         npt_decode_UINT_array(dec, (UINT *)args->pRangeTileCounts, _cnt_pRangeTileCounts);
@@ -18980,24 +19388,24 @@ npt_decode_ID3D11DeviceContext2_UpdateTileMappings_args_temp(struct npt_cs_decod
         args->pRangeTileCounts = NULL;
     }
     npt_decode_UINT(dec, &args->Flags);
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_pTiledResourceRegionStartCoordinates && _cnt_pTiledResourceRegionStartCoordinates < (uint64_t)(args->NumTiledResourceRegions)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_pTiledResourceRegionStartCoordinates > 0 && _cnt_pTiledResourceRegionStartCoordinates < (uint64_t)(args->NumTiledResourceRegions))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
-    if (_cnt_pTiledResourceRegionSizes && _cnt_pTiledResourceRegionSizes < (uint64_t)(args->NumTiledResourceRegions)) {
+    if ((_has_cnt_pTiledResourceRegionSizes > 0 && _cnt_pTiledResourceRegionSizes < (uint64_t)(args->NumTiledResourceRegions))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
-    if (_cnt_pRangeFlags && _cnt_pRangeFlags < (uint64_t)(args->NumRanges)) {
+    if ((_has_cnt_pRangeFlags > 0 && _cnt_pRangeFlags < (uint64_t)(args->NumRanges))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
-    if (_cnt_pTilePoolStartOffsets && _cnt_pTilePoolStartOffsets < (uint64_t)(args->NumRanges)) {
+    if ((_has_cnt_pTilePoolStartOffsets > 0 && _cnt_pTilePoolStartOffsets < (uint64_t)(args->NumRanges))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
-    if (_cnt_pRangeTileCounts && _cnt_pRangeTileCounts < (uint64_t)(args->NumRanges)) {
+    if ((_has_cnt_pRangeTileCounts > 0 && _cnt_pRangeTileCounts < (uint64_t)(args->NumRanges))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -19866,6 +20274,7 @@ npt_decode_ID3D11DeviceContext2_IsAnnotationEnabled_args_temp(struct npt_cs_deco
                                                               struct npt_command_ID3D11DeviceContext2_IsAnnotationEnabled *args)
 {
     /* Decode input parameters from the wire */
+
     /* Allocate temp storage for output-only parameters */
 }
 
@@ -20241,6 +20650,7 @@ npt_decode_ID3D11DeviceContext2_EndEvent_args_temp(struct npt_cs_decoder *dec,
                                                    struct npt_command_ID3D11DeviceContext2_EndEvent *args)
 {
     /* Decode input parameters from the wire */
+
     /* Allocate temp storage for output-only parameters */
 }
 

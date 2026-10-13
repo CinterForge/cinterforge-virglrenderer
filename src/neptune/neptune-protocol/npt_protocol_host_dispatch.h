@@ -219,9 +219,6 @@ npt_dispatch_IDXGISurface_method(struct npt_dispatch_context *ctx,
     case 0:
         npt_dispatch_IDXGISurface_GetDesc(ctx, cmd_flags, object_id);
         break;
-    case 1:
-        npt_dispatch_IDXGISurface_Map(ctx, cmd_flags, object_id);
-        break;
     case 2:
         npt_dispatch_IDXGISurface_Unmap(ctx, cmd_flags, object_id);
         break;
@@ -514,9 +511,6 @@ npt_dispatch_IDXGIOutputDuplication_method(struct npt_dispatch_context *ctx,
         break;
     case 4:
         npt_dispatch_IDXGIOutputDuplication_GetFramePointerShape(ctx, cmd_flags, object_id);
-        break;
-    case 5:
-        npt_dispatch_IDXGIOutputDuplication_MapDesktopSurface(ctx, cmd_flags, object_id);
         break;
     case 6:
         npt_dispatch_IDXGIOutputDuplication_UnMapDesktopSurface(ctx, cmd_flags, object_id);
@@ -1134,9 +1128,6 @@ npt_dispatch_ID3D10Blob_method(struct npt_dispatch_context *ctx,
                                uint64_t object_id)
 {
     switch (method_index) {
-    case 0:
-        npt_dispatch_ID3D10Blob_GetBufferPointer(ctx, cmd_flags, object_id);
-        break;
     case 1:
         npt_dispatch_ID3D10Blob_GetBufferSize(ctx, cmd_flags, object_id);
         break;
@@ -2039,12 +2030,6 @@ npt_dispatch_ID3D11VideoContext_method(struct npt_dispatch_context *ctx,
                                        uint64_t object_id)
 {
     switch (method_index) {
-    case 0:
-        npt_dispatch_ID3D11VideoContext_GetDecoderBuffer(ctx, cmd_flags, object_id);
-        break;
-    case 1:
-        npt_dispatch_ID3D11VideoContext_ReleaseDecoderBuffer(ctx, cmd_flags, object_id);
-        break;
     case 2:
         npt_dispatch_ID3D11VideoContext_DecoderBeginFrame(ctx, cmd_flags, object_id);
         break;
@@ -3146,22 +3131,6 @@ npt_dispatch_ID3D11On12Device2_method(struct npt_dispatch_context *ctx,
 }
 
 static inline void
-npt_dispatch_ID3D12RootSignatureDeserializer_method(struct npt_dispatch_context *ctx,
-                                                    uint8_t method_index,
-                                                    uint32_t cmd_flags,
-                                                    uint64_t object_id)
-{
-    switch (method_index) {
-    case 0:
-        npt_dispatch_ID3D12RootSignatureDeserializer_GetRootSignatureDesc(ctx, cmd_flags, object_id);
-        break;
-    default:
-        npt_cs_decoder_set_fatal(ctx->decoder);
-        break;
-    }
-}
-
-static inline void
 npt_dispatch_ID3D12VersionedRootSignatureDeserializer_method(struct npt_dispatch_context *ctx,
                                                              uint8_t method_index,
                                                              uint32_t cmd_flags,
@@ -3170,9 +3139,6 @@ npt_dispatch_ID3D12VersionedRootSignatureDeserializer_method(struct npt_dispatch
     switch (method_index) {
     case 0:
         npt_dispatch_ID3D12VersionedRootSignatureDeserializer_GetRootSignatureDescAtVersion(ctx, cmd_flags, object_id);
-        break;
-    case 1:
-        npt_dispatch_ID3D12VersionedRootSignatureDeserializer_GetUnconvertedRootSignatureDesc(ctx, cmd_flags, object_id);
         break;
     default:
         npt_cs_decoder_set_fatal(ctx->decoder);
@@ -3996,9 +3962,6 @@ npt_dispatch_ID3D12StateObjectProperties_method(struct npt_dispatch_context *ctx
                                                 uint64_t object_id)
 {
     switch (method_index) {
-    case 0:
-        npt_dispatch_ID3D12StateObjectProperties_GetShaderIdentifier(ctx, cmd_flags, object_id);
-        break;
     case 1:
         npt_dispatch_ID3D12StateObjectProperties_GetShaderStackSize(ctx, cmd_flags, object_id);
         break;
@@ -4039,9 +4002,6 @@ npt_dispatch_ID3D12WorkGraphProperties_method(struct npt_dispatch_context *ctx,
     switch (method_index) {
     case 0:
         npt_dispatch_ID3D12WorkGraphProperties_GetNumWorkGraphs(ctx, cmd_flags, object_id);
-        break;
-    case 1:
-        npt_dispatch_ID3D12WorkGraphProperties_GetProgramName(ctx, cmd_flags, object_id);
         break;
     case 2:
         npt_dispatch_ID3D12WorkGraphProperties_GetWorkGraphIndex(ctx, cmd_flags, object_id);
@@ -5156,9 +5116,6 @@ npt_dispatch_com_call(struct npt_dispatch_context *ctx,
     case NPT_IFACE_ID_ID3D11On12Device2:
         npt_dispatch_ID3D11On12Device2_method(ctx, method_index, cmd_flags, object_id);
         return;
-    case NPT_IFACE_ID_ID3D12RootSignatureDeserializer:
-        npt_dispatch_ID3D12RootSignatureDeserializer_method(ctx, method_index, cmd_flags, object_id);
-        return;
     case NPT_IFACE_ID_ID3D12VersionedRootSignatureDeserializer:
         npt_dispatch_ID3D12VersionedRootSignatureDeserializer_method(ctx, method_index, cmd_flags, object_id);
         return;
@@ -5446,8 +5403,26 @@ npt_dispatch_toplevel(struct npt_dispatch_context *ctx,
 static inline void
 npt_dispatch_command(struct npt_dispatch_context *ctx)
 {
+    struct npt_cs_decoder *const _dec = ctx->decoder;
+    const uint8_t *const _start = _dec->cur;
+    const uint8_t *const _stream_end = _dec->end;
     struct npt_command_header _hdr;
-    npt_cs_decoder_read(ctx->decoder, sizeof(_hdr), &_hdr, sizeof(_hdr));
+    npt_cs_decoder_read(_dec, sizeof(_hdr), &_hdr, sizeof(_hdr));
+    if (npt_cs_decoder_get_fatal(_dec))
+        return;
+
+    /* cmd_size is authoritative: the command decodes inside its own
+     * bytes, and the next one starts at cmd_size whatever the decoder
+     * consumed, so a sender's sizing slip cannot turn the rest of this
+     * command into the next one's header. */
+    if (_hdr.cmd_size < sizeof(_hdr) ||
+        _hdr.cmd_size > (size_t)(_stream_end - _start)) {
+        npt_log("dispatch: cmd_size %u out of range for cmd_type=0x%08x",
+                (unsigned)_hdr.cmd_size, (unsigned)_hdr.cmd_type);
+        npt_cs_decoder_set_fatal(_dec);
+        return;
+    }
+    _dec->end = _start + _hdr.cmd_size;
 
     const uint32_t _group = (_hdr.cmd_type >> 24) & 0xFF;
 
@@ -5466,7 +5441,10 @@ npt_dispatch_command(struct npt_dispatch_context *ctx)
         npt_cs_decoder_set_fatal(ctx->decoder);
     }
 
-    if (npt_cs_decoder_get_fatal(ctx->decoder))
+    _dec->cur = _start + _hdr.cmd_size;
+    _dec->end = _stream_end;
+
+    if (npt_cs_decoder_get_fatal(_dec))
         npt_log("dispatch error for cmd_type=0x%08x", _hdr.cmd_type);
 }
 

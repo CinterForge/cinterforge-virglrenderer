@@ -42,9 +42,13 @@ npt_decode_IDXGIDevice_GetAdapter_args_temp(struct npt_cs_decoder *dec,
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_pAdapter = _gid;
-        args->pAdapter = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->pAdapter) return;
-        *args->pAdapter = NULL;
+        if (_gid) {
+            args->pAdapter = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->pAdapter) return;
+            *args->pAdapter = NULL;
+        } else {
+            args->pAdapter = NULL;
+        }
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -175,6 +179,7 @@ static inline void
 npt_decode_IDXGIDevice_CreateSurface_args_temp(struct npt_cs_decoder *dec,
                                                struct npt_command_IDXGIDevice_CreateSurface *args)
 {
+    uint64_t _cnt_ppSurface = 0; int _has_cnt_ppSurface = -1;
     /* Decode input parameters from the wire */
     if (npt_decode_simple_pointer(dec)) {
         args->pDesc = npt_cs_decoder_alloc_temp(dec, sizeof(DXGI_SURFACE_DESC));
@@ -194,18 +199,24 @@ npt_decode_IDXGIDevice_CreateSurface_args_temp(struct npt_cs_decoder *dec,
     } else {
         args->pSharedResource = NULL;
     }
-    {
-        const uint64_t _cnt = npt_decode_array_count_unchecked(dec);
-        args->ppSurface = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt);
-        args->_guest_ids_ppSurface = _cnt ? npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt) : NULL;
-        args->_guest_id_count_ppSurface = (uint32_t)_cnt;
-        if (_cnt && (!args->ppSurface || !args->_guest_ids_ppSurface)) return;
-        if (_cnt) memset(args->ppSurface, 0, sizeof(void *) * _cnt);
-        for (uint64_t _i = 0; _i < _cnt; _i++) {
-            uint64_t _gid;
-            npt_decode_uint64_t(dec, &_gid);
-            args->_guest_ids_ppSurface[_i] = _gid;
-        }
+    _cnt_ppSurface = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppSurface = _cnt_ppSurface != 0;
+    args->_guest_id_count_ppSurface = (uint32_t)_cnt_ppSurface;
+    if (_cnt_ppSurface) {
+        args->ppSurface = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppSurface);
+        args->_guest_ids_ppSurface = npt_cs_decoder_alloc_temp_array(dec, sizeof(uint64_t), _cnt_ppSurface);
+        if (!args->ppSurface || !args->_guest_ids_ppSurface) return;
+        memset(args->ppSurface, 0, sizeof(void *) * _cnt_ppSurface);
+        for (uint64_t _i = 0; _i < _cnt_ppSurface; _i++)
+            npt_decode_uint64_t(dec, &args->_guest_ids_ppSurface[_i]);
+    } else {
+        args->ppSurface = NULL;
+    }
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppSurface > 0 && _cnt_ppSurface != (uint64_t)(args->NumSurfaces)) ||
+        (_has_cnt_ppSurface == 0 && (uint64_t)(args->NumSurfaces) != 0)) {
+        npt_cs_decoder_set_fatal(dec);
+        return;
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -346,8 +357,10 @@ static inline void
 npt_decode_IDXGIDevice_QueryResourceResidency_args_temp(struct npt_cs_decoder *dec,
                                                         struct npt_command_IDXGIDevice_QueryResourceResidency *args)
 {
+    uint64_t _cnt_ppResources = 0; int _has_cnt_ppResources = -1;
     /* Decode input parameters from the wire */
-    uint64_t _cnt_ppResources = npt_decode_array_count_unchecked(dec);
+    _cnt_ppResources = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppResources = _cnt_ppResources != 0;
     if (_cnt_ppResources) {
         args->ppResources = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppResources);
         if (!args->ppResources) return;
@@ -361,8 +374,9 @@ npt_decode_IDXGIDevice_QueryResourceResidency_args_temp(struct npt_cs_decoder *d
     }
 
     npt_decode_UINT(dec, &args->NumResources);
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_ppResources && _cnt_ppResources < (uint64_t)(args->NumResources)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppResources > 0 && _cnt_ppResources < (uint64_t)(args->NumResources)) ||
+        (_has_cnt_ppResources == 0 && (uint64_t)(args->NumResources) != 0)) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -988,9 +1002,11 @@ static inline void
 npt_decode_IDXGIDevice2_OfferResources_args_temp(struct npt_cs_decoder *dec,
                                                  struct npt_command_IDXGIDevice2_OfferResources *args)
 {
+    uint64_t _cnt_ppResources = 0; int _has_cnt_ppResources = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->NumResources);
-    uint64_t _cnt_ppResources = npt_decode_array_count_unchecked(dec);
+    _cnt_ppResources = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppResources = _cnt_ppResources != 0;
     if (_cnt_ppResources) {
         args->ppResources = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppResources);
         if (!args->ppResources) return;
@@ -1003,8 +1019,9 @@ npt_decode_IDXGIDevice2_OfferResources_args_temp(struct npt_cs_decoder *dec,
         args->ppResources = NULL;
     }
     npt_decode_DXGI_OFFER_RESOURCE_PRIORITY(dec, &args->Priority);
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_ppResources && _cnt_ppResources < (uint64_t)(args->NumResources)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppResources > 0 && _cnt_ppResources < (uint64_t)(args->NumResources)) ||
+        (_has_cnt_ppResources == 0 && (uint64_t)(args->NumResources) != 0)) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -1134,9 +1151,11 @@ static inline void
 npt_decode_IDXGIDevice2_ReclaimResources_args_temp(struct npt_cs_decoder *dec,
                                                    struct npt_command_IDXGIDevice2_ReclaimResources *args)
 {
+    uint64_t _cnt_ppResources = 0; int _has_cnt_ppResources = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->NumResources);
-    uint64_t _cnt_ppResources = npt_decode_array_count_unchecked(dec);
+    _cnt_ppResources = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppResources = _cnt_ppResources != 0;
     if (_cnt_ppResources) {
         args->ppResources = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppResources);
         if (!args->ppResources) return;
@@ -1149,8 +1168,9 @@ npt_decode_IDXGIDevice2_ReclaimResources_args_temp(struct npt_cs_decoder *dec,
         args->ppResources = NULL;
     }
 
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_ppResources && _cnt_ppResources < (uint64_t)(args->NumResources)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppResources > 0 && _cnt_ppResources < (uint64_t)(args->NumResources)) ||
+        (_has_cnt_ppResources == 0 && (uint64_t)(args->NumResources) != 0)) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -1413,6 +1433,7 @@ npt_decode_IDXGIDevice3_Trim_args_temp(struct npt_cs_decoder *dec,
                                        struct npt_command_IDXGIDevice3_Trim *args)
 {
     /* Decode input parameters from the wire */
+
     /* Allocate temp storage for output-only parameters */
 }
 
@@ -1532,9 +1553,11 @@ static inline void
 npt_decode_IDXGIDevice4_OfferResources1_args_temp(struct npt_cs_decoder *dec,
                                                   struct npt_command_IDXGIDevice4_OfferResources1 *args)
 {
+    uint64_t _cnt_ppResources = 0; int _has_cnt_ppResources = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->NumResources);
-    uint64_t _cnt_ppResources = npt_decode_array_count_unchecked(dec);
+    _cnt_ppResources = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppResources = _cnt_ppResources != 0;
     if (_cnt_ppResources) {
         args->ppResources = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppResources);
         if (!args->ppResources) return;
@@ -1548,8 +1571,9 @@ npt_decode_IDXGIDevice4_OfferResources1_args_temp(struct npt_cs_decoder *dec,
     }
     npt_decode_DXGI_OFFER_RESOURCE_PRIORITY(dec, &args->Priority);
     npt_decode_UINT(dec, &args->Flags);
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_ppResources && _cnt_ppResources < (uint64_t)(args->NumResources)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppResources > 0 && _cnt_ppResources < (uint64_t)(args->NumResources)) ||
+        (_has_cnt_ppResources == 0 && (uint64_t)(args->NumResources) != 0)) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -1680,9 +1704,11 @@ static inline void
 npt_decode_IDXGIDevice4_ReclaimResources1_args_temp(struct npt_cs_decoder *dec,
                                                     struct npt_command_IDXGIDevice4_ReclaimResources1 *args)
 {
+    uint64_t _cnt_ppResources = 0; int _has_cnt_ppResources = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->NumResources);
-    uint64_t _cnt_ppResources = npt_decode_array_count_unchecked(dec);
+    _cnt_ppResources = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppResources = _cnt_ppResources != 0;
     if (_cnt_ppResources) {
         args->ppResources = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppResources);
         if (!args->ppResources) return;
@@ -1695,8 +1721,9 @@ npt_decode_IDXGIDevice4_ReclaimResources1_args_temp(struct npt_cs_decoder *dec,
         args->ppResources = NULL;
     }
 
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_ppResources && _cnt_ppResources < (uint64_t)(args->NumResources)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppResources > 0 && _cnt_ppResources < (uint64_t)(args->NumResources)) ||
+        (_has_cnt_ppResources == 0 && (uint64_t)(args->NumResources) != 0)) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }

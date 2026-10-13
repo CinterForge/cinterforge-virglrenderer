@@ -271,6 +271,7 @@ npt_decode_ID3D11Resource_GetEvictionPriority_args_temp(struct npt_cs_decoder *d
                                                         struct npt_command_ID3D11Resource_GetEvictionPriority *args)
 {
     /* Decode input parameters from the wire */
+
     /* Allocate temp storage for output-only parameters */
 }
 

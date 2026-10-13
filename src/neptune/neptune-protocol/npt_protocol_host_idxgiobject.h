@@ -33,6 +33,7 @@ static inline void
 npt_decode_IDXGIObject_SetPrivateData_args_temp(struct npt_cs_decoder *dec,
                                                 struct npt_command_IDXGIObject_SetPrivateData *args)
 {
+    uint64_t _cnt_pData = 0; int _has_cnt_pData = -1;
     /* Decode input parameters from the wire */
     if (npt_decode_simple_pointer(dec)) {
         args->Name = npt_cs_decoder_alloc_temp(dec, sizeof(GUID));
@@ -44,15 +45,20 @@ npt_decode_IDXGIObject_SetPrivateData_args_temp(struct npt_cs_decoder *dec,
         return;
     }
     npt_decode_UINT(dec, &args->DataSize);
-    {
-        const uint64_t _blob_size = npt_decode_array_count_unchecked(dec);
-        if (_blob_size) {
-            args->pData = npt_cs_decoder_alloc_temp(dec, _blob_size);
-            if (!args->pData) return;
-            npt_decode_blob_array(dec, (void *)args->pData, _blob_size);
-        } else {
-            args->pData = NULL;
-        }
+    _cnt_pData = npt_decode_array_count_unchecked(dec);
+    _has_cnt_pData = _cnt_pData != 0;
+    if (_cnt_pData) {
+        args->pData = npt_cs_decoder_alloc_temp(dec, _cnt_pData);
+        if (!args->pData) return;
+        npt_decode_blob_array(dec, (void *)args->pData, _cnt_pData);
+    } else {
+        args->pData = NULL;
+    }
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_pData > 0 && _cnt_pData < (uint64_t)(args->DataSize)) ||
+        (_has_cnt_pData == 0 && (uint64_t)(args->DataSize) != 0)) {
+        npt_cs_decoder_set_fatal(dec);
+        return;
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -484,9 +490,13 @@ npt_decode_IDXGIObject_GetParent_args_temp(struct npt_cs_decoder *dec,
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppParent = _gid;
-        args->ppParent = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppParent) return;
-        *args->ppParent = NULL;
+        if (_gid) {
+            args->ppParent = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppParent) return;
+            *args->ppParent = NULL;
+        } else {
+            args->ppParent = NULL;
+        }
     }
     /* Allocate temp storage for output-only parameters */
 

@@ -18,7 +18,7 @@
 #include "npt_resource.h"
 #include "npt_ring.h"
 #include "npt_shared.h"
-#include "npt_transport_defs.h"
+#include "neptune-protocol/npt_protocol_transport.h"
 #include "neptune-protocol/npt_protocol_host_dispatch.h"
 
 /* True when the decoder belongs to a ring, not the context.
@@ -231,7 +231,8 @@ npt_dispatch_resource_update(struct npt_context *ctx,
          return;
    }
 
-   npt_resource_update(ctx, header->object_id, cmd.subresource,
+   npt_resource_update(ctx, cmd.context_id, header->object_id,
+                       cmd.subresource,
                        cmd.row_pitch, cmd.depth_pitch, cmd.byte_size,
                        !!cmd.has_box,
                        cmd.box_left, cmd.box_top, cmd.box_front,
@@ -302,7 +303,7 @@ npt_dispatch_arm_event_fence(struct npt_context *ctx,
    if (npt_cs_decoder_get_fatal(dec))
       return;
 
-   bool ok = npt_event_arm(ctx, cmd.event_token, cmd.ring_idx, cmd.flags);
+   bool ok = npt_event_arm(ctx, cmd.event_token, cmd.ring_idx);
    if (!ok)
       npt_event_drain_parked_ring(ctx, cmd.ring_idx);
 

@@ -41,9 +41,13 @@ npt_decode_ID3D11View_GetResource_args_temp(struct npt_cs_decoder *dec,
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppResource = _gid;
-        args->ppResource = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppResource) return;
-        *args->ppResource = NULL;
+        if (_gid) {
+            args->ppResource = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppResource) return;
+            *args->ppResource = NULL;
+        } else {
+            args->ppResource = NULL;
+        }
     }
     /* Allocate temp storage for output-only parameters */
 

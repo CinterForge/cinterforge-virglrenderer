@@ -31,6 +31,7 @@ npt_decode_ID3D12DeviceFactory_InitializeFromGlobalState_args_temp(struct npt_cs
                                                                    struct npt_command_ID3D12DeviceFactory_InitializeFromGlobalState *args)
 {
     /* Decode input parameters from the wire */
+
     /* Allocate temp storage for output-only parameters */
 }
 
@@ -147,6 +148,7 @@ npt_decode_ID3D12DeviceFactory_ApplyToGlobalState_args_temp(struct npt_cs_decode
                                                             struct npt_command_ID3D12DeviceFactory_ApplyToGlobalState *args)
 {
     /* Decode input parameters from the wire */
+
     /* Allocate temp storage for output-only parameters */
 }
 
@@ -382,6 +384,7 @@ npt_decode_ID3D12DeviceFactory_GetFlags_args_temp(struct npt_cs_decoder *dec,
                                                   struct npt_command_ID3D12DeviceFactory_GetFlags *args)
 {
     /* Decode input parameters from the wire */
+
     /* Allocate temp storage for output-only parameters */
 }
 
@@ -529,9 +532,13 @@ npt_decode_ID3D12DeviceFactory_GetConfigurationInterface_args_temp(struct npt_cs
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppv = _gid;
-        args->ppv = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppv) return;
-        *args->ppv = NULL;
+        if (_gid) {
+            args->ppv = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppv) return;
+            *args->ppv = NULL;
+        } else {
+            args->ppv = NULL;
+        }
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -659,10 +666,14 @@ static inline void
 npt_decode_ID3D12DeviceFactory_EnableExperimentalFeatures_args_temp(struct npt_cs_decoder *dec,
                                                                     struct npt_command_ID3D12DeviceFactory_EnableExperimentalFeatures *args)
 {
+    uint64_t _cnt_pIIDs = 0; int _has_cnt_pIIDs = -1;
+    uint64_t _cnt_pConfigurationStructs = 0; int _has_cnt_pConfigurationStructs = -1;
+    uint64_t _cnt_pConfigurationStructSizes = 0; int _has_cnt_pConfigurationStructSizes = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->NumFeatures);
-    uint64_t _cnt_pIIDs = 0;
+    _has_cnt_pIIDs = 0;
     if (npt_decode_counted_pointer_count(dec, &_cnt_pIIDs)) {
+        _has_cnt_pIIDs = 1;
         args->pIIDs = npt_cs_decoder_alloc_temp_array(dec, sizeof(IID), _cnt_pIIDs ? _cnt_pIIDs : 1);
         if (!args->pIIDs) return;
         for (uint32_t _i = 0; _i < (uint32_t)_cnt_pIIDs; _i++)
@@ -670,30 +681,35 @@ npt_decode_ID3D12DeviceFactory_EnableExperimentalFeatures_args_temp(struct npt_c
     } else {
         args->pIIDs = NULL;
     }
-    {
-        const uint64_t _blob_size = npt_decode_array_count_unchecked(dec);
-        if (_blob_size) {
-            args->pConfigurationStructs = npt_cs_decoder_alloc_temp(dec, _blob_size);
-            if (!args->pConfigurationStructs) return;
-            npt_decode_blob_array(dec, (void *)args->pConfigurationStructs, _blob_size);
-        } else {
-            args->pConfigurationStructs = NULL;
-        }
+    _cnt_pConfigurationStructs = npt_decode_array_count_unchecked(dec);
+    _has_cnt_pConfigurationStructs = _cnt_pConfigurationStructs != 0;
+    if (_cnt_pConfigurationStructs) {
+        args->pConfigurationStructs = npt_cs_decoder_alloc_temp(dec, _cnt_pConfigurationStructs);
+        if (!args->pConfigurationStructs) return;
+        npt_decode_blob_array(dec, (void *)args->pConfigurationStructs, _cnt_pConfigurationStructs);
+    } else {
+        args->pConfigurationStructs = NULL;
     }
-    uint64_t _cnt_pConfigurationStructSizes = 0;
+    _has_cnt_pConfigurationStructSizes = 0;
     if (npt_decode_counted_pointer_count(dec, &_cnt_pConfigurationStructSizes)) {
+        _has_cnt_pConfigurationStructSizes = 1;
         args->pConfigurationStructSizes = npt_cs_decoder_alloc_temp_array(dec, sizeof(UINT), _cnt_pConfigurationStructSizes ? _cnt_pConfigurationStructSizes : 1);
         if (!args->pConfigurationStructSizes) return;
         npt_decode_UINT_array(dec, (UINT *)args->pConfigurationStructSizes, _cnt_pConfigurationStructSizes);
     } else {
         args->pConfigurationStructSizes = NULL;
     }
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_pIIDs && _cnt_pIIDs < (uint64_t)(args->NumFeatures)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_pIIDs > 0 && _cnt_pIIDs < (uint64_t)(args->NumFeatures)) ||
+        (_has_cnt_pIIDs == 0 && (uint64_t)(args->NumFeatures) != 0)) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
-    if (_cnt_pConfigurationStructSizes && _cnt_pConfigurationStructSizes < (uint64_t)(args->NumFeatures)) {
+    if ((_has_cnt_pConfigurationStructs > 0 && _cnt_pConfigurationStructs < (uint64_t)(args->NumFeatures))) {
+        npt_cs_decoder_set_fatal(dec);
+        return;
+    }
+    if ((_has_cnt_pConfigurationStructSizes > 0 && _cnt_pConfigurationStructSizes < (uint64_t)(args->NumFeatures))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -845,9 +861,13 @@ npt_decode_ID3D12DeviceFactory_CreateDevice_args_temp(struct npt_cs_decoder *dec
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppvDevice = _gid;
-        args->ppvDevice = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppvDevice) return;
-        *args->ppvDevice = NULL;
+        if (_gid) {
+            args->ppvDevice = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppvDevice) return;
+            *args->ppvDevice = NULL;
+        } else {
+            args->ppvDevice = NULL;
+        }
     }
     /* Allocate temp storage for output-only parameters */
 

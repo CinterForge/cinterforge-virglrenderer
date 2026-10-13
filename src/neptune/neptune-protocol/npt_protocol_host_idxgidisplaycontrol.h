@@ -31,6 +31,7 @@ npt_decode_IDXGIDisplayControl_IsStereoEnabled_args_temp(struct npt_cs_decoder *
                                                          struct npt_command_IDXGIDisplayControl_IsStereoEnabled *args)
 {
     /* Decode input parameters from the wire */
+
     /* Allocate temp storage for output-only parameters */
 }
 

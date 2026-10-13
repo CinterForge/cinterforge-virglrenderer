@@ -149,6 +149,7 @@ npt_decode_ID3D12Tools_ShaderInstrumentationEnabled_args_temp(struct npt_cs_deco
                                                               struct npt_command_ID3D12Tools_ShaderInstrumentationEnabled *args)
 {
     /* Decode input parameters from the wire */
+
     /* Allocate temp storage for output-only parameters */
 }
 

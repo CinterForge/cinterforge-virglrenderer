@@ -30,6 +30,7 @@ npt_decode_ID3D11Multithread_Enter_args_temp(struct npt_cs_decoder *dec,
                                              struct npt_command_ID3D11Multithread_Enter *args)
 {
     /* Decode input parameters from the wire */
+
     /* Allocate temp storage for output-only parameters */
 }
 
@@ -145,6 +146,7 @@ npt_decode_ID3D11Multithread_Leave_args_temp(struct npt_cs_decoder *dec,
                                              struct npt_command_ID3D11Multithread_Leave *args)
 {
     /* Decode input parameters from the wire */
+
     /* Allocate temp storage for output-only parameters */
 }
 
@@ -380,6 +382,7 @@ npt_decode_ID3D11Multithread_GetMultithreadProtected_args_temp(struct npt_cs_dec
                                                                struct npt_command_ID3D11Multithread_GetMultithreadProtected *args)
 {
     /* Decode input parameters from the wire */
+
     /* Allocate temp storage for output-only parameters */
 }
 

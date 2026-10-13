@@ -31,6 +31,7 @@ npt_decode_ID3D12DescriptorHeap_GetDesc_args_temp(struct npt_cs_decoder *dec,
                                                   struct npt_command_ID3D12DescriptorHeap_GetDesc *args)
 {
     /* Decode input parameters from the wire */
+
     /* Allocate temp storage for output-only parameters */
 }
 
@@ -150,6 +151,7 @@ npt_decode_ID3D12DescriptorHeap_GetCPUDescriptorHandleForHeapStart_args_temp(str
                                                                              struct npt_command_ID3D12DescriptorHeap_GetCPUDescriptorHandleForHeapStart *args)
 {
     /* Decode input parameters from the wire */
+
     /* Allocate temp storage for output-only parameters */
 }
 
@@ -269,6 +271,7 @@ npt_decode_ID3D12DescriptorHeap_GetGPUDescriptorHandleForHeapStart_args_temp(str
                                                                              struct npt_command_ID3D12DescriptorHeap_GetGPUDescriptorHandleForHeapStart *args)
 {
     /* Decode input parameters from the wire */
+
     /* Allocate temp storage for output-only parameters */
 }
 

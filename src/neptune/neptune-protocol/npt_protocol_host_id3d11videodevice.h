@@ -61,9 +61,13 @@ npt_decode_ID3D11VideoDevice_CreateVideoDecoder_args_temp(struct npt_cs_decoder 
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppDecoder = _gid;
-        args->ppDecoder = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppDecoder) return;
-        *args->ppDecoder = NULL;
+        if (_gid) {
+            args->ppDecoder = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppDecoder) return;
+            *args->ppDecoder = NULL;
+        } else {
+            args->ppDecoder = NULL;
+        }
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -207,9 +211,13 @@ npt_decode_ID3D11VideoDevice_CreateVideoProcessor_args_temp(struct npt_cs_decode
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppVideoProcessor = _gid;
-        args->ppVideoProcessor = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppVideoProcessor) return;
-        *args->ppVideoProcessor = NULL;
+        if (_gid) {
+            args->ppVideoProcessor = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppVideoProcessor) return;
+            *args->ppVideoProcessor = NULL;
+        } else {
+            args->ppVideoProcessor = NULL;
+        }
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -348,9 +356,13 @@ npt_decode_ID3D11VideoDevice_CreateAuthenticatedChannel_args_temp(struct npt_cs_
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppAuthenticatedChannel = _gid;
-        args->ppAuthenticatedChannel = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppAuthenticatedChannel) return;
-        *args->ppAuthenticatedChannel = NULL;
+        if (_gid) {
+            args->ppAuthenticatedChannel = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppAuthenticatedChannel) return;
+            *args->ppAuthenticatedChannel = NULL;
+        } else {
+            args->ppAuthenticatedChannel = NULL;
+        }
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -513,9 +525,13 @@ npt_decode_ID3D11VideoDevice_CreateCryptoSession_args_temp(struct npt_cs_decoder
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppCryptoSession = _gid;
-        args->ppCryptoSession = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppCryptoSession) return;
-        *args->ppCryptoSession = NULL;
+        if (_gid) {
+            args->ppCryptoSession = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppCryptoSession) return;
+            *args->ppCryptoSession = NULL;
+        } else {
+            args->ppCryptoSession = NULL;
+        }
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -668,9 +684,13 @@ npt_decode_ID3D11VideoDevice_CreateVideoDecoderOutputView_args_temp(struct npt_c
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppVDOVView = _gid;
-        args->ppVDOVView = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppVDOVView) return;
-        *args->ppVDOVView = NULL;
+        if (_gid) {
+            args->ppVDOVView = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppVDOVView) return;
+            *args->ppVDOVView = NULL;
+        } else {
+            args->ppVDOVView = NULL;
+        }
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -829,9 +849,13 @@ npt_decode_ID3D11VideoDevice_CreateVideoProcessorInputView_args_temp(struct npt_
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppVPIView = _gid;
-        args->ppVPIView = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppVPIView) return;
-        *args->ppVPIView = NULL;
+        if (_gid) {
+            args->ppVPIView = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppVPIView) return;
+            *args->ppVPIView = NULL;
+        } else {
+            args->ppVPIView = NULL;
+        }
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -992,9 +1016,13 @@ npt_decode_ID3D11VideoDevice_CreateVideoProcessorOutputView_args_temp(struct npt
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppVPOView = _gid;
-        args->ppVPOView = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppVPOView) return;
-        *args->ppVPOView = NULL;
+        if (_gid) {
+            args->ppVPOView = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppVPOView) return;
+            *args->ppVPOView = NULL;
+        } else {
+            args->ppVPOView = NULL;
+        }
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -1143,9 +1171,13 @@ npt_decode_ID3D11VideoDevice_CreateVideoProcessorEnumerator_args_temp(struct npt
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppEnum = _gid;
-        args->ppEnum = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppEnum) return;
-        *args->ppEnum = NULL;
+        if (_gid) {
+            args->ppEnum = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppEnum) return;
+            *args->ppEnum = NULL;
+        } else {
+            args->ppEnum = NULL;
+        }
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -1270,6 +1302,7 @@ npt_decode_ID3D11VideoDevice_GetVideoDecoderProfileCount_args_temp(struct npt_cs
                                                                    struct npt_command_ID3D11VideoDevice_GetVideoDecoderProfileCount *args)
 {
     /* Decode input parameters from the wire */
+
     /* Allocate temp storage for output-only parameters */
 }
 
@@ -2209,6 +2242,7 @@ static inline void
 npt_decode_ID3D11VideoDevice_SetPrivateData_args_temp(struct npt_cs_decoder *dec,
                                                       struct npt_command_ID3D11VideoDevice_SetPrivateData *args)
 {
+    uint64_t _cnt_pData = 0; int _has_cnt_pData = -1;
     /* Decode input parameters from the wire */
     if (npt_decode_simple_pointer(dec)) {
         args->guid = npt_cs_decoder_alloc_temp(dec, sizeof(GUID));
@@ -2220,15 +2254,19 @@ npt_decode_ID3D11VideoDevice_SetPrivateData_args_temp(struct npt_cs_decoder *dec
         return;
     }
     npt_decode_UINT(dec, &args->DataSize);
-    {
-        const uint64_t _blob_size = npt_decode_array_count_unchecked(dec);
-        if (_blob_size) {
-            args->pData = npt_cs_decoder_alloc_temp(dec, _blob_size);
-            if (!args->pData) return;
-            npt_decode_blob_array(dec, (void *)args->pData, _blob_size);
-        } else {
-            args->pData = NULL;
-        }
+    _cnt_pData = npt_decode_array_count_unchecked(dec);
+    _has_cnt_pData = _cnt_pData != 0;
+    if (_cnt_pData) {
+        args->pData = npt_cs_decoder_alloc_temp(dec, _cnt_pData);
+        if (!args->pData) return;
+        npt_decode_blob_array(dec, (void *)args->pData, _cnt_pData);
+    } else {
+        args->pData = NULL;
+    }
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_pData > 0 && _cnt_pData < (uint64_t)(args->DataSize))) {
+        npt_cs_decoder_set_fatal(dec);
+        return;
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -3284,6 +3322,7 @@ static inline void
 npt_decode_ID3D11VideoDevice2_NegotiateCryptoSessionKeyExchangeMT_args_temp(struct npt_cs_decoder *dec,
                                                                             struct npt_command_ID3D11VideoDevice2_NegotiateCryptoSessionKeyExchangeMT *args)
 {
+    uint64_t _cnt_pData = 0; int _has_cnt_pData = -1;
     /* Decode input parameters from the wire */
     {
         npt_object_id _id;
@@ -3292,15 +3331,20 @@ npt_decode_ID3D11VideoDevice2_NegotiateCryptoSessionKeyExchangeMT_args_temp(stru
     }
     npt_decode_D3D11_CRYPTO_SESSION_KEY_EXCHANGE_FLAGS(dec, &args->flags);
     npt_decode_UINT(dec, &args->DataSize);
-    {
-        const uint64_t _blob_size = npt_decode_array_count_unchecked(dec);
-        if (_blob_size) {
-            args->pData = npt_cs_decoder_alloc_temp(dec, _blob_size);
-            if (!args->pData) return;
-            npt_decode_blob_array(dec, (void *)args->pData, _blob_size);
-        } else {
-            args->pData = NULL;
-        }
+    _cnt_pData = npt_decode_array_count_unchecked(dec);
+    _has_cnt_pData = _cnt_pData != 0;
+    if (_cnt_pData) {
+        args->pData = npt_cs_decoder_alloc_temp(dec, _cnt_pData);
+        if (!args->pData) return;
+        npt_decode_blob_array(dec, (void *)args->pData, _cnt_pData);
+    } else {
+        args->pData = NULL;
+    }
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_pData > 0 && _cnt_pData < (uint64_t)(args->DataSize)) ||
+        (_has_cnt_pData == 0 && (uint64_t)(args->DataSize) != 0)) {
+        npt_cs_decoder_set_fatal(dec);
+        return;
     }
     /* Allocate temp storage for output-only parameters */
 

@@ -44,9 +44,13 @@ npt_decode_IDXGIFactory_EnumAdapters_args_temp(struct npt_cs_decoder *dec,
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppAdapter = _gid;
-        args->ppAdapter = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppAdapter) return;
-        *args->ppAdapter = NULL;
+        if (_gid) {
+            args->ppAdapter = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppAdapter) return;
+            *args->ppAdapter = NULL;
+        } else {
+            args->ppAdapter = NULL;
+        }
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -444,9 +448,13 @@ npt_decode_IDXGIFactory_CreateSwapChain_args_temp(struct npt_cs_decoder *dec,
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppSwapChain = _gid;
-        args->ppSwapChain = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppSwapChain) return;
-        *args->ppSwapChain = NULL;
+        if (_gid) {
+            args->ppSwapChain = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppSwapChain) return;
+            *args->ppSwapChain = NULL;
+        } else {
+            args->ppSwapChain = NULL;
+        }
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -591,9 +599,13 @@ npt_decode_IDXGIFactory_CreateSoftwareAdapter_args_temp(struct npt_cs_decoder *d
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppAdapter = _gid;
-        args->ppAdapter = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppAdapter) return;
-        *args->ppAdapter = NULL;
+        if (_gid) {
+            args->ppAdapter = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppAdapter) return;
+            *args->ppAdapter = NULL;
+        } else {
+            args->ppAdapter = NULL;
+        }
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -732,9 +744,13 @@ npt_decode_IDXGIFactory1_EnumAdapters1_args_temp(struct npt_cs_decoder *dec,
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppAdapter = _gid;
-        args->ppAdapter = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppAdapter) return;
-        *args->ppAdapter = NULL;
+        if (_gid) {
+            args->ppAdapter = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppAdapter) return;
+            *args->ppAdapter = NULL;
+        } else {
+            args->ppAdapter = NULL;
+        }
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -857,6 +873,7 @@ npt_decode_IDXGIFactory1_IsCurrent_args_temp(struct npt_cs_decoder *dec,
                                              struct npt_command_IDXGIFactory1_IsCurrent *args)
 {
     /* Decode input parameters from the wire */
+
     /* Allocate temp storage for output-only parameters */
 }
 
@@ -973,6 +990,7 @@ npt_decode_IDXGIFactory2_IsWindowedStereoEnabled_args_temp(struct npt_cs_decoder
                                                            struct npt_command_IDXGIFactory2_IsWindowedStereoEnabled *args)
 {
     /* Decode input parameters from the wire */
+
     /* Allocate temp storage for output-only parameters */
 }
 
@@ -1135,9 +1153,13 @@ npt_decode_IDXGIFactory2_CreateSwapChainForHwnd_args_temp(struct npt_cs_decoder 
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppSwapChain = _gid;
-        args->ppSwapChain = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppSwapChain) return;
-        *args->ppSwapChain = NULL;
+        if (_gid) {
+            args->ppSwapChain = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppSwapChain) return;
+            *args->ppSwapChain = NULL;
+        } else {
+            args->ppSwapChain = NULL;
+        }
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -1307,9 +1329,13 @@ npt_decode_IDXGIFactory2_CreateSwapChainForCoreWindow_args_temp(struct npt_cs_de
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppSwapChain = _gid;
-        args->ppSwapChain = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppSwapChain) return;
-        *args->ppSwapChain = NULL;
+        if (_gid) {
+            args->ppSwapChain = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppSwapChain) return;
+            *args->ppSwapChain = NULL;
+        } else {
+            args->ppSwapChain = NULL;
+        }
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -2369,9 +2395,13 @@ npt_decode_IDXGIFactory2_CreateSwapChainForComposition_args_temp(struct npt_cs_d
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppSwapChain = _gid;
-        args->ppSwapChain = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppSwapChain) return;
-        *args->ppSwapChain = NULL;
+        if (_gid) {
+            args->ppSwapChain = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppSwapChain) return;
+            *args->ppSwapChain = NULL;
+        } else {
+            args->ppSwapChain = NULL;
+        }
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -2500,6 +2530,7 @@ npt_decode_IDXGIFactory3_GetCreationFlags_args_temp(struct npt_cs_decoder *dec,
                                                     struct npt_command_IDXGIFactory3_GetCreationFlags *args)
 {
     /* Decode input parameters from the wire */
+
     /* Allocate temp storage for output-only parameters */
 }
 
@@ -2639,9 +2670,13 @@ npt_decode_IDXGIFactory4_EnumAdapterByLuid_args_temp(struct npt_cs_decoder *dec,
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppvAdapter = _gid;
-        args->ppvAdapter = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppvAdapter) return;
-        *args->ppvAdapter = NULL;
+        if (_gid) {
+            args->ppvAdapter = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppvAdapter) return;
+            *args->ppvAdapter = NULL;
+        } else {
+            args->ppvAdapter = NULL;
+        }
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -2787,9 +2822,13 @@ npt_decode_IDXGIFactory4_EnumWarpAdapter_args_temp(struct npt_cs_decoder *dec,
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppvAdapter = _gid;
-        args->ppvAdapter = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppvAdapter) return;
-        *args->ppvAdapter = NULL;
+        if (_gid) {
+            args->ppvAdapter = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppvAdapter) return;
+            *args->ppvAdapter = NULL;
+        } else {
+            args->ppvAdapter = NULL;
+        }
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -2915,19 +2954,25 @@ static inline void
 npt_decode_IDXGIFactory5_CheckFeatureSupport_args_temp(struct npt_cs_decoder *dec,
                                                        struct npt_command_IDXGIFactory5_CheckFeatureSupport *args)
 {
+    uint64_t _cnt_pFeatureSupportData = 0; int _has_cnt_pFeatureSupportData = -1;
     /* Decode input parameters from the wire */
     npt_decode_DXGI_FEATURE(dec, &args->Feature);
-    {
-        const uint64_t _blob_size = npt_decode_array_count_unchecked(dec);
-        if (_blob_size) {
-            args->pFeatureSupportData = npt_cs_decoder_alloc_temp(dec, _blob_size);
-            if (!args->pFeatureSupportData) return;
-            npt_decode_blob_array(dec, (void *)args->pFeatureSupportData, _blob_size);
-        } else {
-            args->pFeatureSupportData = NULL;
-        }
+    _cnt_pFeatureSupportData = npt_decode_array_count_unchecked(dec);
+    _has_cnt_pFeatureSupportData = _cnt_pFeatureSupportData != 0;
+    if (_cnt_pFeatureSupportData) {
+        args->pFeatureSupportData = npt_cs_decoder_alloc_temp(dec, _cnt_pFeatureSupportData);
+        if (!args->pFeatureSupportData) return;
+        npt_decode_blob_array(dec, (void *)args->pFeatureSupportData, _cnt_pFeatureSupportData);
+    } else {
+        args->pFeatureSupportData = NULL;
     }
     npt_decode_UINT(dec, &args->FeatureSupportDataSize);
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_pFeatureSupportData > 0 && _cnt_pFeatureSupportData < (uint64_t)(args->FeatureSupportDataSize)) ||
+        (_has_cnt_pFeatureSupportData == 0 && (uint64_t)(args->FeatureSupportDataSize) != 0)) {
+        npt_cs_decoder_set_fatal(dec);
+        return;
+    }
     /* Allocate temp storage for output-only parameters */
 
 
@@ -3078,9 +3123,13 @@ npt_decode_IDXGIFactory6_EnumAdapterByGpuPreference_args_temp(struct npt_cs_deco
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppvAdapter = _gid;
-        args->ppvAdapter = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppvAdapter) return;
-        *args->ppvAdapter = NULL;
+        if (_gid) {
+            args->ppvAdapter = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppvAdapter) return;
+            *args->ppvAdapter = NULL;
+        } else {
+            args->ppvAdapter = NULL;
+        }
     }
     /* Allocate temp storage for output-only parameters */
 

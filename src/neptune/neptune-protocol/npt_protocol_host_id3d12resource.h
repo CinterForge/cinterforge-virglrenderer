@@ -293,6 +293,7 @@ npt_decode_ID3D12Resource_GetDesc_args_temp(struct npt_cs_decoder *dec,
                                             struct npt_command_ID3D12Resource_GetDesc *args)
 {
     /* Decode input parameters from the wire */
+
     /* Allocate temp storage for output-only parameters */
 }
 
@@ -412,6 +413,7 @@ npt_decode_ID3D12Resource_GetGPUVirtualAddress_args_temp(struct npt_cs_decoder *
                                                          struct npt_command_ID3D12Resource_GetGPUVirtualAddress *args)
 {
     /* Decode input parameters from the wire */
+
     /* Allocate temp storage for output-only parameters */
 }
 
@@ -959,9 +961,13 @@ npt_decode_ID3D12Resource1_GetProtectedResourceSession_args_temp(struct npt_cs_d
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppProtectedSession = _gid;
-        args->ppProtectedSession = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppProtectedSession) return;
-        *args->ppProtectedSession = NULL;
+        if (_gid) {
+            args->ppProtectedSession = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppProtectedSession) return;
+            *args->ppProtectedSession = NULL;
+        } else {
+            args->ppProtectedSession = NULL;
+        }
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -1085,6 +1091,7 @@ npt_decode_ID3D12Resource2_GetDesc1_args_temp(struct npt_cs_decoder *dec,
                                               struct npt_command_ID3D12Resource2_GetDesc1 *args)
 {
     /* Decode input parameters from the wire */
+
     /* Allocate temp storage for output-only parameters */
 }
 

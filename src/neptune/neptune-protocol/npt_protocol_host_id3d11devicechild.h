@@ -41,9 +41,13 @@ npt_decode_ID3D11DeviceChild_GetDevice_args_temp(struct npt_cs_decoder *dec,
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppDevice = _gid;
-        args->ppDevice = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppDevice) return;
-        *args->ppDevice = NULL;
+        if (_gid) {
+            args->ppDevice = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppDevice) return;
+            *args->ppDevice = NULL;
+        } else {
+            args->ppDevice = NULL;
+        }
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -322,6 +326,7 @@ static inline void
 npt_decode_ID3D11DeviceChild_SetPrivateData_args_temp(struct npt_cs_decoder *dec,
                                                       struct npt_command_ID3D11DeviceChild_SetPrivateData *args)
 {
+    uint64_t _cnt_pData = 0; int _has_cnt_pData = -1;
     /* Decode input parameters from the wire */
     if (npt_decode_simple_pointer(dec)) {
         args->guid = npt_cs_decoder_alloc_temp(dec, sizeof(GUID));
@@ -333,15 +338,19 @@ npt_decode_ID3D11DeviceChild_SetPrivateData_args_temp(struct npt_cs_decoder *dec
         return;
     }
     npt_decode_UINT(dec, &args->DataSize);
-    {
-        const uint64_t _blob_size = npt_decode_array_count_unchecked(dec);
-        if (_blob_size) {
-            args->pData = npt_cs_decoder_alloc_temp(dec, _blob_size);
-            if (!args->pData) return;
-            npt_decode_blob_array(dec, (void *)args->pData, _blob_size);
-        } else {
-            args->pData = NULL;
-        }
+    _cnt_pData = npt_decode_array_count_unchecked(dec);
+    _has_cnt_pData = _cnt_pData != 0;
+    if (_cnt_pData) {
+        args->pData = npt_cs_decoder_alloc_temp(dec, _cnt_pData);
+        if (!args->pData) return;
+        npt_decode_blob_array(dec, (void *)args->pData, _cnt_pData);
+    } else {
+        args->pData = NULL;
+    }
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_pData > 0 && _cnt_pData < (uint64_t)(args->DataSize))) {
+        npt_cs_decoder_set_fatal(dec);
+        return;
     }
     /* Allocate temp storage for output-only parameters */
 

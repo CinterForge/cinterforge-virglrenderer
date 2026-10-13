@@ -454,6 +454,7 @@ npt_decode_IDXGIOutput_WaitForVBlank_args_temp(struct npt_cs_decoder *dec,
                                                struct npt_command_IDXGIOutput_WaitForVBlank *args)
 {
     /* Decode input parameters from the wire */
+
     /* Allocate temp storage for output-only parameters */
 }
 
@@ -696,6 +697,7 @@ npt_decode_IDXGIOutput_ReleaseOwnership_args_temp(struct npt_cs_decoder *dec,
                                                   struct npt_command_IDXGIOutput_ReleaseOwnership *args)
 {
     /* Decode input parameters from the wire */
+
     /* Allocate temp storage for output-only parameters */
 }
 
@@ -1997,9 +1999,13 @@ npt_decode_IDXGIOutput1_DuplicateOutput_args_temp(struct npt_cs_decoder *dec,
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppOutputDuplication = _gid;
-        args->ppOutputDuplication = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppOutputDuplication) return;
-        *args->ppOutputDuplication = NULL;
+        if (_gid) {
+            args->ppOutputDuplication = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppOutputDuplication) return;
+            *args->ppOutputDuplication = NULL;
+        } else {
+            args->ppOutputDuplication = NULL;
+        }
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -2123,6 +2129,7 @@ npt_decode_IDXGIOutput2_SupportsOverlays_args_temp(struct npt_cs_decoder *dec,
                                                    struct npt_command_IDXGIOutput2_SupportsOverlays *args)
 {
     /* Decode input parameters from the wire */
+
     /* Allocate temp storage for output-only parameters */
 }
 
@@ -2520,6 +2527,7 @@ static inline void
 npt_decode_IDXGIOutput5_DuplicateOutput1_args_temp(struct npt_cs_decoder *dec,
                                                    struct npt_command_IDXGIOutput5_DuplicateOutput1 *args)
 {
+    uint64_t _cnt_pSupportedFormats = 0; int _has_cnt_pSupportedFormats = -1;
     /* Decode input parameters from the wire */
     {
         npt_object_id _id;
@@ -2528,8 +2536,9 @@ npt_decode_IDXGIOutput5_DuplicateOutput1_args_temp(struct npt_cs_decoder *dec,
     }
     npt_decode_UINT(dec, &args->Flags);
     npt_decode_UINT(dec, &args->SupportedFormatsCount);
-    uint64_t _cnt_pSupportedFormats = 0;
+    _has_cnt_pSupportedFormats = 0;
     if (npt_decode_counted_pointer_count(dec, &_cnt_pSupportedFormats)) {
+        _has_cnt_pSupportedFormats = 1;
         args->pSupportedFormats = npt_cs_decoder_alloc_temp_array(dec, sizeof(DXGI_FORMAT), _cnt_pSupportedFormats ? _cnt_pSupportedFormats : 1);
         if (!args->pSupportedFormats) return;
         npt_decode_DXGI_FORMAT_array(dec, (DXGI_FORMAT *)args->pSupportedFormats, _cnt_pSupportedFormats);
@@ -2540,12 +2549,17 @@ npt_decode_IDXGIOutput5_DuplicateOutput1_args_temp(struct npt_cs_decoder *dec,
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppOutputDuplication = _gid;
-        args->ppOutputDuplication = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppOutputDuplication) return;
-        *args->ppOutputDuplication = NULL;
+        if (_gid) {
+            args->ppOutputDuplication = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppOutputDuplication) return;
+            *args->ppOutputDuplication = NULL;
+        } else {
+            args->ppOutputDuplication = NULL;
+        }
     }
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_pSupportedFormats && _cnt_pSupportedFormats < (uint64_t)(args->SupportedFormatsCount)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_pSupportedFormats > 0 && _cnt_pSupportedFormats < (uint64_t)(args->SupportedFormatsCount)) ||
+        (_has_cnt_pSupportedFormats == 0 && (uint64_t)(args->SupportedFormatsCount) != 0)) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }

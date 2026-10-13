@@ -23,9 +23,11 @@ struct npt_context;
 #define NPT_MAX_RESOURCE_UPDATE_BYTES (2048u << 20)
 
 /* RESOURCE_UPDATE.  `payload` points at the contiguous source bytes in
- * the decoder's stream; lifetime is the caller's responsibility. */
+ * the decoder's stream; lifetime is the caller's responsibility.
+ * `context_id` names the deferred context to record a D3D11 update on;
+ * 0 applies it on the immediate context. */
 void
-npt_resource_update(struct npt_context *ctx,
+npt_resource_update(struct npt_context *ctx, uint64_t context_id,
                     uint64_t resource_id, uint32_t subresource,
                     uint32_t row_pitch, uint32_t depth_pitch,
                     uint32_t byte_size,

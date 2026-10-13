@@ -18,121 +18,6 @@
 #pragma GCC diagnostic ignored "-Wpointer-arith"
 
 /*
- * ID3D10Blob::GetBufferPointer
- */
-
-struct npt_command_ID3D10Blob_GetBufferPointer {
-    void *_self;
-};
-
-static inline void
-npt_decode_ID3D10Blob_GetBufferPointer_args_temp(struct npt_cs_decoder *dec,
-                                                 struct npt_command_ID3D10Blob_GetBufferPointer *args)
-{
-    /* Decode input parameters from the wire */
-    /* Allocate temp storage for output-only parameters */
-}
-
-static inline void
-npt_replace_ID3D10Blob_GetBufferPointer_args_handle(struct npt_dispatch_context *ctx, struct npt_command_ID3D10Blob_GetBufferPointer *args)
-{
-}
-
-static inline void
-npt_encode_ID3D10Blob_GetBufferPointer_reply(struct npt_cs_encoder *enc,
-                                             const struct npt_command_ID3D10Blob_GetBufferPointer *args)
-{
-    struct npt_reply_header _reply = {
-        .cmd_type = NPT_CMD_TYPE(255, NPT_IFACE_ID_ID3D10Blob,
-                                 NPT_METHOD_ID3D10Blob_GetBufferPointer),
-        .cmd_return = 0,
-    };
-    npt_cs_encoder_write(enc, sizeof(_reply), &_reply, sizeof(_reply));
-}
-
-static inline void
-npt_dispatch_ID3D10Blob_GetBufferPointer(struct npt_dispatch_context *ctx,
-                                         uint32_t cmd_flags,
-                                         uint64_t object_id)
-{
-    struct npt_command_ID3D10Blob_GetBufferPointer args;
-    memset(&args, 0, sizeof(args));
-
-    npt_decode_ID3D10Blob_GetBufferPointer_args_temp(ctx->decoder, &args);
-
-    if (npt_cs_decoder_get_fatal(ctx->decoder))
-        return;
-
-    args._self = npt_cs_handle_lookup(ctx, object_id,
-                                       NPT_OBJECT_TYPE_ID3D10BLOB);
-    if (!args._self) {
-        /* The host no longer knows this object -- a guest-side lifetime
-         * bug, or a teardown race between a release and a call already
-         * on the wire.  A reply-less call is dropped: losing one
-         * command on an object that is already gone is a smaller harm
-         * than the context teardown a fatal costs.  A call that owes a
-         * reply still goes fatal; there is no honest answer to encode,
-         * and a silent drop would hang the caller.  Consume the
-         * recorded miss either way so it cannot leak into the next
-         * command. */
-        (void)npt_cs_decoder_take_handle_miss(ctx->decoder);
-        if (!(cmd_flags & NPT_CMD_FLAG_REPLY)) {
-            npt_log("dropping ID3D10Blob_GetBufferPointer on unregistered object "
-                    "0x%016" PRIx64, (uint64_t)object_id);
-
-            npt_cs_decoder_reset_temp_pool(ctx->decoder);
-            return;
-        }
-        npt_cs_decoder_set_fatal(ctx->decoder);
-        return;
-    }
-
-    npt_replace_ID3D10Blob_GetBufferPointer_args_handle(ctx, &args);
-
-    if (npt_cs_decoder_take_handle_miss(ctx->decoder)) {
-        /* An argument handle failed to translate; the backend would
-         * dereference the NULL left in its place.  Same policy as a
-         * missing self: drop when nothing awaits a reply, go fatal
-         * when something does. */
-        if (!(cmd_flags & NPT_CMD_FLAG_REPLY)) {
-            npt_log("dropping ID3D10Blob_GetBufferPointer: an argument handle is unknown "
-                    "to this context");
-
-            npt_cs_decoder_reset_temp_pool(ctx->decoder);
-            return;
-        }
-        npt_cs_decoder_set_fatal(ctx->decoder);
-        return;
-    }
-
-    PFN_ID3D10Blob_GetBufferPointer _original = NPT_COM_VTBL_FUNC(
-        PFN_ID3D10Blob_GetBufferPointer, npt_com_vtable(args._self),
-        NPT_VTBL_ID3D10Blob_GetBufferPointer);
-
-    if (ctx->id3d10blob_dispatch_overrides && ctx->id3d10blob_dispatch_overrides->GetBufferPointer) {
-        ctx->id3d10blob_dispatch_overrides->GetBufferPointer(ctx, &args, _original);
-    } else {
-        _original(args._self);
-    }
-
-    /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  A void**
-     * output takes its type from the REFIID input paired with it.  A
-     * canonical method's slots are answered into the reply refs. */
-
-    if (cmd_flags & NPT_CMD_FLAG_REPLY) {
-        if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
-            if (npt_cs_encoder_acquire(ctx->encoder)) {
-                npt_encode_ID3D10Blob_GetBufferPointer_reply(ctx->encoder, &args);
-                npt_cs_encoder_release(ctx->encoder);
-            }
-        }
-    }
-
-    npt_cs_decoder_reset_temp_pool(ctx->decoder);
-}
-
-/*
  * ID3D10Blob::GetBufferSize
  */
 
@@ -146,6 +31,7 @@ npt_decode_ID3D10Blob_GetBufferSize_args_temp(struct npt_cs_decoder *dec,
                                               struct npt_command_ID3D10Blob_GetBufferSize *args)
 {
     /* Decode input parameters from the wire */
+
     /* Allocate temp storage for output-only parameters */
 }
 

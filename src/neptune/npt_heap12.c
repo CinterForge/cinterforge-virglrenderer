@@ -27,7 +27,7 @@
 #include "npt_cs.h"
 #include "npt_library.h"
 #include "npt_renderer.h"
-#include "npt_transport_defs.h"
+#include "neptune-protocol/npt_protocol_transport.h"
 
 struct npt_heap_import {
    uint64_t heap_id;              /* guest id of the ID3D12Heap */

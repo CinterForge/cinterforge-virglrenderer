@@ -141,132 +141,6 @@ npt_dispatch_IDXGISurface_GetDesc(struct npt_dispatch_context *ctx,
 }
 
 /*
- * IDXGISurface::Map
- */
-
-struct npt_command_IDXGISurface_Map {
-    void *_self;
-    DXGI_MAPPED_RECT * pLockedRect;
-    UINT MapFlags;
-    HRESULT ret;
-};
-
-static inline void
-npt_decode_IDXGISurface_Map_args_temp(struct npt_cs_decoder *dec,
-                                      struct npt_command_IDXGISurface_Map *args)
-{
-    /* Decode input parameters from the wire */
-
-    npt_decode_UINT(dec, &args->MapFlags);
-    /* Allocate temp storage for output-only parameters */
-    args->pLockedRect = npt_cs_decoder_alloc_temp(dec, sizeof(DXGI_MAPPED_RECT));
-    if (!args->pLockedRect) return;
-    memset(args->pLockedRect, 0, sizeof(DXGI_MAPPED_RECT));
-
-}
-
-static inline void
-npt_replace_IDXGISurface_Map_args_handle(struct npt_dispatch_context *ctx, struct npt_command_IDXGISurface_Map *args)
-{
-}
-
-static inline void
-npt_encode_IDXGISurface_Map_reply(struct npt_cs_encoder *enc,
-                                  const struct npt_command_IDXGISurface_Map *args)
-{
-    struct npt_reply_header _reply = {
-        .cmd_type = NPT_CMD_TYPE(255, NPT_IFACE_ID_IDXGISurface,
-                                 NPT_METHOD_IDXGISurface_Map),
-        .cmd_return = (uint32_t)args->ret,
-    };
-    npt_cs_encoder_write(enc, sizeof(_reply), &_reply, sizeof(_reply));
-    if (npt_encode_simple_pointer(enc, args->pLockedRect))
-        npt_encode_DXGI_MAPPED_RECT(enc, args->pLockedRect);
-}
-
-static inline void
-npt_dispatch_IDXGISurface_Map(struct npt_dispatch_context *ctx,
-                              uint32_t cmd_flags,
-                              uint64_t object_id)
-{
-    struct npt_command_IDXGISurface_Map args;
-    memset(&args, 0, sizeof(args));
-
-    npt_decode_IDXGISurface_Map_args_temp(ctx->decoder, &args);
-
-    if (npt_cs_decoder_get_fatal(ctx->decoder))
-        return;
-
-    args._self = npt_cs_handle_lookup(ctx, object_id,
-                                       NPT_OBJECT_TYPE_IDXGISURFACE);
-    if (!args._self) {
-        /* The host no longer knows this object -- a guest-side lifetime
-         * bug, or a teardown race between a release and a call already
-         * on the wire.  A reply-less call is dropped: losing one
-         * command on an object that is already gone is a smaller harm
-         * than the context teardown a fatal costs.  A call that owes a
-         * reply still goes fatal; there is no honest answer to encode,
-         * and a silent drop would hang the caller.  Consume the
-         * recorded miss either way so it cannot leak into the next
-         * command. */
-        (void)npt_cs_decoder_take_handle_miss(ctx->decoder);
-        if (!(cmd_flags & NPT_CMD_FLAG_REPLY)) {
-            npt_log("dropping IDXGISurface_Map on unregistered object "
-                    "0x%016" PRIx64, (uint64_t)object_id);
-
-            npt_cs_decoder_reset_temp_pool(ctx->decoder);
-            return;
-        }
-        npt_cs_decoder_set_fatal(ctx->decoder);
-        return;
-    }
-
-    npt_replace_IDXGISurface_Map_args_handle(ctx, &args);
-
-    if (npt_cs_decoder_take_handle_miss(ctx->decoder)) {
-        /* An argument handle failed to translate; the backend would
-         * dereference the NULL left in its place.  Same policy as a
-         * missing self: drop when nothing awaits a reply, go fatal
-         * when something does. */
-        if (!(cmd_flags & NPT_CMD_FLAG_REPLY)) {
-            npt_log("dropping IDXGISurface_Map: an argument handle is unknown "
-                    "to this context");
-
-            npt_cs_decoder_reset_temp_pool(ctx->decoder);
-            return;
-        }
-        npt_cs_decoder_set_fatal(ctx->decoder);
-        return;
-    }
-
-    PFN_IDXGISurface_Map _original = NPT_COM_VTBL_FUNC(
-        PFN_IDXGISurface_Map, npt_com_vtable(args._self),
-        NPT_VTBL_IDXGISurface_Map);
-
-    if (ctx->idxgisurface_dispatch_overrides && ctx->idxgisurface_dispatch_overrides->Map) {
-        args.ret = ctx->idxgisurface_dispatch_overrides->Map(ctx, &args, _original);
-    } else {
-        args.ret = _original(args._self, args.pLockedRect, args.MapFlags);
-    }
-
-    /* Register any output COM handles in the context object table so
-     * later commands that reference them can be validated.  A void**
-     * output takes its type from the REFIID input paired with it.  A
-     * canonical method's slots are answered into the reply refs. */
-
-    if (cmd_flags & NPT_CMD_FLAG_REPLY) {
-        if (!npt_cs_decoder_get_fatal(ctx->decoder)) {
-            if (npt_cs_encoder_acquire(ctx->encoder)) {
-                npt_encode_IDXGISurface_Map_reply(ctx->encoder, &args);
-                npt_cs_encoder_release(ctx->encoder);
-            }
-        }
-    }
-
-    npt_cs_decoder_reset_temp_pool(ctx->decoder);
-}
-
-/*
  * IDXGISurface::Unmap
  */
 
@@ -280,6 +154,7 @@ npt_decode_IDXGISurface_Unmap_args_temp(struct npt_cs_decoder *dec,
                                         struct npt_command_IDXGISurface_Unmap *args)
 {
     /* Decode input parameters from the wire */
+
     /* Allocate temp storage for output-only parameters */
 }
 
@@ -669,9 +544,13 @@ npt_decode_IDXGISurface2_GetResource_args_temp(struct npt_cs_decoder *dec,
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppParentResource = _gid;
-        args->ppParentResource = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppParentResource) return;
-        *args->ppParentResource = NULL;
+        if (_gid) {
+            args->ppParentResource = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppParentResource) return;
+            *args->ppParentResource = NULL;
+        } else {
+            args->ppParentResource = NULL;
+        }
     }
 
     /* Allocate temp storage for output-only parameters */

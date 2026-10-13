@@ -654,6 +654,7 @@ npt_decode_ID3D12DeviceRemovedExtendedData2_GetDeviceState_args_temp(struct npt_
                                                                      struct npt_command_ID3D12DeviceRemovedExtendedData2_GetDeviceState *args)
 {
     /* Decode input parameters from the wire */
+
     /* Allocate temp storage for output-only parameters */
 }
 

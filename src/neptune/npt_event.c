@@ -8,7 +8,7 @@
 #include "npt_context.h"
 #include "npt_library.h"
 #include "npt_renderer.h"
-#include "npt_transport_defs.h"
+#include "neptune-protocol/npt_protocol_transport.h"
 
 #include "util/hash_table.h"
 #include "util/list.h"
@@ -362,33 +362,16 @@ event_pair_parked(struct npt_context *ctx,
 }
 
 bool
-npt_event_arm(struct npt_context *ctx, uint64_t token, uint32_t ring_idx,
-              uint32_t arm_flags)
+npt_event_arm(struct npt_context *ctx, uint64_t token, uint32_t ring_idx)
 {
    if (!token)
       return false;
 
-   const bool auto_release = (arm_flags & NPT_EVENT_ARM_FLAG_AUTO_RELEASE) != 0;
-
    mtx_lock(&ctx->event_mutex);
-   struct npt_event_proxy *pr =
-      auto_release ? NULL : lookup_locked(ctx, token);
+   struct npt_event_proxy *pr = lookup_locked(ctx, token);
    if (!pr) {
       /* Lazy-create for an ARM that beat its REGISTER_EVENT, WITHOUT a
-       * registration reference — the arm reference taken below holds it.
-       *
-       * AUTO_RELEASE arms never send REGISTER at all: the arm reference
-       * is the proxy's single reference and each arm gets a fresh proxy,
-       * never a table hit.  The guest reuses one HANDLE (= token) across
-       * waits, and a prior arm's proxy for it can still be alive here --
-       * already signaled, since nothing clears the host event -- so
-       * reusing it would retire the new fence before the GPU work, and
-       * that spurious retire drops the last reference while the decode
-       * thread may still be inside the D3D call registering the handle.
-       * The insert replaces the token's table entry, so the SEOC that
-       * follows this ARM in stream order resolves to this proxy; the
-       * displaced proxy lives on through its outstanding references and
-       * is released by pointer. */
+       * registration reference — the arm reference taken below holds it. */
       pr = event_proxy_create_locked(ctx, token, /*initial_refcount=*/0);
       if (!pr) {
          mtx_unlock(&ctx->event_mutex);
@@ -464,10 +447,7 @@ npt_event_proxy_unref_locked(struct npt_context *ctx,
                                              tok_hash(&pr->token),
                                              &pr->token);
    }
-   /* An AUTO_RELEASE arm for the same token may have replaced this
-    * proxy's table entry with a fresh one; only remove the entry if it
-    * is still ours. */
-   if (e && e->data == pr)
+   if (e)
       _mesa_hash_table_remove(ctx->event_proxies, e);
    free(pr);
 }

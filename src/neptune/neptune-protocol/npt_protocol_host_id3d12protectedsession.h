@@ -52,9 +52,13 @@ npt_decode_ID3D12ProtectedSession_GetStatusFence_args_temp(struct npt_cs_decoder
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppFence = _gid;
-        args->ppFence = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppFence) return;
-        *args->ppFence = NULL;
+        if (_gid) {
+            args->ppFence = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppFence) return;
+            *args->ppFence = NULL;
+        } else {
+            args->ppFence = NULL;
+        }
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -178,6 +182,7 @@ npt_decode_ID3D12ProtectedSession_GetSessionStatus_args_temp(struct npt_cs_decod
                                                              struct npt_command_ID3D12ProtectedSession_GetSessionStatus *args)
 {
     /* Decode input parameters from the wire */
+
     /* Allocate temp storage for output-only parameters */
 }
 

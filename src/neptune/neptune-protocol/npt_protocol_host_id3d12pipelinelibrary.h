@@ -209,9 +209,13 @@ npt_decode_ID3D12PipelineLibrary_LoadGraphicsPipeline_args_temp(struct npt_cs_de
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppPipelineState = _gid;
-        args->ppPipelineState = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppPipelineState) return;
-        *args->ppPipelineState = NULL;
+        if (_gid) {
+            args->ppPipelineState = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppPipelineState) return;
+            *args->ppPipelineState = NULL;
+        } else {
+            args->ppPipelineState = NULL;
+        }
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -381,9 +385,13 @@ npt_decode_ID3D12PipelineLibrary_LoadComputePipeline_args_temp(struct npt_cs_dec
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppPipelineState = _gid;
-        args->ppPipelineState = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppPipelineState) return;
-        *args->ppPipelineState = NULL;
+        if (_gid) {
+            args->ppPipelineState = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppPipelineState) return;
+            *args->ppPipelineState = NULL;
+        } else {
+            args->ppPipelineState = NULL;
+        }
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -511,6 +519,7 @@ npt_decode_ID3D12PipelineLibrary_GetSerializedSize_args_temp(struct npt_cs_decod
                                                              struct npt_command_ID3D12PipelineLibrary_GetSerializedSize *args)
 {
     /* Decode input parameters from the wire */
+
     /* Allocate temp storage for output-only parameters */
 }
 
@@ -804,9 +813,13 @@ npt_decode_ID3D12PipelineLibrary1_LoadPipeline_args_temp(struct npt_cs_decoder *
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppPipelineState = _gid;
-        args->ppPipelineState = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppPipelineState) return;
-        *args->ppPipelineState = NULL;
+        if (_gid) {
+            args->ppPipelineState = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppPipelineState) return;
+            *args->ppPipelineState = NULL;
+        } else {
+            args->ppPipelineState = NULL;
+        }
     }
     /* Allocate temp storage for output-only parameters */
 

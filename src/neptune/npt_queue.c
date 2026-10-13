@@ -258,10 +258,10 @@ npt_queue_thread(void *arg)
          clock_gettime(CLOCK_MONOTONIC, &t1);
 
       /* Consume the fire's token(s) like the gate path does: the proxy
-       * event is manual-reset and nothing else ever drains its exported
-       * pipe, so a leftover token would make the NEXT arm of this
-       * guest HANDLE (guests reuse them) start out readable and retire
-       * its fence before the GPU work ran. */
+       * event is manual-reset and nothing else drains its exported
+       * pipe.  Each guest arm gets its own proxy, so a leftover token
+       * can no longer retire a later fence; draining keeps the proxy's
+       * descriptor quiet for whatever still polls it. */
       if (rc > 0)
          npt_queue_drain_wakeups(sync->sync_fd);
 

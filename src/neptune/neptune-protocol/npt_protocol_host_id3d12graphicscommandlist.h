@@ -31,6 +31,7 @@ npt_decode_ID3D12GraphicsCommandList_Close_args_temp(struct npt_cs_decoder *dec,
                                                      struct npt_command_ID3D12GraphicsCommandList_Close *args)
 {
     /* Decode input parameters from the wire */
+
     /* Allocate temp storage for output-only parameters */
 }
 
@@ -1630,10 +1631,12 @@ static inline void
 npt_decode_ID3D12GraphicsCommandList_RSSetViewports_args_temp(struct npt_cs_decoder *dec,
                                                               struct npt_command_ID3D12GraphicsCommandList_RSSetViewports *args)
 {
+    uint64_t _cnt_pViewports = 0; int _has_cnt_pViewports = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->NumViewports);
-    uint64_t _cnt_pViewports = 0;
+    _has_cnt_pViewports = 0;
     if (npt_decode_counted_pointer_count(dec, &_cnt_pViewports)) {
+        _has_cnt_pViewports = 1;
         args->pViewports = npt_cs_decoder_alloc_temp_array(dec, sizeof(D3D12_VIEWPORT), _cnt_pViewports ? _cnt_pViewports : 1);
         if (!args->pViewports) return;
         for (uint32_t _i = 0; _i < (uint32_t)_cnt_pViewports; _i++)
@@ -1641,8 +1644,9 @@ npt_decode_ID3D12GraphicsCommandList_RSSetViewports_args_temp(struct npt_cs_deco
     } else {
         args->pViewports = NULL;
     }
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_pViewports && _cnt_pViewports < (uint64_t)(args->NumViewports)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_pViewports > 0 && _cnt_pViewports < (uint64_t)(args->NumViewports)) ||
+        (_has_cnt_pViewports == 0 && (uint64_t)(args->NumViewports) != 0)) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -1764,10 +1768,12 @@ static inline void
 npt_decode_ID3D12GraphicsCommandList_RSSetScissorRects_args_temp(struct npt_cs_decoder *dec,
                                                                  struct npt_command_ID3D12GraphicsCommandList_RSSetScissorRects *args)
 {
+    uint64_t _cnt_pRects = 0; int _has_cnt_pRects = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->NumRects);
-    uint64_t _cnt_pRects = 0;
+    _has_cnt_pRects = 0;
     if (npt_decode_counted_pointer_count(dec, &_cnt_pRects)) {
+        _has_cnt_pRects = 1;
         args->pRects = npt_cs_decoder_alloc_temp_array(dec, sizeof(D3D12_RECT), _cnt_pRects ? _cnt_pRects : 1);
         if (!args->pRects) return;
         for (uint32_t _i = 0; _i < (uint32_t)_cnt_pRects; _i++)
@@ -1775,8 +1781,9 @@ npt_decode_ID3D12GraphicsCommandList_RSSetScissorRects_args_temp(struct npt_cs_d
     } else {
         args->pRects = NULL;
     }
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_pRects && _cnt_pRects < (uint64_t)(args->NumRects)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_pRects > 0 && _cnt_pRects < (uint64_t)(args->NumRects)) ||
+        (_has_cnt_pRects == 0 && (uint64_t)(args->NumRects) != 0)) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -2267,10 +2274,12 @@ static inline void
 npt_decode_ID3D12GraphicsCommandList_ResourceBarrier_args_temp(struct npt_cs_decoder *dec,
                                                                struct npt_command_ID3D12GraphicsCommandList_ResourceBarrier *args)
 {
+    uint64_t _cnt_pBarriers = 0; int _has_cnt_pBarriers = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->NumBarriers);
-    uint64_t _cnt_pBarriers = 0;
+    _has_cnt_pBarriers = 0;
     if (npt_decode_counted_pointer_count(dec, &_cnt_pBarriers)) {
+        _has_cnt_pBarriers = 1;
         args->pBarriers = npt_cs_decoder_alloc_temp_array(dec, sizeof(D3D12_RESOURCE_BARRIER), _cnt_pBarriers ? _cnt_pBarriers : 1);
         if (!args->pBarriers) return;
         for (uint32_t _i = 0; _i < (uint32_t)_cnt_pBarriers; _i++)
@@ -2278,8 +2287,9 @@ npt_decode_ID3D12GraphicsCommandList_ResourceBarrier_args_temp(struct npt_cs_dec
     } else {
         args->pBarriers = NULL;
     }
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_pBarriers && _cnt_pBarriers < (uint64_t)(args->NumBarriers)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_pBarriers > 0 && _cnt_pBarriers < (uint64_t)(args->NumBarriers)) ||
+        (_has_cnt_pBarriers == 0 && (uint64_t)(args->NumBarriers) != 0)) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -2528,9 +2538,11 @@ static inline void
 npt_decode_ID3D12GraphicsCommandList_SetDescriptorHeaps_args_temp(struct npt_cs_decoder *dec,
                                                                   struct npt_command_ID3D12GraphicsCommandList_SetDescriptorHeaps *args)
 {
+    uint64_t _cnt_ppDescriptorHeaps = 0; int _has_cnt_ppDescriptorHeaps = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->NumDescriptorHeaps);
-    uint64_t _cnt_ppDescriptorHeaps = npt_decode_array_count_unchecked(dec);
+    _cnt_ppDescriptorHeaps = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppDescriptorHeaps = _cnt_ppDescriptorHeaps != 0;
     if (_cnt_ppDescriptorHeaps) {
         args->ppDescriptorHeaps = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppDescriptorHeaps);
         if (!args->ppDescriptorHeaps) return;
@@ -2542,8 +2554,9 @@ npt_decode_ID3D12GraphicsCommandList_SetDescriptorHeaps_args_temp(struct npt_cs_
     } else {
         args->ppDescriptorHeaps = NULL;
     }
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_ppDescriptorHeaps && _cnt_ppDescriptorHeaps < (uint64_t)(args->NumDescriptorHeaps)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppDescriptorHeaps > 0 && _cnt_ppDescriptorHeaps < (uint64_t)(args->NumDescriptorHeaps)) ||
+        (_has_cnt_ppDescriptorHeaps == 0 && (uint64_t)(args->NumDescriptorHeaps) != 0)) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -3408,20 +3421,26 @@ static inline void
 npt_decode_ID3D12GraphicsCommandList_SetComputeRoot32BitConstants_args_temp(struct npt_cs_decoder *dec,
                                                                             struct npt_command_ID3D12GraphicsCommandList_SetComputeRoot32BitConstants *args)
 {
+    uint64_t _cnt_pSrcData = 0; int _has_cnt_pSrcData = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->RootParameterIndex);
     npt_decode_UINT(dec, &args->Num32BitValuesToSet);
-    {
-        const uint64_t _blob_size = npt_decode_array_count_unchecked(dec);
-        if (_blob_size) {
-            args->pSrcData = npt_cs_decoder_alloc_temp(dec, _blob_size);
-            if (!args->pSrcData) return;
-            npt_decode_blob_array(dec, (void *)args->pSrcData, _blob_size);
-        } else {
-            args->pSrcData = NULL;
-        }
+    _cnt_pSrcData = npt_decode_array_count_unchecked(dec);
+    _has_cnt_pSrcData = _cnt_pSrcData != 0;
+    if (_cnt_pSrcData) {
+        args->pSrcData = npt_cs_decoder_alloc_temp(dec, _cnt_pSrcData);
+        if (!args->pSrcData) return;
+        npt_decode_blob_array(dec, (void *)args->pSrcData, _cnt_pSrcData);
+    } else {
+        args->pSrcData = NULL;
     }
     npt_decode_UINT(dec, &args->DestOffsetIn32BitValues);
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_pSrcData > 0 && _cnt_pSrcData < (uint64_t)(args->Num32BitValuesToSet * sizeof(UINT))) ||
+        (_has_cnt_pSrcData == 0 && (uint64_t)(args->Num32BitValuesToSet * sizeof(UINT)) != 0)) {
+        npt_cs_decoder_set_fatal(dec);
+        return;
+    }
     /* Allocate temp storage for output-only parameters */
 
 
@@ -3544,20 +3563,26 @@ static inline void
 npt_decode_ID3D12GraphicsCommandList_SetGraphicsRoot32BitConstants_args_temp(struct npt_cs_decoder *dec,
                                                                              struct npt_command_ID3D12GraphicsCommandList_SetGraphicsRoot32BitConstants *args)
 {
+    uint64_t _cnt_pSrcData = 0; int _has_cnt_pSrcData = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->RootParameterIndex);
     npt_decode_UINT(dec, &args->Num32BitValuesToSet);
-    {
-        const uint64_t _blob_size = npt_decode_array_count_unchecked(dec);
-        if (_blob_size) {
-            args->pSrcData = npt_cs_decoder_alloc_temp(dec, _blob_size);
-            if (!args->pSrcData) return;
-            npt_decode_blob_array(dec, (void *)args->pSrcData, _blob_size);
-        } else {
-            args->pSrcData = NULL;
-        }
+    _cnt_pSrcData = npt_decode_array_count_unchecked(dec);
+    _has_cnt_pSrcData = _cnt_pSrcData != 0;
+    if (_cnt_pSrcData) {
+        args->pSrcData = npt_cs_decoder_alloc_temp(dec, _cnt_pSrcData);
+        if (!args->pSrcData) return;
+        npt_decode_blob_array(dec, (void *)args->pSrcData, _cnt_pSrcData);
+    } else {
+        args->pSrcData = NULL;
     }
     npt_decode_UINT(dec, &args->DestOffsetIn32BitValues);
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_pSrcData > 0 && _cnt_pSrcData < (uint64_t)(args->Num32BitValuesToSet * sizeof(UINT))) ||
+        (_has_cnt_pSrcData == 0 && (uint64_t)(args->Num32BitValuesToSet * sizeof(UINT)) != 0)) {
+        npt_cs_decoder_set_fatal(dec);
+        return;
+    }
     /* Allocate temp storage for output-only parameters */
 
 
@@ -4529,11 +4554,13 @@ static inline void
 npt_decode_ID3D12GraphicsCommandList_IASetVertexBuffers_args_temp(struct npt_cs_decoder *dec,
                                                                   struct npt_command_ID3D12GraphicsCommandList_IASetVertexBuffers *args)
 {
+    uint64_t _cnt_pViews = 0; int _has_cnt_pViews = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->StartSlot);
     npt_decode_UINT(dec, &args->NumViews);
-    uint64_t _cnt_pViews = 0;
+    _has_cnt_pViews = 0;
     if (npt_decode_counted_pointer_count(dec, &_cnt_pViews)) {
+        _has_cnt_pViews = 1;
         args->pViews = npt_cs_decoder_alloc_temp_array(dec, sizeof(D3D12_VERTEX_BUFFER_VIEW), _cnt_pViews ? _cnt_pViews : 1);
         if (!args->pViews) return;
         for (uint32_t _i = 0; _i < (uint32_t)_cnt_pViews; _i++)
@@ -4541,8 +4568,8 @@ npt_decode_ID3D12GraphicsCommandList_IASetVertexBuffers_args_temp(struct npt_cs_
     } else {
         args->pViews = NULL;
     }
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_pViews && _cnt_pViews < (uint64_t)(args->NumViews)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_pViews > 0 && _cnt_pViews < (uint64_t)(args->NumViews))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -4666,11 +4693,13 @@ static inline void
 npt_decode_ID3D12GraphicsCommandList_SOSetTargets_args_temp(struct npt_cs_decoder *dec,
                                                             struct npt_command_ID3D12GraphicsCommandList_SOSetTargets *args)
 {
+    uint64_t _cnt_pViews = 0; int _has_cnt_pViews = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->StartSlot);
     npt_decode_UINT(dec, &args->NumViews);
-    uint64_t _cnt_pViews = 0;
+    _has_cnt_pViews = 0;
     if (npt_decode_counted_pointer_count(dec, &_cnt_pViews)) {
+        _has_cnt_pViews = 1;
         args->pViews = npt_cs_decoder_alloc_temp_array(dec, sizeof(D3D12_STREAM_OUTPUT_BUFFER_VIEW), _cnt_pViews ? _cnt_pViews : 1);
         if (!args->pViews) return;
         for (uint32_t _i = 0; _i < (uint32_t)_cnt_pViews; _i++)
@@ -4678,8 +4707,8 @@ npt_decode_ID3D12GraphicsCommandList_SOSetTargets_args_temp(struct npt_cs_decode
     } else {
         args->pViews = NULL;
     }
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_pViews && _cnt_pViews < (uint64_t)(args->NumViews)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_pViews > 0 && _cnt_pViews < (uint64_t)(args->NumViews))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -4804,10 +4833,12 @@ static inline void
 npt_decode_ID3D12GraphicsCommandList_OMSetRenderTargets_args_temp(struct npt_cs_decoder *dec,
                                                                   struct npt_command_ID3D12GraphicsCommandList_OMSetRenderTargets *args)
 {
+    uint64_t _cnt_pRenderTargetDescriptors = 0; int _has_cnt_pRenderTargetDescriptors = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->NumRenderTargetDescriptors);
-    uint64_t _cnt_pRenderTargetDescriptors = 0;
+    _has_cnt_pRenderTargetDescriptors = 0;
     if (npt_decode_counted_pointer_count(dec, &_cnt_pRenderTargetDescriptors)) {
+        _has_cnt_pRenderTargetDescriptors = 1;
         args->pRenderTargetDescriptors = npt_cs_decoder_alloc_temp_array(dec, sizeof(D3D12_CPU_DESCRIPTOR_HANDLE), _cnt_pRenderTargetDescriptors ? _cnt_pRenderTargetDescriptors : 1);
         if (!args->pRenderTargetDescriptors) return;
         for (uint32_t _i = 0; _i < (uint32_t)_cnt_pRenderTargetDescriptors; _i++)
@@ -4823,8 +4854,8 @@ npt_decode_ID3D12GraphicsCommandList_OMSetRenderTargets_args_temp(struct npt_cs_
     } else {
         args->pDepthStencilDescriptor = NULL;
     }
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_pRenderTargetDescriptors && _cnt_pRenderTargetDescriptors < (uint64_t)(args->RTsSingleHandleToDescriptorRange ? 1 : args->NumRenderTargetDescriptors)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_pRenderTargetDescriptors > 0 && _cnt_pRenderTargetDescriptors < (uint64_t)(args->RTsSingleHandleToDescriptorRange ? 1 : args->NumRenderTargetDescriptors))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -4952,14 +4983,16 @@ static inline void
 npt_decode_ID3D12GraphicsCommandList_ClearDepthStencilView_args_temp(struct npt_cs_decoder *dec,
                                                                      struct npt_command_ID3D12GraphicsCommandList_ClearDepthStencilView *args)
 {
+    uint64_t _cnt_pRects = 0; int _has_cnt_pRects = -1;
     /* Decode input parameters from the wire */
     npt_decode_D3D12_CPU_DESCRIPTOR_HANDLE(dec, &args->DepthStencilView);
     npt_decode_D3D12_CLEAR_FLAGS(dec, &args->ClearFlags);
     npt_decode_FLOAT(dec, &args->Depth);
     npt_decode_UINT8(dec, &args->Stencil);
     npt_decode_UINT(dec, &args->NumRects);
-    uint64_t _cnt_pRects = 0;
+    _has_cnt_pRects = 0;
     if (npt_decode_counted_pointer_count(dec, &_cnt_pRects)) {
+        _has_cnt_pRects = 1;
         args->pRects = npt_cs_decoder_alloc_temp_array(dec, sizeof(D3D12_RECT), _cnt_pRects ? _cnt_pRects : 1);
         if (!args->pRects) return;
         for (uint32_t _i = 0; _i < (uint32_t)_cnt_pRects; _i++)
@@ -4967,8 +5000,9 @@ npt_decode_ID3D12GraphicsCommandList_ClearDepthStencilView_args_temp(struct npt_
     } else {
         args->pRects = NULL;
     }
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_pRects && _cnt_pRects < (uint64_t)(args->NumRects)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_pRects > 0 && _cnt_pRects < (uint64_t)(args->NumRects)) ||
+        (_has_cnt_pRects == 0 && (uint64_t)(args->NumRects) != 0)) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -5096,6 +5130,7 @@ static inline void
 npt_decode_ID3D12GraphicsCommandList_ClearRenderTargetView_args_temp(struct npt_cs_decoder *dec,
                                                                      struct npt_command_ID3D12GraphicsCommandList_ClearRenderTargetView *args)
 {
+    uint64_t _cnt_pRects = 0; int _has_cnt_pRects = -1;
     /* Decode input parameters from the wire */
     npt_decode_D3D12_CPU_DESCRIPTOR_HANDLE(dec, &args->RenderTargetView);
     (void)npt_decode_array_count(dec, 4);
@@ -5103,8 +5138,9 @@ npt_decode_ID3D12GraphicsCommandList_ClearRenderTargetView_args_temp(struct npt_
     if (!args->ColorRGBA) return;
     npt_decode_FLOAT_array(dec, (FLOAT *)args->ColorRGBA, 4);
     npt_decode_UINT(dec, &args->NumRects);
-    uint64_t _cnt_pRects = 0;
+    _has_cnt_pRects = 0;
     if (npt_decode_counted_pointer_count(dec, &_cnt_pRects)) {
+        _has_cnt_pRects = 1;
         args->pRects = npt_cs_decoder_alloc_temp_array(dec, sizeof(D3D12_RECT), _cnt_pRects ? _cnt_pRects : 1);
         if (!args->pRects) return;
         for (uint32_t _i = 0; _i < (uint32_t)_cnt_pRects; _i++)
@@ -5112,8 +5148,9 @@ npt_decode_ID3D12GraphicsCommandList_ClearRenderTargetView_args_temp(struct npt_
     } else {
         args->pRects = NULL;
     }
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_pRects && _cnt_pRects < (uint64_t)(args->NumRects)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_pRects > 0 && _cnt_pRects < (uint64_t)(args->NumRects)) ||
+        (_has_cnt_pRects == 0 && (uint64_t)(args->NumRects) != 0)) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -5241,6 +5278,7 @@ static inline void
 npt_decode_ID3D12GraphicsCommandList_ClearUnorderedAccessViewUint_args_temp(struct npt_cs_decoder *dec,
                                                                             struct npt_command_ID3D12GraphicsCommandList_ClearUnorderedAccessViewUint *args)
 {
+    uint64_t _cnt_pRects = 0; int _has_cnt_pRects = -1;
     /* Decode input parameters from the wire */
     npt_decode_D3D12_GPU_DESCRIPTOR_HANDLE(dec, &args->ViewGPUHandleInCurrentHeap);
     npt_decode_D3D12_CPU_DESCRIPTOR_HANDLE(dec, &args->ViewCPUHandle);
@@ -5254,8 +5292,9 @@ npt_decode_ID3D12GraphicsCommandList_ClearUnorderedAccessViewUint_args_temp(stru
     if (!args->Values) return;
     npt_decode_UINT_array(dec, (UINT *)args->Values, 4);
     npt_decode_UINT(dec, &args->NumRects);
-    uint64_t _cnt_pRects = 0;
+    _has_cnt_pRects = 0;
     if (npt_decode_counted_pointer_count(dec, &_cnt_pRects)) {
+        _has_cnt_pRects = 1;
         args->pRects = npt_cs_decoder_alloc_temp_array(dec, sizeof(D3D12_RECT), _cnt_pRects ? _cnt_pRects : 1);
         if (!args->pRects) return;
         for (uint32_t _i = 0; _i < (uint32_t)_cnt_pRects; _i++)
@@ -5263,8 +5302,9 @@ npt_decode_ID3D12GraphicsCommandList_ClearUnorderedAccessViewUint_args_temp(stru
     } else {
         args->pRects = NULL;
     }
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_pRects && _cnt_pRects < (uint64_t)(args->NumRects)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_pRects > 0 && _cnt_pRects < (uint64_t)(args->NumRects)) ||
+        (_has_cnt_pRects == 0 && (uint64_t)(args->NumRects) != 0)) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -5395,6 +5435,7 @@ static inline void
 npt_decode_ID3D12GraphicsCommandList_ClearUnorderedAccessViewFloat_args_temp(struct npt_cs_decoder *dec,
                                                                              struct npt_command_ID3D12GraphicsCommandList_ClearUnorderedAccessViewFloat *args)
 {
+    uint64_t _cnt_pRects = 0; int _has_cnt_pRects = -1;
     /* Decode input parameters from the wire */
     npt_decode_D3D12_GPU_DESCRIPTOR_HANDLE(dec, &args->ViewGPUHandleInCurrentHeap);
     npt_decode_D3D12_CPU_DESCRIPTOR_HANDLE(dec, &args->ViewCPUHandle);
@@ -5408,8 +5449,9 @@ npt_decode_ID3D12GraphicsCommandList_ClearUnorderedAccessViewFloat_args_temp(str
     if (!args->Values) return;
     npt_decode_FLOAT_array(dec, (FLOAT *)args->Values, 4);
     npt_decode_UINT(dec, &args->NumRects);
-    uint64_t _cnt_pRects = 0;
+    _has_cnt_pRects = 0;
     if (npt_decode_counted_pointer_count(dec, &_cnt_pRects)) {
+        _has_cnt_pRects = 1;
         args->pRects = npt_cs_decoder_alloc_temp_array(dec, sizeof(D3D12_RECT), _cnt_pRects ? _cnt_pRects : 1);
         if (!args->pRects) return;
         for (uint32_t _i = 0; _i < (uint32_t)_cnt_pRects; _i++)
@@ -5417,8 +5459,9 @@ npt_decode_ID3D12GraphicsCommandList_ClearUnorderedAccessViewFloat_args_temp(str
     } else {
         args->pRects = NULL;
     }
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_pRects && _cnt_pRects < (uint64_t)(args->NumRects)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_pRects > 0 && _cnt_pRects < (uint64_t)(args->NumRects)) ||
+        (_has_cnt_pRects == 0 && (uint64_t)(args->NumRects) != 0)) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -6208,19 +6251,24 @@ static inline void
 npt_decode_ID3D12GraphicsCommandList_SetMarker_args_temp(struct npt_cs_decoder *dec,
                                                          struct npt_command_ID3D12GraphicsCommandList_SetMarker *args)
 {
+    uint64_t _cnt_pData = 0; int _has_cnt_pData = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->Metadata);
-    {
-        const uint64_t _blob_size = npt_decode_array_count_unchecked(dec);
-        if (_blob_size) {
-            args->pData = npt_cs_decoder_alloc_temp(dec, _blob_size);
-            if (!args->pData) return;
-            npt_decode_blob_array(dec, (void *)args->pData, _blob_size);
-        } else {
-            args->pData = NULL;
-        }
+    _cnt_pData = npt_decode_array_count_unchecked(dec);
+    _has_cnt_pData = _cnt_pData != 0;
+    if (_cnt_pData) {
+        args->pData = npt_cs_decoder_alloc_temp(dec, _cnt_pData);
+        if (!args->pData) return;
+        npt_decode_blob_array(dec, (void *)args->pData, _cnt_pData);
+    } else {
+        args->pData = NULL;
     }
     npt_decode_UINT(dec, &args->Size);
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_pData > 0 && _cnt_pData < (uint64_t)(args->Size))) {
+        npt_cs_decoder_set_fatal(dec);
+        return;
+    }
     /* Allocate temp storage for output-only parameters */
 
 
@@ -6341,19 +6389,24 @@ static inline void
 npt_decode_ID3D12GraphicsCommandList_BeginEvent_args_temp(struct npt_cs_decoder *dec,
                                                           struct npt_command_ID3D12GraphicsCommandList_BeginEvent *args)
 {
+    uint64_t _cnt_pData = 0; int _has_cnt_pData = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->Metadata);
-    {
-        const uint64_t _blob_size = npt_decode_array_count_unchecked(dec);
-        if (_blob_size) {
-            args->pData = npt_cs_decoder_alloc_temp(dec, _blob_size);
-            if (!args->pData) return;
-            npt_decode_blob_array(dec, (void *)args->pData, _blob_size);
-        } else {
-            args->pData = NULL;
-        }
+    _cnt_pData = npt_decode_array_count_unchecked(dec);
+    _has_cnt_pData = _cnt_pData != 0;
+    if (_cnt_pData) {
+        args->pData = npt_cs_decoder_alloc_temp(dec, _cnt_pData);
+        if (!args->pData) return;
+        npt_decode_blob_array(dec, (void *)args->pData, _cnt_pData);
+    } else {
+        args->pData = NULL;
     }
     npt_decode_UINT(dec, &args->Size);
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_pData > 0 && _cnt_pData < (uint64_t)(args->Size))) {
+        npt_cs_decoder_set_fatal(dec);
+        return;
+    }
     /* Allocate temp storage for output-only parameters */
 
 
@@ -6472,6 +6525,7 @@ npt_decode_ID3D12GraphicsCommandList_EndEvent_args_temp(struct npt_cs_decoder *d
                                                         struct npt_command_ID3D12GraphicsCommandList_EndEvent *args)
 {
     /* Decode input parameters from the wire */
+
     /* Allocate temp storage for output-only parameters */
 }
 
@@ -6741,6 +6795,8 @@ static inline void
 npt_decode_ID3D12GraphicsCommandList1_AtomicCopyBufferUINT_args_temp(struct npt_cs_decoder *dec,
                                                                      struct npt_command_ID3D12GraphicsCommandList1_AtomicCopyBufferUINT *args)
 {
+    uint64_t _cnt_ppDependentResources = 0; int _has_cnt_ppDependentResources = -1;
+    uint64_t _cnt_pDependentSubresourceRanges = 0; int _has_cnt_pDependentSubresourceRanges = -1;
     /* Decode input parameters from the wire */
     {
         npt_object_id _id;
@@ -6755,7 +6811,8 @@ npt_decode_ID3D12GraphicsCommandList1_AtomicCopyBufferUINT_args_temp(struct npt_
     }
     npt_decode_UINT64(dec, &args->SrcOffset);
     npt_decode_UINT(dec, &args->Dependencies);
-    uint64_t _cnt_ppDependentResources = npt_decode_array_count_unchecked(dec);
+    _cnt_ppDependentResources = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppDependentResources = _cnt_ppDependentResources != 0;
     if (_cnt_ppDependentResources) {
         args->ppDependentResources = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppDependentResources);
         if (!args->ppDependentResources) return;
@@ -6767,8 +6824,9 @@ npt_decode_ID3D12GraphicsCommandList1_AtomicCopyBufferUINT_args_temp(struct npt_
     } else {
         args->ppDependentResources = NULL;
     }
-    uint64_t _cnt_pDependentSubresourceRanges = 0;
+    _has_cnt_pDependentSubresourceRanges = 0;
     if (npt_decode_counted_pointer_count(dec, &_cnt_pDependentSubresourceRanges)) {
+        _has_cnt_pDependentSubresourceRanges = 1;
         args->pDependentSubresourceRanges = npt_cs_decoder_alloc_temp_array(dec, sizeof(D3D12_SUBRESOURCE_RANGE_UINT64), _cnt_pDependentSubresourceRanges ? _cnt_pDependentSubresourceRanges : 1);
         if (!args->pDependentSubresourceRanges) return;
         for (uint32_t _i = 0; _i < (uint32_t)_cnt_pDependentSubresourceRanges; _i++)
@@ -6776,12 +6834,14 @@ npt_decode_ID3D12GraphicsCommandList1_AtomicCopyBufferUINT_args_temp(struct npt_
     } else {
         args->pDependentSubresourceRanges = NULL;
     }
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_ppDependentResources && _cnt_ppDependentResources < (uint64_t)(args->Dependencies)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppDependentResources > 0 && _cnt_ppDependentResources < (uint64_t)(args->Dependencies)) ||
+        (_has_cnt_ppDependentResources == 0 && (uint64_t)(args->Dependencies) != 0)) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
-    if (_cnt_pDependentSubresourceRanges && _cnt_pDependentSubresourceRanges < (uint64_t)(args->Dependencies)) {
+    if ((_has_cnt_pDependentSubresourceRanges > 0 && _cnt_pDependentSubresourceRanges < (uint64_t)(args->Dependencies)) ||
+        (_has_cnt_pDependentSubresourceRanges == 0 && (uint64_t)(args->Dependencies) != 0)) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -6920,6 +6980,8 @@ static inline void
 npt_decode_ID3D12GraphicsCommandList1_AtomicCopyBufferUINT64_args_temp(struct npt_cs_decoder *dec,
                                                                        struct npt_command_ID3D12GraphicsCommandList1_AtomicCopyBufferUINT64 *args)
 {
+    uint64_t _cnt_ppDependentResources = 0; int _has_cnt_ppDependentResources = -1;
+    uint64_t _cnt_pDependentSubresourceRanges = 0; int _has_cnt_pDependentSubresourceRanges = -1;
     /* Decode input parameters from the wire */
     {
         npt_object_id _id;
@@ -6934,7 +6996,8 @@ npt_decode_ID3D12GraphicsCommandList1_AtomicCopyBufferUINT64_args_temp(struct np
     }
     npt_decode_UINT64(dec, &args->SrcOffset);
     npt_decode_UINT(dec, &args->Dependencies);
-    uint64_t _cnt_ppDependentResources = npt_decode_array_count_unchecked(dec);
+    _cnt_ppDependentResources = npt_decode_array_count_unchecked(dec);
+    _has_cnt_ppDependentResources = _cnt_ppDependentResources != 0;
     if (_cnt_ppDependentResources) {
         args->ppDependentResources = npt_cs_decoder_alloc_temp_array(dec, sizeof(void *), _cnt_ppDependentResources);
         if (!args->ppDependentResources) return;
@@ -6946,8 +7009,9 @@ npt_decode_ID3D12GraphicsCommandList1_AtomicCopyBufferUINT64_args_temp(struct np
     } else {
         args->ppDependentResources = NULL;
     }
-    uint64_t _cnt_pDependentSubresourceRanges = 0;
+    _has_cnt_pDependentSubresourceRanges = 0;
     if (npt_decode_counted_pointer_count(dec, &_cnt_pDependentSubresourceRanges)) {
+        _has_cnt_pDependentSubresourceRanges = 1;
         args->pDependentSubresourceRanges = npt_cs_decoder_alloc_temp_array(dec, sizeof(D3D12_SUBRESOURCE_RANGE_UINT64), _cnt_pDependentSubresourceRanges ? _cnt_pDependentSubresourceRanges : 1);
         if (!args->pDependentSubresourceRanges) return;
         for (uint32_t _i = 0; _i < (uint32_t)_cnt_pDependentSubresourceRanges; _i++)
@@ -6955,12 +7019,14 @@ npt_decode_ID3D12GraphicsCommandList1_AtomicCopyBufferUINT64_args_temp(struct np
     } else {
         args->pDependentSubresourceRanges = NULL;
     }
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_ppDependentResources && _cnt_ppDependentResources < (uint64_t)(args->Dependencies)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_ppDependentResources > 0 && _cnt_ppDependentResources < (uint64_t)(args->Dependencies)) ||
+        (_has_cnt_ppDependentResources == 0 && (uint64_t)(args->Dependencies) != 0)) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
-    if (_cnt_pDependentSubresourceRanges && _cnt_pDependentSubresourceRanges < (uint64_t)(args->Dependencies)) {
+    if ((_has_cnt_pDependentSubresourceRanges > 0 && _cnt_pDependentSubresourceRanges < (uint64_t)(args->Dependencies)) ||
+        (_has_cnt_pDependentSubresourceRanges == 0 && (uint64_t)(args->Dependencies) != 0)) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -7216,11 +7282,13 @@ static inline void
 npt_decode_ID3D12GraphicsCommandList1_SetSamplePositions_args_temp(struct npt_cs_decoder *dec,
                                                                    struct npt_command_ID3D12GraphicsCommandList1_SetSamplePositions *args)
 {
+    uint64_t _cnt_pSamplePositions = 0; int _has_cnt_pSamplePositions = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->NumSamplesPerPixel);
     npt_decode_UINT(dec, &args->NumPixels);
-    uint64_t _cnt_pSamplePositions = 0;
+    _has_cnt_pSamplePositions = 0;
     if (npt_decode_counted_pointer_count(dec, &_cnt_pSamplePositions)) {
+        _has_cnt_pSamplePositions = 1;
         args->pSamplePositions = npt_cs_decoder_alloc_temp_array(dec, sizeof(D3D12_SAMPLE_POSITION), _cnt_pSamplePositions ? _cnt_pSamplePositions : 1);
         if (!args->pSamplePositions) return;
         for (uint32_t _i = 0; _i < (uint32_t)_cnt_pSamplePositions; _i++)
@@ -7228,8 +7296,9 @@ npt_decode_ID3D12GraphicsCommandList1_SetSamplePositions_args_temp(struct npt_cs
     } else {
         args->pSamplePositions = NULL;
     }
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_pSamplePositions && _cnt_pSamplePositions < (uint64_t)(args->NumSamplesPerPixel * args->NumPixels)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_pSamplePositions > 0 && _cnt_pSamplePositions < (uint64_t)(args->NumSamplesPerPixel * args->NumPixels)) ||
+        (_has_cnt_pSamplePositions == 0 && (uint64_t)(args->NumSamplesPerPixel * args->NumPixels) != 0)) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -7629,10 +7698,13 @@ static inline void
 npt_decode_ID3D12GraphicsCommandList2_WriteBufferImmediate_args_temp(struct npt_cs_decoder *dec,
                                                                      struct npt_command_ID3D12GraphicsCommandList2_WriteBufferImmediate *args)
 {
+    uint64_t _cnt_pParams = 0; int _has_cnt_pParams = -1;
+    uint64_t _cnt_pModes = 0; int _has_cnt_pModes = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->Count);
-    uint64_t _cnt_pParams = 0;
+    _has_cnt_pParams = 0;
     if (npt_decode_counted_pointer_count(dec, &_cnt_pParams)) {
+        _has_cnt_pParams = 1;
         args->pParams = npt_cs_decoder_alloc_temp_array(dec, sizeof(D3D12_WRITEBUFFERIMMEDIATE_PARAMETER), _cnt_pParams ? _cnt_pParams : 1);
         if (!args->pParams) return;
         for (uint32_t _i = 0; _i < (uint32_t)_cnt_pParams; _i++)
@@ -7640,20 +7712,22 @@ npt_decode_ID3D12GraphicsCommandList2_WriteBufferImmediate_args_temp(struct npt_
     } else {
         args->pParams = NULL;
     }
-    uint64_t _cnt_pModes = 0;
+    _has_cnt_pModes = 0;
     if (npt_decode_counted_pointer_count(dec, &_cnt_pModes)) {
+        _has_cnt_pModes = 1;
         args->pModes = npt_cs_decoder_alloc_temp_array(dec, sizeof(D3D12_WRITEBUFFERIMMEDIATE_MODE), _cnt_pModes ? _cnt_pModes : 1);
         if (!args->pModes) return;
         npt_decode_D3D12_WRITEBUFFERIMMEDIATE_MODE_array(dec, (D3D12_WRITEBUFFERIMMEDIATE_MODE *)args->pModes, _cnt_pModes);
     } else {
         args->pModes = NULL;
     }
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_pParams && _cnt_pParams < (uint64_t)(args->Count)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_pParams > 0 && _cnt_pParams < (uint64_t)(args->Count)) ||
+        (_has_cnt_pParams == 0 && (uint64_t)(args->Count) != 0)) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
-    if (_cnt_pModes && _cnt_pModes < (uint64_t)(args->Count)) {
+    if ((_has_cnt_pModes > 0 && _cnt_pModes < (uint64_t)(args->Count))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -7901,10 +7975,12 @@ static inline void
 npt_decode_ID3D12GraphicsCommandList4_BeginRenderPass_args_temp(struct npt_cs_decoder *dec,
                                                                 struct npt_command_ID3D12GraphicsCommandList4_BeginRenderPass *args)
 {
+    uint64_t _cnt_pRenderTargets = 0; int _has_cnt_pRenderTargets = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT(dec, &args->NumRenderTargets);
-    uint64_t _cnt_pRenderTargets = 0;
+    _has_cnt_pRenderTargets = 0;
     if (npt_decode_counted_pointer_count(dec, &_cnt_pRenderTargets)) {
+        _has_cnt_pRenderTargets = 1;
         args->pRenderTargets = npt_cs_decoder_alloc_temp_array(dec, sizeof(D3D12_RENDER_PASS_RENDER_TARGET_DESC), _cnt_pRenderTargets ? _cnt_pRenderTargets : 1);
         if (!args->pRenderTargets) return;
         for (uint32_t _i = 0; _i < (uint32_t)_cnt_pRenderTargets; _i++)
@@ -7920,8 +7996,8 @@ npt_decode_ID3D12GraphicsCommandList4_BeginRenderPass_args_temp(struct npt_cs_de
         args->pDepthStencil = NULL;
     }
     npt_decode_D3D12_RENDER_PASS_FLAGS(dec, &args->Flags);
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_pRenderTargets && _cnt_pRenderTargets < (uint64_t)(args->NumRenderTargets)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_pRenderTargets > 0 && _cnt_pRenderTargets < (uint64_t)(args->NumRenderTargets))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -8050,6 +8126,7 @@ npt_decode_ID3D12GraphicsCommandList4_EndRenderPass_args_temp(struct npt_cs_deco
                                                               struct npt_command_ID3D12GraphicsCommandList4_EndRenderPass *args)
 {
     /* Decode input parameters from the wire */
+
     /* Allocate temp storage for output-only parameters */
 }
 
@@ -8167,23 +8244,28 @@ static inline void
 npt_decode_ID3D12GraphicsCommandList4_InitializeMetaCommand_args_temp(struct npt_cs_decoder *dec,
                                                                       struct npt_command_ID3D12GraphicsCommandList4_InitializeMetaCommand *args)
 {
+    uint64_t _cnt_pInitializationParametersData = 0; int _has_cnt_pInitializationParametersData = -1;
     /* Decode input parameters from the wire */
     {
         npt_object_id _id;
         npt_decode_uint64_t(dec, &_id);
         args->pMetaCommand = (ID3D12MetaCommand *)npt_object_from_id(_id);
     }
-    {
-        const uint64_t _blob_size = npt_decode_array_count_unchecked(dec);
-        if (_blob_size) {
-            args->pInitializationParametersData = npt_cs_decoder_alloc_temp(dec, _blob_size);
-            if (!args->pInitializationParametersData) return;
-            npt_decode_blob_array(dec, (void *)args->pInitializationParametersData, _blob_size);
-        } else {
-            args->pInitializationParametersData = NULL;
-        }
+    _cnt_pInitializationParametersData = npt_decode_array_count_unchecked(dec);
+    _has_cnt_pInitializationParametersData = _cnt_pInitializationParametersData != 0;
+    if (_cnt_pInitializationParametersData) {
+        args->pInitializationParametersData = npt_cs_decoder_alloc_temp(dec, _cnt_pInitializationParametersData);
+        if (!args->pInitializationParametersData) return;
+        npt_decode_blob_array(dec, (void *)args->pInitializationParametersData, _cnt_pInitializationParametersData);
+    } else {
+        args->pInitializationParametersData = NULL;
     }
     npt_decode_SIZE_T(dec, &args->InitializationParametersDataSizeInBytes);
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_pInitializationParametersData > 0 && _cnt_pInitializationParametersData < (uint64_t)(args->InitializationParametersDataSizeInBytes))) {
+        npt_cs_decoder_set_fatal(dec);
+        return;
+    }
     /* Allocate temp storage for output-only parameters */
 
 
@@ -8305,23 +8387,28 @@ static inline void
 npt_decode_ID3D12GraphicsCommandList4_ExecuteMetaCommand_args_temp(struct npt_cs_decoder *dec,
                                                                    struct npt_command_ID3D12GraphicsCommandList4_ExecuteMetaCommand *args)
 {
+    uint64_t _cnt_pExecutionParametersData = 0; int _has_cnt_pExecutionParametersData = -1;
     /* Decode input parameters from the wire */
     {
         npt_object_id _id;
         npt_decode_uint64_t(dec, &_id);
         args->pMetaCommand = (ID3D12MetaCommand *)npt_object_from_id(_id);
     }
-    {
-        const uint64_t _blob_size = npt_decode_array_count_unchecked(dec);
-        if (_blob_size) {
-            args->pExecutionParametersData = npt_cs_decoder_alloc_temp(dec, _blob_size);
-            if (!args->pExecutionParametersData) return;
-            npt_decode_blob_array(dec, (void *)args->pExecutionParametersData, _blob_size);
-        } else {
-            args->pExecutionParametersData = NULL;
-        }
+    _cnt_pExecutionParametersData = npt_decode_array_count_unchecked(dec);
+    _has_cnt_pExecutionParametersData = _cnt_pExecutionParametersData != 0;
+    if (_cnt_pExecutionParametersData) {
+        args->pExecutionParametersData = npt_cs_decoder_alloc_temp(dec, _cnt_pExecutionParametersData);
+        if (!args->pExecutionParametersData) return;
+        npt_decode_blob_array(dec, (void *)args->pExecutionParametersData, _cnt_pExecutionParametersData);
+    } else {
+        args->pExecutionParametersData = NULL;
     }
     npt_decode_SIZE_T(dec, &args->ExecutionParametersDataSizeInBytes);
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_pExecutionParametersData > 0 && _cnt_pExecutionParametersData < (uint64_t)(args->ExecutionParametersDataSizeInBytes))) {
+        npt_cs_decoder_set_fatal(dec);
+        return;
+    }
     /* Allocate temp storage for output-only parameters */
 
 
@@ -8443,6 +8530,7 @@ static inline void
 npt_decode_ID3D12GraphicsCommandList4_BuildRaytracingAccelerationStructure_args_temp(struct npt_cs_decoder *dec,
                                                                                      struct npt_command_ID3D12GraphicsCommandList4_BuildRaytracingAccelerationStructure *args)
 {
+    uint64_t _cnt_pPostbuildInfoDescs = 0; int _has_cnt_pPostbuildInfoDescs = -1;
     /* Decode input parameters from the wire */
     if (npt_decode_simple_pointer(dec)) {
         args->pDesc = npt_cs_decoder_alloc_temp(dec, sizeof(D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_DESC));
@@ -8454,8 +8542,9 @@ npt_decode_ID3D12GraphicsCommandList4_BuildRaytracingAccelerationStructure_args_
         return;
     }
     npt_decode_UINT(dec, &args->NumPostbuildInfoDescs);
-    uint64_t _cnt_pPostbuildInfoDescs = 0;
+    _has_cnt_pPostbuildInfoDescs = 0;
     if (npt_decode_counted_pointer_count(dec, &_cnt_pPostbuildInfoDescs)) {
+        _has_cnt_pPostbuildInfoDescs = 1;
         args->pPostbuildInfoDescs = npt_cs_decoder_alloc_temp_array(dec, sizeof(D3D12_RAYTRACING_ACCELERATION_STRUCTURE_POSTBUILD_INFO_DESC), _cnt_pPostbuildInfoDescs ? _cnt_pPostbuildInfoDescs : 1);
         if (!args->pPostbuildInfoDescs) return;
         for (uint32_t _i = 0; _i < (uint32_t)_cnt_pPostbuildInfoDescs; _i++)
@@ -8463,8 +8552,8 @@ npt_decode_ID3D12GraphicsCommandList4_BuildRaytracingAccelerationStructure_args_
     } else {
         args->pPostbuildInfoDescs = NULL;
     }
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_pPostbuildInfoDescs && _cnt_pPostbuildInfoDescs < (uint64_t)(args->NumPostbuildInfoDescs)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_pPostbuildInfoDescs > 0 && _cnt_pPostbuildInfoDescs < (uint64_t)(args->NumPostbuildInfoDescs))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -8588,6 +8677,7 @@ static inline void
 npt_decode_ID3D12GraphicsCommandList4_EmitRaytracingAccelerationStructurePostbuildInfo_args_temp(struct npt_cs_decoder *dec,
                                                                                                  struct npt_command_ID3D12GraphicsCommandList4_EmitRaytracingAccelerationStructurePostbuildInfo *args)
 {
+    uint64_t _cnt_pSourceAccelerationStructureData = 0; int _has_cnt_pSourceAccelerationStructureData = -1;
     /* Decode input parameters from the wire */
     if (npt_decode_simple_pointer(dec)) {
         args->pDesc = npt_cs_decoder_alloc_temp(dec, sizeof(D3D12_RAYTRACING_ACCELERATION_STRUCTURE_POSTBUILD_INFO_DESC));
@@ -8599,16 +8689,18 @@ npt_decode_ID3D12GraphicsCommandList4_EmitRaytracingAccelerationStructurePostbui
         return;
     }
     npt_decode_UINT(dec, &args->NumSourceAccelerationStructures);
-    uint64_t _cnt_pSourceAccelerationStructureData = 0;
+    _has_cnt_pSourceAccelerationStructureData = 0;
     if (npt_decode_counted_pointer_count(dec, &_cnt_pSourceAccelerationStructureData)) {
+        _has_cnt_pSourceAccelerationStructureData = 1;
         args->pSourceAccelerationStructureData = npt_cs_decoder_alloc_temp_array(dec, sizeof(D3D12_GPU_VIRTUAL_ADDRESS), _cnt_pSourceAccelerationStructureData ? _cnt_pSourceAccelerationStructureData : 1);
         if (!args->pSourceAccelerationStructureData) return;
         npt_decode_D3D12_GPU_VIRTUAL_ADDRESS_array(dec, (D3D12_GPU_VIRTUAL_ADDRESS *)args->pSourceAccelerationStructureData, _cnt_pSourceAccelerationStructureData);
     } else {
         args->pSourceAccelerationStructureData = NULL;
     }
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_pSourceAccelerationStructureData && _cnt_pSourceAccelerationStructureData < (uint64_t)(args->NumSourceAccelerationStructures)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_pSourceAccelerationStructureData > 0 && _cnt_pSourceAccelerationStructureData < (uint64_t)(args->NumSourceAccelerationStructures)) ||
+        (_has_cnt_pSourceAccelerationStructureData == 0 && (uint64_t)(args->NumSourceAccelerationStructures) != 0)) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -9104,18 +9196,20 @@ static inline void
 npt_decode_ID3D12GraphicsCommandList5_RSSetShadingRate_args_temp(struct npt_cs_decoder *dec,
                                                                  struct npt_command_ID3D12GraphicsCommandList5_RSSetShadingRate *args)
 {
+    uint64_t _cnt_combiners = 0; int _has_cnt_combiners = -1;
     /* Decode input parameters from the wire */
     npt_decode_D3D12_SHADING_RATE(dec, &args->baseShadingRate);
-    uint64_t _cnt_combiners = 0;
+    _has_cnt_combiners = 0;
     if (npt_decode_counted_pointer_count(dec, &_cnt_combiners)) {
+        _has_cnt_combiners = 1;
         args->combiners = npt_cs_decoder_alloc_temp_array(dec, sizeof(D3D12_SHADING_RATE_COMBINER), _cnt_combiners ? _cnt_combiners : 1);
         if (!args->combiners) return;
         npt_decode_D3D12_SHADING_RATE_COMBINER_array(dec, (D3D12_SHADING_RATE_COMBINER *)args->combiners, _cnt_combiners);
     } else {
         args->combiners = NULL;
     }
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_combiners && _cnt_combiners < (uint64_t)(D3D12_RS_SET_SHADING_RATE_COMBINER_COUNT)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_combiners > 0 && _cnt_combiners < (uint64_t)(D3D12_RS_SET_SHADING_RATE_COMBINER_COUNT))) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }
@@ -9484,10 +9578,12 @@ static inline void
 npt_decode_ID3D12GraphicsCommandList7_Barrier_args_temp(struct npt_cs_decoder *dec,
                                                         struct npt_command_ID3D12GraphicsCommandList7_Barrier *args)
 {
+    uint64_t _cnt_pBarrierGroups = 0; int _has_cnt_pBarrierGroups = -1;
     /* Decode input parameters from the wire */
     npt_decode_UINT32(dec, &args->NumBarrierGroups);
-    uint64_t _cnt_pBarrierGroups = 0;
+    _has_cnt_pBarrierGroups = 0;
     if (npt_decode_counted_pointer_count(dec, &_cnt_pBarrierGroups)) {
+        _has_cnt_pBarrierGroups = 1;
         args->pBarrierGroups = npt_cs_decoder_alloc_temp_array(dec, sizeof(D3D12_BARRIER_GROUP), _cnt_pBarrierGroups ? _cnt_pBarrierGroups : 1);
         if (!args->pBarrierGroups) return;
         for (uint32_t _i = 0; _i < (uint32_t)_cnt_pBarrierGroups; _i++)
@@ -9495,8 +9591,9 @@ npt_decode_ID3D12GraphicsCommandList7_Barrier_args_temp(struct npt_cs_decoder *d
     } else {
         args->pBarrierGroups = NULL;
     }
-    /* A counted array must carry every element the callee will read. */
-    if (_cnt_pBarrierGroups && _cnt_pBarrierGroups < (uint64_t)(args->NumBarrierGroups)) {
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_pBarrierGroups > 0 && _cnt_pBarrierGroups < (uint64_t)(args->NumBarrierGroups)) ||
+        (_has_cnt_pBarrierGroups == 0 && (uint64_t)(args->NumBarrierGroups) != 0)) {
         npt_cs_decoder_set_fatal(dec);
         return;
     }

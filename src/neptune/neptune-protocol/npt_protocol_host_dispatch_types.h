@@ -31,7 +31,6 @@ struct npt_command_IDXGIResource_GetEvictionPriority;
 struct npt_command_IDXGIKeyedMutex_AcquireSync;
 struct npt_command_IDXGIKeyedMutex_ReleaseSync;
 struct npt_command_IDXGISurface_GetDesc;
-struct npt_command_IDXGISurface_Map;
 struct npt_command_IDXGISurface_Unmap;
 struct npt_command_IDXGISurface1_GetDC;
 struct npt_command_IDXGISurface1_ReleaseDC;
@@ -82,7 +81,6 @@ struct npt_command_IDXGIOutputDuplication_AcquireNextFrame;
 struct npt_command_IDXGIOutputDuplication_GetFrameDirtyRects;
 struct npt_command_IDXGIOutputDuplication_GetFrameMoveRects;
 struct npt_command_IDXGIOutputDuplication_GetFramePointerShape;
-struct npt_command_IDXGIOutputDuplication_MapDesktopSurface;
 struct npt_command_IDXGIOutputDuplication_UnMapDesktopSurface;
 struct npt_command_IDXGIOutputDuplication_ReleaseFrame;
 struct npt_command_IDXGISurface2_GetResource;
@@ -167,7 +165,6 @@ struct npt_command_IDXGIOutput6_CheckHardwareCompositionSupport;
 struct npt_command_IDXGIFactory6_EnumAdapterByGpuPreference;
 struct npt_command_IDXGIFactory7_RegisterAdaptersChangedEvent;
 struct npt_command_IDXGIFactory7_UnregisterAdaptersChangedEvent;
-struct npt_command_ID3D10Blob_GetBufferPointer;
 struct npt_command_ID3D10Blob_GetBufferSize;
 struct npt_command_ID3DDestructionNotifier_RegisterDestructionCallback;
 struct npt_command_ID3DDestructionNotifier_UnregisterDestructionCallback;
@@ -330,8 +327,6 @@ struct npt_command_ID3D11CryptoSession_GetCryptoSessionHandle;
 struct npt_command_ID3D11VideoDecoderOutputView_GetDesc;
 struct npt_command_ID3D11VideoProcessorInputView_GetDesc;
 struct npt_command_ID3D11VideoProcessorOutputView_GetDesc;
-struct npt_command_ID3D11VideoContext_GetDecoderBuffer;
-struct npt_command_ID3D11VideoContext_ReleaseDecoderBuffer;
 struct npt_command_ID3D11VideoContext_DecoderBeginFrame;
 struct npt_command_ID3D11VideoContext_DecoderEndFrame;
 struct npt_command_ID3D11VideoContext_SubmitDecoderBuffers;
@@ -558,9 +553,7 @@ struct npt_command_ID3D11On12Device_AcquireWrappedResources;
 struct npt_command_ID3D11On12Device1_GetD3D12Device;
 struct npt_command_ID3D11On12Device2_UnwrapUnderlyingResource;
 struct npt_command_ID3D11On12Device2_ReturnUnderlyingResource;
-struct npt_command_ID3D12RootSignatureDeserializer_GetRootSignatureDesc;
 struct npt_command_ID3D12VersionedRootSignatureDeserializer_GetRootSignatureDescAtVersion;
-struct npt_command_ID3D12VersionedRootSignatureDeserializer_GetUnconvertedRootSignatureDesc;
 struct npt_command_ID3D12Object_GetPrivateData;
 struct npt_command_ID3D12Object_SetPrivateData;
 struct npt_command_ID3D12Object_SetPrivateDataInterface;
@@ -718,13 +711,11 @@ struct npt_command_ID3D12SwapChainAssistant_GetSwapChainObject;
 struct npt_command_ID3D12SwapChainAssistant_GetCurrentResourceAndCommandQueue;
 struct npt_command_ID3D12SwapChainAssistant_InsertImplicitSync;
 struct npt_command_ID3D12LifetimeTracker_DestroyOwnedObject;
-struct npt_command_ID3D12StateObjectProperties_GetShaderIdentifier;
 struct npt_command_ID3D12StateObjectProperties_GetShaderStackSize;
 struct npt_command_ID3D12StateObjectProperties_GetPipelineStackSize;
 struct npt_command_ID3D12StateObjectProperties_SetPipelineStackSize;
 struct npt_command_ID3D12StateObjectProperties1_GetProgramIdentifier;
 struct npt_command_ID3D12WorkGraphProperties_GetNumWorkGraphs;
-struct npt_command_ID3D12WorkGraphProperties_GetProgramName;
 struct npt_command_ID3D12WorkGraphProperties_GetWorkGraphIndex;
 struct npt_command_ID3D12WorkGraphProperties_GetNumNodes;
 struct npt_command_ID3D12WorkGraphProperties_GetNodeID;
@@ -848,7 +839,6 @@ typedef HRESULT (NPT_STDMETHODCALLTYPE *PFN_IDXGIResource_GetEvictionPriority)(v
 typedef HRESULT (NPT_STDMETHODCALLTYPE *PFN_IDXGIKeyedMutex_AcquireSync)(void *, UINT64, DWORD);
 typedef HRESULT (NPT_STDMETHODCALLTYPE *PFN_IDXGIKeyedMutex_ReleaseSync)(void *, UINT64);
 typedef HRESULT (NPT_STDMETHODCALLTYPE *PFN_IDXGISurface_GetDesc)(void *, DXGI_SURFACE_DESC *);
-typedef HRESULT (NPT_STDMETHODCALLTYPE *PFN_IDXGISurface_Map)(void *, DXGI_MAPPED_RECT *, UINT);
 typedef HRESULT (NPT_STDMETHODCALLTYPE *PFN_IDXGISurface_Unmap)(void *);
 typedef HRESULT (NPT_STDMETHODCALLTYPE *PFN_IDXGISurface1_GetDC)(void *, BOOL, HDC *);
 typedef HRESULT (NPT_STDMETHODCALLTYPE *PFN_IDXGISurface1_ReleaseDC)(void *, RECT *);
@@ -899,7 +889,6 @@ typedef HRESULT (NPT_STDMETHODCALLTYPE *PFN_IDXGIOutputDuplication_AcquireNextFr
 typedef HRESULT (NPT_STDMETHODCALLTYPE *PFN_IDXGIOutputDuplication_GetFrameDirtyRects)(void *, UINT, void *, UINT *);
 typedef HRESULT (NPT_STDMETHODCALLTYPE *PFN_IDXGIOutputDuplication_GetFrameMoveRects)(void *, UINT, void *, UINT *);
 typedef HRESULT (NPT_STDMETHODCALLTYPE *PFN_IDXGIOutputDuplication_GetFramePointerShape)(void *, UINT, void *, UINT *, DXGI_OUTDUPL_POINTER_SHAPE_INFO *);
-typedef HRESULT (NPT_STDMETHODCALLTYPE *PFN_IDXGIOutputDuplication_MapDesktopSurface)(void *, DXGI_MAPPED_RECT *);
 typedef HRESULT (NPT_STDMETHODCALLTYPE *PFN_IDXGIOutputDuplication_UnMapDesktopSurface)(void *);
 typedef HRESULT (NPT_STDMETHODCALLTYPE *PFN_IDXGIOutputDuplication_ReleaseFrame)(void *);
 typedef HRESULT (NPT_STDMETHODCALLTYPE *PFN_IDXGISurface2_GetResource)(void *, const IID *, void **, UINT *);
@@ -984,7 +973,6 @@ typedef HRESULT (NPT_STDMETHODCALLTYPE *PFN_IDXGIOutput6_CheckHardwareCompositio
 typedef HRESULT (NPT_STDMETHODCALLTYPE *PFN_IDXGIFactory6_EnumAdapterByGpuPreference)(void *, UINT, DXGI_GPU_PREFERENCE, const IID *, void **);
 typedef HRESULT (NPT_STDMETHODCALLTYPE *PFN_IDXGIFactory7_RegisterAdaptersChangedEvent)(void *, HANDLE, DWORD *);
 typedef HRESULT (NPT_STDMETHODCALLTYPE *PFN_IDXGIFactory7_UnregisterAdaptersChangedEvent)(void *, DWORD);
-typedef void (NPT_STDMETHODCALLTYPE *PFN_ID3D10Blob_GetBufferPointer)(void *);
 typedef SIZE_T (NPT_STDMETHODCALLTYPE *PFN_ID3D10Blob_GetBufferSize)(void *);
 typedef HRESULT (NPT_STDMETHODCALLTYPE *PFN_ID3DDestructionNotifier_RegisterDestructionCallback)(void *, PFN_DESTRUCTION_CALLBACK, void *, UINT *);
 typedef HRESULT (NPT_STDMETHODCALLTYPE *PFN_ID3DDestructionNotifier_UnregisterDestructionCallback)(void *, UINT);
@@ -1147,8 +1135,6 @@ typedef void (NPT_STDMETHODCALLTYPE *PFN_ID3D11CryptoSession_GetCryptoSessionHan
 typedef void (NPT_STDMETHODCALLTYPE *PFN_ID3D11VideoDecoderOutputView_GetDesc)(void *, D3D11_VIDEO_DECODER_OUTPUT_VIEW_DESC *);
 typedef void (NPT_STDMETHODCALLTYPE *PFN_ID3D11VideoProcessorInputView_GetDesc)(void *, D3D11_VIDEO_PROCESSOR_INPUT_VIEW_DESC *);
 typedef void (NPT_STDMETHODCALLTYPE *PFN_ID3D11VideoProcessorOutputView_GetDesc)(void *, D3D11_VIDEO_PROCESSOR_OUTPUT_VIEW_DESC *);
-typedef HRESULT (NPT_STDMETHODCALLTYPE *PFN_ID3D11VideoContext_GetDecoderBuffer)(void *, ID3D11VideoDecoder *, D3D11_VIDEO_DECODER_BUFFER_TYPE, UINT *, void **);
-typedef HRESULT (NPT_STDMETHODCALLTYPE *PFN_ID3D11VideoContext_ReleaseDecoderBuffer)(void *, ID3D11VideoDecoder *, D3D11_VIDEO_DECODER_BUFFER_TYPE);
 typedef HRESULT (NPT_STDMETHODCALLTYPE *PFN_ID3D11VideoContext_DecoderBeginFrame)(void *, ID3D11VideoDecoder *, ID3D11VideoDecoderOutputView *, UINT, const void *);
 typedef HRESULT (NPT_STDMETHODCALLTYPE *PFN_ID3D11VideoContext_DecoderEndFrame)(void *, ID3D11VideoDecoder *);
 typedef HRESULT (NPT_STDMETHODCALLTYPE *PFN_ID3D11VideoContext_SubmitDecoderBuffers)(void *, ID3D11VideoDecoder *, UINT, const D3D11_VIDEO_DECODER_BUFFER_DESC *);
@@ -1375,9 +1361,7 @@ typedef void (NPT_STDMETHODCALLTYPE *PFN_ID3D11On12Device_AcquireWrappedResource
 typedef HRESULT (NPT_STDMETHODCALLTYPE *PFN_ID3D11On12Device1_GetD3D12Device)(void *, const IID *, void **);
 typedef HRESULT (NPT_STDMETHODCALLTYPE *PFN_ID3D11On12Device2_UnwrapUnderlyingResource)(void *, ID3D11Resource *, ID3D12CommandQueue *, const IID *, void **);
 typedef HRESULT (NPT_STDMETHODCALLTYPE *PFN_ID3D11On12Device2_ReturnUnderlyingResource)(void *, ID3D11Resource *, UINT, UINT64 *, ID3D12Fence **);
-typedef D3D12_ROOT_SIGNATURE_DESC * (NPT_STDMETHODCALLTYPE *PFN_ID3D12RootSignatureDeserializer_GetRootSignatureDesc)(void *, D3D12_ROOT_SIGNATURE_DESC *);
 typedef HRESULT (NPT_STDMETHODCALLTYPE *PFN_ID3D12VersionedRootSignatureDeserializer_GetRootSignatureDescAtVersion)(void *, D3D_ROOT_SIGNATURE_VERSION, const D3D12_VERSIONED_ROOT_SIGNATURE_DESC **);
-typedef D3D12_VERSIONED_ROOT_SIGNATURE_DESC * (NPT_STDMETHODCALLTYPE *PFN_ID3D12VersionedRootSignatureDeserializer_GetUnconvertedRootSignatureDesc)(void *, D3D12_VERSIONED_ROOT_SIGNATURE_DESC *);
 typedef HRESULT (NPT_STDMETHODCALLTYPE *PFN_ID3D12Object_GetPrivateData)(void *, const GUID *, UINT *, void *);
 typedef HRESULT (NPT_STDMETHODCALLTYPE *PFN_ID3D12Object_SetPrivateData)(void *, const GUID *, UINT, const void *);
 typedef HRESULT (NPT_STDMETHODCALLTYPE *PFN_ID3D12Object_SetPrivateDataInterface)(void *, const GUID *, const IUnknown *);
@@ -1535,13 +1519,11 @@ typedef HRESULT (NPT_STDMETHODCALLTYPE *PFN_ID3D12SwapChainAssistant_GetSwapChai
 typedef HRESULT (NPT_STDMETHODCALLTYPE *PFN_ID3D12SwapChainAssistant_GetCurrentResourceAndCommandQueue)(void *, const IID *, void **, const IID *, void **);
 typedef HRESULT (NPT_STDMETHODCALLTYPE *PFN_ID3D12SwapChainAssistant_InsertImplicitSync)(void *);
 typedef HRESULT (NPT_STDMETHODCALLTYPE *PFN_ID3D12LifetimeTracker_DestroyOwnedObject)(void *, ID3D12DeviceChild *);
-typedef void (NPT_STDMETHODCALLTYPE *PFN_ID3D12StateObjectProperties_GetShaderIdentifier)(void *, const WCHAR *);
 typedef UINT64 (NPT_STDMETHODCALLTYPE *PFN_ID3D12StateObjectProperties_GetShaderStackSize)(void *, const WCHAR *);
 typedef UINT64 (NPT_STDMETHODCALLTYPE *PFN_ID3D12StateObjectProperties_GetPipelineStackSize)(void *);
 typedef void (NPT_STDMETHODCALLTYPE *PFN_ID3D12StateObjectProperties_SetPipelineStackSize)(void *, UINT64);
 typedef D3D12_PROGRAM_IDENTIFIER * (NPT_STDMETHODCALLTYPE *PFN_ID3D12StateObjectProperties1_GetProgramIdentifier)(void *, D3D12_PROGRAM_IDENTIFIER *, const WCHAR *);
 typedef UINT (NPT_STDMETHODCALLTYPE *PFN_ID3D12WorkGraphProperties_GetNumWorkGraphs)(void *);
-typedef WCHAR (NPT_STDMETHODCALLTYPE *PFN_ID3D12WorkGraphProperties_GetProgramName)(void *, UINT);
 typedef UINT (NPT_STDMETHODCALLTYPE *PFN_ID3D12WorkGraphProperties_GetWorkGraphIndex)(void *, const WCHAR *);
 typedef UINT (NPT_STDMETHODCALLTYPE *PFN_ID3D12WorkGraphProperties_GetNumNodes)(void *, UINT);
 typedef D3D12_NODE_ID * (NPT_STDMETHODCALLTYPE *PFN_ID3D12WorkGraphProperties_GetNodeID)(void *, D3D12_NODE_ID *, UINT, UINT);
@@ -1707,9 +1689,6 @@ struct npt_dispatch_idxgisurface_overrides {
     HRESULT (*GetDesc)(struct npt_dispatch_context *ctx,
                       struct npt_command_IDXGISurface_GetDesc *args,
                       PFN_IDXGISurface_GetDesc original);
-    HRESULT (*Map)(struct npt_dispatch_context *ctx,
-              struct npt_command_IDXGISurface_Map *args,
-              PFN_IDXGISurface_Map original);
     HRESULT (*Unmap)(struct npt_dispatch_context *ctx,
                   struct npt_command_IDXGISurface_Unmap *args,
                   PFN_IDXGISurface_Unmap original);
@@ -1893,9 +1872,6 @@ struct npt_dispatch_idxgioutputduplication_overrides {
     HRESULT (*GetFramePointerShape)(struct npt_dispatch_context *ctx,
                                                 struct npt_command_IDXGIOutputDuplication_GetFramePointerShape *args,
                                                 PFN_IDXGIOutputDuplication_GetFramePointerShape original);
-    HRESULT (*MapDesktopSurface)(struct npt_dispatch_context *ctx,
-                                          struct npt_command_IDXGIOutputDuplication_MapDesktopSurface *args,
-                                          PFN_IDXGIOutputDuplication_MapDesktopSurface original);
     HRESULT (*UnMapDesktopSurface)(struct npt_dispatch_context *ctx,
                                               struct npt_command_IDXGIOutputDuplication_UnMapDesktopSurface *args,
                                               PFN_IDXGIOutputDuplication_UnMapDesktopSurface original);
@@ -2232,9 +2208,6 @@ struct npt_dispatch_idxgifactory7_overrides {
 };
 
 struct npt_dispatch_id3d10blob_overrides {
-    void (*GetBufferPointer)(struct npt_dispatch_context *ctx,
-                                        struct npt_command_ID3D10Blob_GetBufferPointer *args,
-                                        PFN_ID3D10Blob_GetBufferPointer original);
     SIZE_T (*GetBufferSize)(struct npt_dispatch_context *ctx,
                                   struct npt_command_ID3D10Blob_GetBufferSize *args,
                                   PFN_ID3D10Blob_GetBufferSize original);
@@ -2817,12 +2790,6 @@ struct npt_dispatch_id3d11videoprocessoroutputview_overrides {
 };
 
 struct npt_dispatch_id3d11videocontext_overrides {
-    HRESULT (*GetDecoderBuffer)(struct npt_dispatch_context *ctx,
-                                        struct npt_command_ID3D11VideoContext_GetDecoderBuffer *args,
-                                        PFN_ID3D11VideoContext_GetDecoderBuffer original);
-    HRESULT (*ReleaseDecoderBuffer)(struct npt_dispatch_context *ctx,
-                                                struct npt_command_ID3D11VideoContext_ReleaseDecoderBuffer *args,
-                                                PFN_ID3D11VideoContext_ReleaseDecoderBuffer original);
     HRESULT (*DecoderBeginFrame)(struct npt_dispatch_context *ctx,
                                           struct npt_command_ID3D11VideoContext_DecoderBeginFrame *args,
                                           PFN_ID3D11VideoContext_DecoderBeginFrame original);
@@ -3599,19 +3566,10 @@ struct npt_dispatch_id3d11on12device2_overrides {
                                                         PFN_ID3D11On12Device2_ReturnUnderlyingResource original);
 };
 
-struct npt_dispatch_id3d12rootsignaturedeserializer_overrides {
-    D3D12_ROOT_SIGNATURE_DESC (*GetRootSignatureDesc)(struct npt_dispatch_context *ctx,
-                                                struct npt_command_ID3D12RootSignatureDeserializer_GetRootSignatureDesc *args,
-                                                PFN_ID3D12RootSignatureDeserializer_GetRootSignatureDesc original);
-};
-
 struct npt_dispatch_id3d12versionedrootsignaturedeserializer_overrides {
     HRESULT (*GetRootSignatureDescAtVersion)(struct npt_dispatch_context *ctx,
                                                                   struct npt_command_ID3D12VersionedRootSignatureDeserializer_GetRootSignatureDescAtVersion *args,
                                                                   PFN_ID3D12VersionedRootSignatureDeserializer_GetRootSignatureDescAtVersion original);
-    D3D12_VERSIONED_ROOT_SIGNATURE_DESC (*GetUnconvertedRootSignatureDesc)(struct npt_dispatch_context *ctx,
-                                                                      struct npt_command_ID3D12VersionedRootSignatureDeserializer_GetUnconvertedRootSignatureDesc *args,
-                                                                      PFN_ID3D12VersionedRootSignatureDeserializer_GetUnconvertedRootSignatureDesc original);
 };
 
 struct npt_dispatch_id3d12object_overrides {
@@ -4164,9 +4122,6 @@ struct npt_dispatch_id3d12lifetimetracker_overrides {
 };
 
 struct npt_dispatch_id3d12stateobjectproperties_overrides {
-    void (*GetShaderIdentifier)(struct npt_dispatch_context *ctx,
-                                              struct npt_command_ID3D12StateObjectProperties_GetShaderIdentifier *args,
-                                              PFN_ID3D12StateObjectProperties_GetShaderIdentifier original);
     UINT64 (*GetShaderStackSize)(struct npt_dispatch_context *ctx,
                                             struct npt_command_ID3D12StateObjectProperties_GetShaderStackSize *args,
                                             PFN_ID3D12StateObjectProperties_GetShaderStackSize original);
@@ -4188,9 +4143,6 @@ struct npt_dispatch_id3d12workgraphproperties_overrides {
     UINT (*GetNumWorkGraphs)(struct npt_dispatch_context *ctx,
                                         struct npt_command_ID3D12WorkGraphProperties_GetNumWorkGraphs *args,
                                         PFN_ID3D12WorkGraphProperties_GetNumWorkGraphs original);
-    WCHAR (*GetProgramName)(struct npt_dispatch_context *ctx,
-                                    struct npt_command_ID3D12WorkGraphProperties_GetProgramName *args,
-                                    PFN_ID3D12WorkGraphProperties_GetProgramName original);
     UINT (*GetWorkGraphIndex)(struct npt_dispatch_context *ctx,
                                           struct npt_command_ID3D12WorkGraphProperties_GetWorkGraphIndex *args,
                                           PFN_ID3D12WorkGraphProperties_GetWorkGraphIndex original);
@@ -4742,7 +4694,6 @@ struct npt_dispatch_context {
     struct npt_dispatch_id3d11on12device_overrides *id3d11on12device_dispatch_overrides;
     struct npt_dispatch_id3d11on12device1_overrides *id3d11on12device1_dispatch_overrides;
     struct npt_dispatch_id3d11on12device2_overrides *id3d11on12device2_dispatch_overrides;
-    struct npt_dispatch_id3d12rootsignaturedeserializer_overrides *id3d12rootsignaturedeserializer_dispatch_overrides;
     struct npt_dispatch_id3d12versionedrootsignaturedeserializer_overrides *id3d12versionedrootsignaturedeserializer_dispatch_overrides;
     struct npt_dispatch_id3d12object_overrides *id3d12object_dispatch_overrides;
     struct npt_dispatch_id3d12devicechild_overrides *id3d12devicechild_dispatch_overrides;

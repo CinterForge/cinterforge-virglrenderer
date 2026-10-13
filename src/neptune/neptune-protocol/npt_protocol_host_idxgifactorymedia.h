@@ -69,9 +69,13 @@ npt_decode_IDXGIFactoryMedia_CreateSwapChainForCompositionSurfaceHandle_args_tem
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppSwapChain = _gid;
-        args->ppSwapChain = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppSwapChain) return;
-        *args->ppSwapChain = NULL;
+        if (_gid) {
+            args->ppSwapChain = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppSwapChain) return;
+            *args->ppSwapChain = NULL;
+        } else {
+            args->ppSwapChain = NULL;
+        }
     }
     /* Allocate temp storage for output-only parameters */
 
@@ -246,9 +250,13 @@ npt_decode_IDXGIFactoryMedia_CreateDecodeSwapChainForCompositionSurfaceHandle_ar
         uint64_t _gid;
         npt_decode_uint64_t(dec, &_gid);
         args->_guest_id_ppSwapChain = _gid;
-        args->ppSwapChain = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
-        if (!args->ppSwapChain) return;
-        *args->ppSwapChain = NULL;
+        if (_gid) {
+            args->ppSwapChain = npt_cs_decoder_alloc_temp(dec, sizeof(void *));
+            if (!args->ppSwapChain) return;
+            *args->ppSwapChain = NULL;
+        } else {
+            args->ppSwapChain = NULL;
+        }
     }
     /* Allocate temp storage for output-only parameters */
 

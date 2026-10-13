@@ -1027,6 +1027,7 @@ npt_decode_IDXGIDecodeSwapChain_GetColorSpace_args_temp(struct npt_cs_decoder *d
                                                         struct npt_command_IDXGIDecodeSwapChain_GetColorSpace *args)
 {
     /* Decode input parameters from the wire */
+
     /* Allocate temp storage for output-only parameters */
 }
 

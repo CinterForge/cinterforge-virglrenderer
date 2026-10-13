@@ -20,7 +20,7 @@
 #include "npt_context.h"
 #include "npt_profile.h"
 #include "npt_renderer.h"
-#include "npt_transport_defs.h"
+#include "neptune-protocol/npt_protocol_transport.h"
 #include "virgl_resource.h"
 
 #include "neptune-protocol/npt_protocol_host_dispatch_types.h"
