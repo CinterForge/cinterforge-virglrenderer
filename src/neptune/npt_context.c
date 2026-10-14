@@ -538,14 +538,7 @@ npt_context_await_object_locked(struct npt_context *ctx, uint64_t id)
                  waited_ns / 1000000);
          return NULL;
       }
-      struct timespec ts;
-      timespec_get(&ts, TIME_UTC);
-      ts.tv_nsec += (long)slice_ns;
-      if (ts.tv_nsec >= 1000000000L) {
-         ts.tv_sec += 1;
-         ts.tv_nsec -= 1000000000L;
-      }
-      cnd_timedwait(&ctx->object_cond, &ctx->object_mutex, &ts);
+      npt_cnd_wait_rel_ns(&ctx->object_cond, &ctx->object_mutex, slice_ns);
       waited_ns += slice_ns;
    }
 }
@@ -1260,19 +1253,6 @@ npt_context_on_ring_fatal(struct npt_context *ctx)
 
 /* Ring monitor (ALIVE-bit reporter) */
 
-static struct timespec
-npt_context_timespec_add(struct timespec a, struct timespec b)
-{
-   const long NS_PER_SEC = 1000000000;
-   a.tv_sec += b.tv_sec;
-   a.tv_nsec += b.tv_nsec;
-   if (a.tv_nsec >= NS_PER_SEC) {
-      a.tv_sec += 1;
-      a.tv_nsec -= NS_PER_SEC;
-   }
-   return a;
-}
-
 static int
 npt_context_ring_monitor_thread(void *arg)
 {
@@ -1302,18 +1282,9 @@ npt_context_ring_monitor_thread(void *arg)
        * period-tightening); re-check started flag at top of loop. */
 
       mtx_lock(&ctx->ring_monitor.mutex);
-      struct timespec ts;
-      if ((ret = clock_gettime(CLOCK_REALTIME, &ts))) {
-         mtx_unlock(&ctx->ring_monitor.mutex);
-         break;
-      }
-
-      const uint32_t period_us = ctx->ring_monitor.report_period_us;
-      ts = npt_context_timespec_add(
-         ts, (struct timespec){ period_us / 1000000,
-                                (period_us % 1000000) * 1000 });
-      ret = cnd_timedwait(&ctx->ring_monitor.cond, &ctx->ring_monitor.mutex,
-                          &ts);
+      ret = npt_cnd_wait_rel_ns(&ctx->ring_monitor.cond,
+                                &ctx->ring_monitor.mutex,
+                                ctx->ring_monitor.report_period_us * 1000ull);
       mtx_unlock(&ctx->ring_monitor.mutex);
    }
 

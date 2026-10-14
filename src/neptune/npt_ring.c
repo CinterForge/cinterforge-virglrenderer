@@ -270,42 +270,6 @@ npt_ring_feedback_pending(const struct npt_context *ctx)
                                memory_order_relaxed) != 0;
 }
 
-/* Bounded wait on `cond` with a relative timeout.  Caller holds `mutex`.
- *
- * c11 cnd_timedwait takes an absolute CLOCK_REALTIME deadline, so a
- * backward wall-clock step lands the deadline that far in the future --
- * and while a feedback poll is owed, that timeout is the only thing that
- * will publish the value a guest thread is blocked on.  Both platform
- * primitives below take a relative timeout off a clock that cannot step.
- * The portable fallback is the c11 one and keeps that exposure. */
-static void
-npt_cnd_wait_rel_ns(cnd_t *cond, mtx_t *mutex, uint64_t ns)
-{
-#if defined(_WIN32)
-   /* Round up: a sub-millisecond wait truncated to 0 would spin. */
-   SleepConditionVariableCS(cond, mutex, (DWORD)((ns + 999999ull) / 1000000ull));
-#else
-   const uint64_t ns_per_sec = 1000000000ull;
-#if defined(__APPLE__)
-   const struct timespec rel = {
-      .tv_sec = (time_t)(ns / ns_per_sec),
-      .tv_nsec = (long)(ns % ns_per_sec),
-   };
-   pthread_cond_timedwait_relative_np(cond, mutex, &rel);
-#else
-   struct timespec ts;
-   timespec_get(&ts, TIME_UTC);
-   ts.tv_sec += (time_t)(ns / ns_per_sec);
-   ts.tv_nsec += (long)(ns % ns_per_sec);
-   if (ts.tv_nsec >= (long)ns_per_sec) {
-      ts.tv_sec += 1;
-      ts.tv_nsec -= (long)ns_per_sec;
-   }
-   cnd_timedwait(cond, mutex, &ts);
-#endif
-#endif
-}
-
 static void
 npt_ring_cond_wait_ns(struct npt_ring *ring, uint64_t ns)
 {

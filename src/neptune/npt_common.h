@@ -89,6 +89,9 @@ npt_capset_caps_override(void);
 void
 npt_log(const char *fmt, ...);
 
+int
+npt_cnd_wait_rel_ns(cnd_t *cond, mtx_t *mutex, uint64_t ns);
+
 static inline bool
 npt_region_is_valid(const struct npt_region *region)
 {

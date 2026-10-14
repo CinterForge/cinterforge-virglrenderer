@@ -6,6 +6,11 @@
 #include "npt_common.h"
 
 #include <stdarg.h>
+#include <time.h>
+
+#ifndef _WIN32
+#include <pthread.h>
+#endif
 
 #include "util/u_debug.h"
 
@@ -60,4 +65,46 @@ npt_log(const char *fmt, ...)
    va_start(va, fmt);
    virgl_prefixed_logv("npt", VIRGL_LOG_LEVEL_INFO, fmt, va);
    va_end(va);
+}
+
+/* Bounded wait on `cond` with a relative timeout.  Caller holds `mutex`.
+ * Returns thrd_success when signalled, thrd_timeout when the timeout
+ * elapsed, thrd_error otherwise.
+ *
+ * c11 cnd_timedwait takes an absolute CLOCK_REALTIME deadline, so a
+ * backward wall-clock step lands the deadline that far in the future.
+ * Every platform branch below waits on a clock that cannot step. */
+int
+npt_cnd_wait_rel_ns(cnd_t *cond, mtx_t *mutex, uint64_t ns)
+{
+#if defined(_WIN32)
+   /* Round up: a sub-millisecond wait truncated to 0 would spin. */
+   if (SleepConditionVariableCS(cond, mutex,
+                                (DWORD)((ns + 999999ull) / 1000000ull)))
+      return thrd_success;
+   return GetLastError() == ERROR_TIMEOUT ? thrd_timeout : thrd_error;
+#else
+   const uint64_t ns_per_sec = 1000000000ull;
+   int rc;
+#if defined(__APPLE__)
+   const struct timespec rel = {
+      .tv_sec = (time_t)(ns / ns_per_sec),
+      .tv_nsec = (long)(ns % ns_per_sec),
+   };
+   rc = pthread_cond_timedwait_relative_np(cond, mutex, &rel);
+#else
+   struct timespec ts;
+   clock_gettime(CLOCK_MONOTONIC, &ts);
+   ts.tv_sec += (time_t)(ns / ns_per_sec);
+   ts.tv_nsec += (long)(ns % ns_per_sec);
+   if (ts.tv_nsec >= (long)ns_per_sec) {
+      ts.tv_sec += 1;
+      ts.tv_nsec -= (long)ns_per_sec;
+   }
+   rc = pthread_cond_clockwait(cond, mutex, CLOCK_MONOTONIC, &ts);
+#endif
+   if (rc == 0)
+      return thrd_success;
+   return rc == ETIMEDOUT ? thrd_timeout : thrd_error;
+#endif
 }
