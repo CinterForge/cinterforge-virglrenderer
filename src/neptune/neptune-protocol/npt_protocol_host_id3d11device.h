@@ -4831,19 +4831,28 @@ static inline void
 npt_decode_ID3D11Device_CheckFeatureSupport_args_temp(struct npt_cs_decoder *dec,
                                                       struct npt_command_ID3D11Device_CheckFeatureSupport *args)
 {
+    uint64_t _cnt_pFeatureSupportData = 0; int _has_cnt_pFeatureSupportData = -1;
     /* Decode input parameters from the wire */
     npt_decode_D3D11_FEATURE(dec, &args->Feature);
-
-    npt_decode_UINT(dec, &args->FeatureSupportDataSize);
-    /* Allocate temp storage for output-only parameters */
-
-    if (args->FeatureSupportDataSize) {
-        args->pFeatureSupportData = npt_cs_decoder_alloc_temp(dec, args->FeatureSupportDataSize);
+    _cnt_pFeatureSupportData = npt_decode_array_count_unchecked(dec);
+    _has_cnt_pFeatureSupportData = _cnt_pFeatureSupportData != 0;
+    if (_cnt_pFeatureSupportData) {
+        args->pFeatureSupportData = npt_cs_decoder_alloc_temp(dec, _cnt_pFeatureSupportData);
         if (!args->pFeatureSupportData) return;
-        memset(args->pFeatureSupportData, 0, args->FeatureSupportDataSize);
+        npt_decode_blob_array(dec, (void *)args->pFeatureSupportData, _cnt_pFeatureSupportData);
     } else {
         args->pFeatureSupportData = NULL;
     }
+    npt_decode_UINT(dec, &args->FeatureSupportDataSize);
+    /* A counted array must hold every element the callee walks. */
+    if ((_has_cnt_pFeatureSupportData > 0 && _cnt_pFeatureSupportData < (uint64_t)(args->FeatureSupportDataSize)) ||
+        (_has_cnt_pFeatureSupportData == 0 && (uint64_t)(args->FeatureSupportDataSize) != 0)) {
+        npt_cs_decoder_set_fatal(dec);
+        return;
+    }
+    /* Allocate temp storage for output-only parameters */
+
+
 
 }
 
