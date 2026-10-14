@@ -253,21 +253,13 @@ if with_neptune
    if host_machine.system() == 'linux'
       virgl_sources += 'neptune/npt_hostmem.c'
    endif
-   # macOS needs no backend dep: it dlopens the backend umbrella and
-   # defines the shared-texture descriptor locally (npt_shared.c).
-   if not with_host_darwin
-      # Headers only -- Neptune dlopens the d3d11/dxgi libraries at runtime,
-      # so the renderer must not gain a NEEDED entry on libdxvk_*.
-      dxvk_dep = dependency('dxvk-dxgi').partial_dependency(
-         compile_args : true, includes : true)
-      # The shared-resource descriptor contract is a fork-only extension;
-      # bail early rather than fail to compile a Neptune source file.
-      if not cc.has_header('dxvk_shared_resource.h', dependencies : dxvk_dep)
-         error('Neptune requires the dxvk with shared-resource descriptors; ' +
-               'dxvk_shared_resource.h not found via dxvk-dxgi pkg-config.')
-      endif
-      virgl_depends += [dxvk_dep]
-   endif
+   # No backend dep: Neptune dlopens the D3D libraries at runtime.  The
+   # contract with them -- shared-resource descriptors and the embedder API
+   # -- is directx-native's, headers only (the renderer runs none of its
+   # code and must not carry its own copy of its globals).
+   virgl_depends += [dependency('directx-native-headers',
+      fallback : ['directx-native', 'directx_native_headers_dep'],
+      default_options : ['tests=false'])]
 endif
 
 if with_drm_renderers

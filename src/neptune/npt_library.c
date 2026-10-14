@@ -53,19 +53,71 @@ npt_library_sym(void *handle, const char *name)
    return sym;
 }
 
+/* <prefix><suffix> from `mod`, logging when it is absent. */
+static void *
+npt_library_embedder_sym(void *mod, const char *prefix, const char *suffix)
+{
+   char name[96];
+   snprintf(name, sizeof(name), "%s%s", prefix, suffix);
+   return npt_library_sym(mod, name);
+}
+
+/* The same for a symbol the backend may legitimately lack: absent is not
+ * worth a log line. */
+static void *
+npt_library_embedder_sym_optional(void *mod, const char *prefix,
+                                  const char *suffix)
+{
+   char name[96];
+   snprintf(name, sizeof(name), "%s%s", prefix, suffix);
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpedantic"
+   void *sym = dlsym(mod, name);
+#pragma GCC diagnostic pop
+   dlerror(); /* clear */
+   return sym;
+}
+
+/* Every library exporting directx-native embedder symbols reports the
+ * DXN_ABI_VERSION it was built with; the descriptors and the embedder API
+ * are lockstep, so anything else -- including no answer -- is refused. */
+static bool
+npt_library_check_abi(void *mod, const char *prefix, const char *what)
+{
+   PFN_dxn_native_abi_version query =
+      ((union { void *p; PFN_dxn_native_abi_version f; }){
+         .p = npt_library_embedder_sym(mod, prefix,
+                                       DXN_SYM_NATIVE_ABI_VERSION) }).f;
+   if (!query) {
+      npt_log("%s library has no %s" DXN_SYM_NATIVE_ABI_VERSION
+              "; refusing it (this renderer speaks directx-native ABI %u)",
+              what, prefix, DXN_ABI_VERSION);
+      return false;
+   }
+   const uint32_t version = query();
+   if (version != DXN_ABI_VERSION) {
+      npt_log("%s library speaks directx-native ABI %u, this renderer %u; "
+              "refusing it", what, version, DXN_ABI_VERSION);
+      return false;
+   }
+   npt_log("%s library: directx-native ABI %u", what, version);
+   return true;
+}
+
 #ifdef __APPLE__
 /* Bind the backend's embedder API from the loaded umbrella.  d3dmetal
- * prefixes its exports dmn_, dxmt prefixes them dxmt_; probing
- * event_create() for each identifies the backend, which the
- * workaround-flags gate below also needs. */
-static void
+ * prefixes its exports dmn_, dxmt prefixes them dxmt_; probing each
+ * prefix's native_abi_version (which every backend exports) identifies the
+ * backend, which the workaround-flags gate below also needs.  False when
+ * the backend's directx-native ABI does not match ours. */
+static bool
 npt_library_load_embedder_api(struct npt_d3d_library *lib)
 {
    void *mod = lib->d3d11_module ? lib->d3d11_module
              : lib->dxgi_module  ? lib->dxgi_module
              :                     lib->d3d12_module;
    if (!mod)
-      return;
+      return true;
 
    static const struct {
       const char *prefix;
@@ -76,60 +128,59 @@ npt_library_load_embedder_api(struct npt_d3d_library *lib)
    };
 
    for (size_t i = 0; i < ARRAY_SIZE(candidates); i++) {
+      const char *prefix = candidates[i].prefix;
       char name[64];
-      snprintf(name, sizeof(name), "%sevent_create", candidates[i].prefix);
+      snprintf(name, sizeof(name), "%s" DXN_SYM_NATIVE_ABI_VERSION, prefix);
       dlerror();
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wpedantic"
-      void *create = dlsym(mod, name);
+      void *abi = dlsym(mod, name);
 #pragma GCC diagnostic pop
-      if (!create)
+      dlerror(); /* clear */
+      if (!abi)
          continue;
 
       lib->backend = candidates[i].kind;
+      if (!npt_library_check_abi(mod, prefix, "backend"))
+         return false;
+
       lib->pfn_event_create =
-         ((union { void *p; void *(*f)(int, int); }){ .p = create }).f;
-
-      snprintf(name, sizeof(name), "%sevent_close", candidates[i].prefix);
+         ((union { void *p; PFN_dxn_event_create f; }){
+            .p = npt_library_embedder_sym(mod, prefix,
+                                          DXN_SYM_EVENT_CREATE) }).f;
       lib->pfn_event_close =
-         ((union { void *p; void (*f)(void *); }){
-            .p = npt_library_sym(mod, name) }).f;
-
-      snprintf(name, sizeof(name), "%sevent_dup_fd", candidates[i].prefix);
+         ((union { void *p; PFN_dxn_event_close f; }){
+            .p = npt_library_embedder_sym(mod, prefix,
+                                          DXN_SYM_EVENT_CLOSE) }).f;
       lib->pfn_event_dup_fd =
-         ((union { void *p; int (*f)(void *); }){
-            .p = npt_library_sym(mod, name) }).f;
+         ((union { void *p; PFN_dxn_event_dup_fd f; }){
+            .p = npt_library_embedder_sym(mod, prefix,
+                                          DXN_SYM_EVENT_DUP_FD) }).f;
 
-      snprintf(name, sizeof(name), "%sshared_handle_close",
-               candidates[i].prefix);
+      /* The rest is optional: a backend without NT-style handles, D3D12
+       * heap import or external DYNAMIC buffers exports nothing for it, and
+       * the users fail cleanly. */
       lib->pfn_shared_handle_close =
-         ((union { void *p; int (*f)(void *); }){
-            .p = npt_library_sym(mod, name) }).f;
-
-      /* Optional, as on the Linux side.  DXMT has no D3D12 at all, so
-       * it exports nothing here. */
-      snprintf(name, sizeof(name), "%sopen_existing_heap_from_fd",
-               candidates[i].prefix);
+         ((union { void *p; PFN_dxn_shared_handle_close f; }){
+            .p = npt_library_embedder_sym_optional(mod, prefix,
+                                          DXN_SYM_SHARED_HANDLE_CLOSE) }).f;
       lib->pfn_darwin_open_existing_heap_from_fd =
-         ((union { void *p;
-                   PFN_npt_lib_darwin_open_existing_heap_from_fd f; }){
-            .p = npt_library_sym(mod, name) }).f;
-
-      if (candidates[i].kind == NPT_BACKEND_DXMT) {
-         lib->pfn_d3d11_buffer_bind_external_fd =
-            ((union { void *p;
-                      PFN_npt_lib_d3d11_buffer_bind_external_fd f; }){
-               .p = npt_library_sym(mod,
-                                    "dxmt_d3d11_buffer_bind_external_fd") }).f;
-         lib->pfn_d3d11_buffer_external_cookie =
-            ((union { void *p;
-                      PFN_npt_lib_d3d11_buffer_external_cookie f; }){
-               .p = npt_library_sym(mod,
-                                    "dxmt_d3d11_buffer_external_cookie") }).f;
-      }
-      return;
+         ((union { void *p; PFN_dxn_open_existing_heap_from_fd f; }){
+            .p = npt_library_embedder_sym_optional(
+               mod, prefix, DXN_SYM_OPEN_EXISTING_HEAP_FROM_FD) }).f;
+      lib->pfn_d3d11_buffer_bind_external_fd =
+         ((union { void *p; PFN_dxn_d3d11_buffer_bind_external_fd f; }){
+            .p = npt_library_embedder_sym_optional(
+               mod, prefix, DXN_SYM_D3D11_BUFFER_BIND_EXTERNAL_FD) }).f;
+      lib->pfn_d3d11_buffer_external_cookie =
+         ((union { void *p; PFN_dxn_d3d11_buffer_external_cookie f; }){
+            .p = npt_library_embedder_sym_optional(
+               mod, prefix, DXN_SYM_D3D11_BUFFER_EXTERNAL_COOKIE) }).f;
+      return true;
    }
-   npt_log("backend embedder API (dmn_/dxmt_event_*) not found");
+   npt_log("backend embedder API (dmn_/dxmt_" DXN_SYM_NATIVE_ABI_VERSION
+           ") not found");
+   return true;
 }
 #endif /* __APPLE__ */
 
@@ -166,18 +217,25 @@ npt_library_init(struct npt_d3d_library *lib)
                                     "D3D11On12CreateDevice")
             }).f;
 #ifndef __APPLE__
-         /* Optional: a dxvk without them leaves the guest's DYNAMIC
-          * buffers on the copying map ring. */
-         lib->pfn_d3d11_buffer_bind_external_fd =
-            ((union { void *p; PFN_npt_lib_d3d11_buffer_bind_external_fd f; }){
-               .p = npt_library_sym(lib->d3d11_module,
-                                    "dxvk_d3d11_buffer_bind_external_dmabuf")
-            }).f;
-         lib->pfn_d3d11_buffer_external_cookie =
-            ((union { void *p; PFN_npt_lib_d3d11_buffer_external_cookie f; }){
-               .p = npt_library_sym(lib->d3d11_module,
-                                    "dxvk_d3d11_buffer_external_cookie")
-            }).f;
+         /* dxvk's embedder API.  Optional: without it the guest's
+          * DYNAMIC buffers stay on the copying map ring. */
+         if (!npt_library_check_abi(lib->d3d11_module, "dxvk_", "D3D11")) {
+            dlclose(lib->d3d11_module);
+            lib->d3d11_module = NULL;
+            lib->pfn_D3D11CreateDevice = NULL;
+            lib->pfn_D3D11On12CreateDevice = NULL;
+         } else {
+            lib->pfn_d3d11_buffer_bind_external_fd =
+               ((union { void *p; PFN_dxn_d3d11_buffer_bind_external_fd f; }){
+                  .p = npt_library_embedder_sym_optional(
+                     lib->d3d11_module, "dxvk_",
+                     DXN_SYM_D3D11_BUFFER_BIND_EXTERNAL_FD) }).f;
+            lib->pfn_d3d11_buffer_external_cookie =
+               ((union { void *p; PFN_dxn_d3d11_buffer_external_cookie f; }){
+                  .p = npt_library_embedder_sym_optional(
+                     lib->d3d11_module, "dxvk_",
+                     DXN_SYM_D3D11_BUFFER_EXTERNAL_COOKIE) }).f;
+         }
 #endif
       }
    }
@@ -243,14 +301,24 @@ npt_library_init(struct npt_d3d_library *lib)
                .p = npt_library_sym(lib->d3d12_module,
                                     "D3D12SerializeVersionedRootSignature")
             }).f;
-         /* Optional: NULL makes CREATE_HEAP_FROM_SHMEM fail cleanly and
-          * the guest stays on the sync-map path. */
-         lib->pfn_vkd3d_open_existing_heap_from_dmabuf =
-            ((union { void *p;
-                      PFN_npt_lib_vkd3d_open_existing_heap_from_dmabuf f; }){
-               .p = npt_library_sym(lib->d3d12_module,
-                                    "vkd3d_open_existing_heap_from_dmabuf")
-            }).f;
+#ifndef __APPLE__
+         /* vkd3d-proton's embedder API.  Optional: NULL makes
+          * CREATE_HEAP_FROM_SHMEM fail cleanly and the guest stays on the
+          * sync-map path. */
+         if (!npt_library_check_abi(lib->d3d12_module, "vkd3d_", "D3D12")) {
+            dlclose(lib->d3d12_module);
+            lib->d3d12_module = NULL;
+            lib->pfn_D3D12CreateDevice = NULL;
+            lib->pfn_D3D12SerializeRootSignature = NULL;
+            lib->pfn_D3D12SerializeVersionedRootSignature = NULL;
+         } else {
+            lib->pfn_vkd3d_open_existing_heap_from_dmabuf =
+               ((union { void *p; PFN_dxn_open_existing_heap_from_dmabuf f; }){
+                  .p = npt_library_embedder_sym_optional(
+                     lib->d3d12_module, "vkd3d_",
+                     DXN_SYM_OPEN_EXISTING_HEAP_FROM_DMABUF) }).f;
+         }
+#endif
       }
    }
 
@@ -268,7 +336,10 @@ npt_library_init(struct npt_d3d_library *lib)
    }
 
 #ifdef __APPLE__
-   npt_library_load_embedder_api(lib);
+   if (!npt_library_load_embedder_api(lib)) {
+      npt_library_fini(lib);
+      return false;
+   }
 
    /* D3DMetal's DXBC->AIR/DXIL shader converter has several defects the guest
     * driver (Triton) patches around. Advertise exactly those patches -- each a

@@ -7,9 +7,9 @@
  * export through IDXGIResource::GetSharedHandle or
  * ID3D12Device::CreateSharedHandle, import through
  * ID3D11Device::OpenSharedResource or ID3D12Device::OpenSharedHandle,
- * whichever family the object belongs to; only the descriptor behind
- * the HANDLE differs: dxvk's DxvkSharedTextureDescriptor (dmabuf) on
- * Linux, the darwin backend's shared-texture descriptor (shm fd) on macOS.
+ * whichever family the object belongs to.  The HANDLE is directx-native's
+ * dxn_shared_texture on every backend; only what its fd is differs (a
+ * dma-buf on Linux, a shm object on macOS).
  */
 
 #include "npt_shared.h"
@@ -20,9 +20,7 @@
 #include <time.h>
 #include <unistd.h>
 
-#ifndef __APPLE__
-#include <dxvk_shared_resource.h>
-#endif
+#include <directx-native/dxn_shared.h>
 
 #include "c11/threads.h"
 
@@ -38,15 +36,6 @@
 
 /* D3D11_BIND_SHADER_RESOURCE (d3d11.h); consumers sample the texture. */
 #define NPT_D3D11_BIND_SHADER_RESOURCE 0x8u
-
-/* The exporting backend's own description of the texture format.  The
- * Darwin backend records the DXGI format directly; the dxvk backend
- * carries it in the shared-resource metadata. */
-#ifdef __APPLE__
-#define NPT_SHARED_EXPORT_FORMAT(d) ((d)->dxgi_format)
-#else
-#define NPT_SHARED_EXPORT_FORMAT(d) ((d)->meta.Format)
-#endif
 
 /* DXGI_FORMAT -> enum virgl_formats, for the 8-bit RGBA/BGRA families
  * that can back a presentable surface.  0 means "unmapped", which leaves
@@ -66,38 +55,6 @@ npt_shared_dxgi_to_virgl_format(uint32_t dxgi_format)
    }
 }
 
-#ifdef __APPLE__
-/* The POD both darwin backends hand through GetSharedHandle /
- * OpenSharedResource, defined here so the renderer neither links nor
- * includes a backend header.  d3dmetal's dmn_shared_texture_handle and
- * dxmt's dxmt_shared_texture_handle share this exact ABI: same 'DMTX'
- * magic, version, and field layout. */
-#define NPT_DARWIN_SHARED_TEXTURE_MAGIC   0x58544D44u /* 'DMTX' */
-/* Every peer that builds or reads the POD declares the same version, and
- * an import refuses a handle whose version differs rather than read a
- * layout it does not have. */
-#define NPT_DARWIN_SHARED_HANDLE_VERSION  2u
-struct npt_darwin_shared_texture {
-   uint32_t magic;
-   uint32_t version;
-   int32_t  fd;            /* process-local; sent via SCM_RIGHTS, then patched */
-   uint32_t width, height;
-   uint32_t dxgi_format;
-   uint32_t mip_levels, array_size, sample_count;
-   uint32_t bind_flags, misc_flags, cpu_access;
-   uint64_t stride;        /* bytesPerRow */
-   uint64_t size;          /* logical stride*height */
-   uint64_t offset;        /* byte offset of the surface within fd (a
-                            * surface placed in a shared heap is a window
-                            * into the heap's one object); 0 otherwise */
-};
-/* The same layout d3dmetal-native asserts for dmn_shared_texture_handle. */
-static_assert(sizeof(struct npt_darwin_shared_texture) == 72 &&
-              offsetof(struct npt_darwin_shared_texture, stride) == 48 &&
-              offsetof(struct npt_darwin_shared_texture, offset) == 64,
-              "darwin shared-texture POD ABI drift");
-#endif
-
 /* OPEN_RES arrives on the consumer's ring thread; the resource fd
  * arrives on the dispatch thread via the proxy's attach-forwarding
  * (triggered by the guest KMD's CTX_ATTACH_RESOURCE, a virtio ctrl
@@ -112,13 +69,9 @@ static_assert(sizeof(struct npt_darwin_shared_texture) == 72 &&
 static void
 npt_shared_handle_close(HANDLE handle)
 {
-#ifdef __APPLE__
    struct npt_d3d_library *lib = npt_renderer_get_library();
    if (lib && lib->pfn_shared_handle_close)
       lib->pfn_shared_handle_close((void *)(uintptr_t)handle);
-#else
-   (void)handle;
-#endif
 }
 
 /* Publish `handle`'s descriptor to the guest and stage its blob.  Only
@@ -132,65 +85,45 @@ npt_shared_export_handle(struct npt_context *ctx, uint64_t blob_id,
    struct npt_blob_export_info info;
    memset(&info, 0, sizeof(info));
 
-#ifdef __APPLE__
-   const struct npt_darwin_shared_texture *desc =
-      (const struct npt_darwin_shared_texture *)(uintptr_t)handle;
-   if (desc->magic != NPT_DARWIN_SHARED_TEXTURE_MAGIC ||
-       desc->version != NPT_DARWIN_SHARED_HANDLE_VERSION || desc->fd < 0) {
+   const dxn_shared_texture *desc =
+      (const dxn_shared_texture *)(uintptr_t)handle;
+   if (!dxn_shared_check(desc, DXN_SHARED_TEXTURE_MAGIC, sizeof(*desc)) ||
+       desc->fd < 0 || desc->plane_count < 1 ||
+       desc->plane_count > NPT_BLOB_EXPORT_MAX_PLANES) {
       npt_log("shared: export: blob_id %" PRIu64 " bad descriptor", blob_id);
       return NPT_E_FAIL;
    }
 
-   if (!(desc->bind_flags & NPT_D3D11_BIND_SHADER_RESOURCE))
+   if (!(desc->meta.bind_flags & NPT_D3D11_BIND_SHADER_RESOURCE))
       npt_log("shared: export: blob_id %" PRIu64 " texture lacks "
               "SHADER_RESOURCE bind (0x%x); consumers cannot sample it",
-              blob_id, desc->bind_flags);
+              blob_id, desc->meta.bind_flags);
 
-   /* Backend shared textures are always one linear plane of shared
-    * memory; modifier/texture_layout have no meaning here. */
+   info.modifier = desc->drm_modifier;
    info.allocation_size = desc->size;
-   info.plane_count = 1;
-   info.planes[0].offset = desc->offset;
-   info.planes[0].pitch = desc->stride;
-
-   const int export_fd = desc->fd;
-   /* The blob has to span the window, not just the surface: a placed
-    * texture starts `offset` into the heap's object. */
-   const uint64_t export_size = desc->offset + desc->size;
-#else
-   const struct DxvkSharedTextureDescriptor *desc =
-      (const struct DxvkSharedTextureDescriptor *)(uintptr_t)handle;
-   if (desc->magic != DXVK_SHARED_DESCRIPTOR_TEXTURE ||
-       desc->structSize != sizeof(*desc) || desc->fd < 0 ||
-       desc->planeCount < 1 ||
-       desc->planeCount > NPT_BLOB_EXPORT_MAX_PLANES) {
-      npt_log("shared: export: blob_id %" PRIu64 " bad descriptor", blob_id);
-      return NPT_E_FAIL;
-   }
-
-   if (!(desc->meta.BindFlags & NPT_D3D11_BIND_SHADER_RESOURCE))
-      npt_log("shared: export: blob_id %" PRIu64 " texture lacks "
-              "SHADER_RESOURCE bind (0x%x); consumers cannot sample it",
-              blob_id, desc->meta.BindFlags);
-
-   info.modifier = desc->drmFormatModifier;
-   info.allocation_size = desc->allocationSize;
-   info.plane_count = desc->planeCount;
-   info.texture_layout = desc->meta.TextureLayout;
-   for (uint32_t i = 0; i < desc->planeCount; i++) {
+   info.plane_count = desc->plane_count;
+   info.texture_layout = desc->meta.texture_layout;
+   for (uint32_t i = 0; i < desc->plane_count; i++) {
       info.planes[i].offset = desc->planes[i].offset;
       info.planes[i].pitch = desc->planes[i].pitch;
    }
 
    const int export_fd = desc->fd;
-   const uint64_t export_size = desc->allocationSize;
+#ifdef __APPLE__
+   /* A darwin descriptor's size is the surface's, which starts
+    * planes[0].offset into the object (a texture placed in a shared heap);
+    * the blob has to span the whole window. */
+   const uint64_t export_size = desc->planes[0].offset + desc->size;
+#else
+   /* A dma-buf descriptor's size is the exporter's whole allocation. */
+   const uint64_t export_size = desc->size;
 #endif
 
    /* The channel order the exporter actually used.  An importer cannot
     * derive it: DRI3 carries no fourcc, so it can only guess from
     * depth/bpp and always guesses the screen visual's BGRA. */
    const uint32_t export_virgl_format =
-      npt_shared_dxgi_to_virgl_format(NPT_SHARED_EXPORT_FORMAT(desc));
+      npt_shared_dxgi_to_virgl_format(desc->meta.dxgi_format);
 
    /* Publish the export-level facts into the exporter's shmem window. */
    struct npt_resource *data_res = npt_context_get_resource(ctx, data_res_id);
@@ -224,16 +157,10 @@ npt_shared_export_handle(struct npt_context *ctx, uint64_t blob_id,
       return NPT_E_FAIL;
    }
 
-#ifdef __APPLE__
-   npt_log("shared: exported blob_id=%" PRIu64 " %ux%u fmt=%u pitch=%" PRIu64
-           " (ctx %u)", blob_id, desc->width, desc->height, desc->dxgi_format,
-           desc->stride, ctx->ctx_id);
-#else
    npt_log("shared: exported blob_id=%" PRIu64 " %ux%u fmt=%u mod=0x%016"
-           PRIx64 " pitch=%" PRIu64 " (ctx %u)", blob_id, desc->meta.Width,
-           desc->meta.Height, desc->meta.Format, desc->drmFormatModifier,
+           PRIx64 " pitch=%" PRIu64 " (ctx %u)", blob_id, desc->meta.width,
+           desc->meta.height, desc->meta.dxgi_format, desc->drm_modifier,
            desc->planes[0].pitch, ctx->ctx_id);
-#endif
    return NPT_S_OK;
 }
 
@@ -365,51 +292,28 @@ npt_shared_open_res(struct npt_context *ctx, uint64_t device_id,
    }
 
    /* Rebuild the exporter's descriptor around our own fd reference. */
-#ifdef __APPLE__
-   struct npt_darwin_shared_texture desc;
+   dxn_shared_texture desc;
    memset(&desc, 0, sizeof(desc));
-   desc.magic = NPT_DARWIN_SHARED_TEXTURE_MAGIC;
-   desc.version = NPT_DARWIN_SHARED_HANDLE_VERSION;
-   desc.offset = cmd->export_info.planes[0].offset;
-   desc.width = cmd->width;
-   desc.height = cmd->height;
-   desc.dxgi_format = cmd->format;
-   desc.mip_levels = cmd->mip_levels;
-   desc.array_size = cmd->array_size;
-   desc.sample_count = cmd->sample_count;
-   desc.bind_flags = cmd->bind_flags;
-   desc.misc_flags = cmd->misc_flags;
-   desc.cpu_access = cmd->cpu_access_flags;
-   /* One linear plane of shared memory; usage/layout/modifier from the
-    * wire have no darwin-backend equivalent. */
-   desc.stride = cmd->export_info.planes[0].pitch;
-   desc.size = cmd->export_info.allocation_size;
-#else
-   struct DxvkSharedTextureDescriptor desc;
-   memset(&desc, 0, sizeof(desc));
-   desc.magic = DXVK_SHARED_DESCRIPTOR_TEXTURE;
-   desc.version = DXVK_SHARED_DESCRIPTOR_VERSION;
-   desc.structSize = sizeof(desc);
-   desc.meta.Width = cmd->width;
-   desc.meta.Height = cmd->height;
-   desc.meta.MipLevels = cmd->mip_levels;
-   desc.meta.ArraySize = cmd->array_size;
-   desc.meta.Format = cmd->format;
-   desc.meta.SampleDesc.Count = cmd->sample_count;
-   desc.meta.SampleDesc.Quality = 0;
-   desc.meta.Usage = cmd->usage;
-   desc.meta.BindFlags = cmd->bind_flags;
-   desc.meta.CPUAccessFlags = cmd->cpu_access_flags;
-   desc.meta.MiscFlags = cmd->misc_flags;
-   desc.meta.TextureLayout = cmd->export_info.texture_layout;
-   desc.drmFormatModifier = cmd->export_info.modifier;
-   desc.planeCount = cmd->export_info.plane_count;
-   for (uint32_t i = 0; i < desc.planeCount; i++) {
+   DXN_SHARED_INIT(&desc, DXN_SHARED_TEXTURE_MAGIC);
+   desc.meta.width = cmd->width;
+   desc.meta.height = cmd->height;
+   desc.meta.mip_levels = cmd->mip_levels;
+   desc.meta.array_size = cmd->array_size;
+   desc.meta.dxgi_format = cmd->format;
+   desc.meta.sample_count = cmd->sample_count;
+   desc.meta.sample_quality = 0;
+   desc.meta.usage = cmd->usage;
+   desc.meta.bind_flags = cmd->bind_flags;
+   desc.meta.cpu_access_flags = cmd->cpu_access_flags;
+   desc.meta.misc_flags = cmd->misc_flags;
+   desc.meta.texture_layout = cmd->export_info.texture_layout;
+   desc.drm_modifier = cmd->export_info.modifier;
+   desc.plane_count = cmd->export_info.plane_count;
+   for (uint32_t i = 0; i < desc.plane_count; i++) {
       desc.planes[i].offset = cmd->export_info.planes[i].offset;
       desc.planes[i].pitch = cmd->export_info.planes[i].pitch;
    }
-   desc.allocationSize = cmd->export_info.allocation_size;
-#endif
+   desc.size = cmd->export_info.allocation_size;
 
    /* The import dup()s the fd internally; hold our own reference so a
     * concurrent resource destroy can't invalidate res->u.fd mid-call. */
