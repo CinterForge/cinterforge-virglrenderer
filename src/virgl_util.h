@@ -43,6 +43,10 @@
 #define TRACE_WITH_PERCETTO 3
 #define TRACE_WITH_SYSPROF 4
 
+#ifndef DRM_FORMAT_MOD_INVALID
+#define DRM_FORMAT_MOD_INVALID 0x00ffffffffffffffULL
+#endif
+
 #define BIT(n)                   (UINT32_C(1) << (n))
 
 static inline bool has_bit(uint32_t mask, uint32_t bit)

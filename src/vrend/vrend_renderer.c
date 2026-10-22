@@ -54,6 +54,7 @@
 #include "vrend_debug.h"
 #include "vrend_winsys.h"
 #include "vrend_blitter.h"
+#include "vrend_venus_interop.h"
 
 #include "virgl_util.h"
 
@@ -7612,7 +7613,7 @@ static void vrend_pipe_resource_attach_iov(struct pipe_resource *pres,
    res->num_iovs = iov_count;
 
    if (has_bit(res->storage_bits, VREND_STORAGE_HOST_SYSTEM_MEMORY)) {
-      vrend_write_to_iovec(res->iov, res->num_iovs, 0,
+      virgl_write_to_iovec(res->iov, res->num_iovs, 0,
             res->ptr, res->base.width0);
    }
 }
@@ -7623,7 +7624,7 @@ static void vrend_pipe_resource_detach_iov(struct pipe_resource *pres,
    struct vrend_resource *res = (struct vrend_resource *)pres;
 
    if (has_bit(res->storage_bits, VREND_STORAGE_HOST_SYSTEM_MEMORY)) {
-      vrend_read_from_iovec(res->iov, res->num_iovs, 0,
+      virgl_read_from_iovec(res->iov, res->num_iovs, 0,
             res->ptr, res->base.width0);
    }
 
@@ -7704,7 +7705,7 @@ static bool vrend_use_gbm_layout_feature(UNUSED uint32_t flags)
    if (debug_get_bool_option("VIRGL_GBM_LAYOUT_FORCE_ENABLE", false))
       return true;
 
-   if (!debug_get_bool_option("VIRGL_GBM_LAYOUT_ENABLE", false))
+   if (debug_get_bool_option("VIRGL_GBM_LAYOUT_DISABLE", false))
       return false;
 
    if (!(flags & VREND_USE_GBM_LAYOUT))
@@ -7936,6 +7937,11 @@ int vrend_renderer_init(const struct vrend_if_cbs *cbs, uint32_t flags)
 
    vrend_state.gbm_layout_feat = vrend_use_gbm_layout_feature(flags);
 
+#if defined(ENABLE_GBM_ALLOCATION) && !defined(MINIGBM)
+   if (gbm && gbm->device && vrend_state.gbm_layout_feat)
+      vrend_init_venus_interop(gbm->device);
+#endif
+
    return 0;
 cleanup_and_fail:
    if (flags & VREND_USE_THREAD_SYNC)
@@ -7955,6 +7961,8 @@ vrend_renderer_fini(void)
       close(vrend_state.eventfd);
       vrend_state.eventfd = -1;
    }
+
+   vrend_deinit_venus_interop();
 
    vrend_free_fences();
    vrend_blitter_fini();
@@ -8808,8 +8816,14 @@ static void vrend_resource_gbm_init(struct vrend_resource *gr, uint32_t format)
    if (gr->base.depth0 != 1 || gr->base.last_level != 0 || gr->base.nr_samples > 1)
       return;
 
-   if (!gbm || !gbm->device || !gbm_format || !gbm_flags)
+   if (!gbm || !gbm->device || !gbm_format)
       return;
+
+#ifdef MINIGBM
+   /* minigbm requires non-zero gbm use flags */
+   if (!gbm_flags)
+      return;
+#endif
 
    if (!virgl_gbm_external_allocation_preferred(gr->base.bind))
       return;
@@ -8819,24 +8833,27 @@ static void vrend_resource_gbm_init(struct vrend_resource *gr, uint32_t format)
     * GBM allocation may be less optimal compared to a regular GL allocation.
     * Skip GBM allocation when we don't actually need it.
     */
-   if (!vrend_state.gbm_layout_feat)
+   if (!vrend_has_venus_interop())
       return;
-
-   /*
-    * Kernel virtio-gpu driver doesn't support modifiers other than linear and
-    * venus needs a real modifier that backs GBM buffer when it imports vrend
-    * resource. Linear allocation is needed when venus works in KMS mode on guest
-    * and it wants to present vrend resources.
-    */
-   if (gr->base.bind & VIRGL_BIND_SHARED)
-      gbm_flags |= GBM_BO_USE_LINEAR;
 #endif
 
    if (!gbm_device_is_format_supported(gbm->device, gbm_format, gbm_flags))
       return;
 
-   struct gbm_bo *bo = gbm_bo_create(gbm->device, gr->base.width0, gr->base.height0,
-                                     gbm_format, gbm_flags);
+   struct gbm_bo *bo;
+
+#if !defined(MINIGBM)
+   if ((gr->base.bind & VIRGL_BIND_SHARED) && !(gbm_flags & GBM_BO_USE_LINEAR)) {
+      bo = vrend_vk_gbm_bo_create(gbm->device, gr->base.width0, gr->base.height0,
+                                  gbm_format);
+   } else
+#endif
+   {
+      bo = gbm_bo_create(gbm->device, gr->base.width0, gr->base.height0,
+                         gbm_format, gbm_flags);
+
+      gr->gbm_direct_transfer = true;
+   }
    if (!bo)
       return;
 
@@ -9207,7 +9224,7 @@ static void read_transfer_data(const struct iovec *iov,
                                bool invert)
 {
    int blsize = util_format_get_blocksize(format);
-   uint32_t size = vrend_get_iovec_size(iov, num_iovs);
+   uint32_t size = virgl_get_iovec_size(iov, num_iovs);
    uint32_t send_size = util_format_get_nblocks(format, box->width,
                                               box->height) * blsize * box->depth;
    uint32_t bwx = util_format_get_nblocksx(format, box->width) * blsize;
@@ -9215,14 +9232,14 @@ static void read_transfer_data(const struct iovec *iov,
    int d, h;
 
    if ((send_size == size || bh == 1) && !invert && box->depth == 1)
-      vrend_read_from_iovec(iov, num_iovs, offset, data, send_size);
+      virgl_read_from_iovec(iov, num_iovs, offset, data, send_size);
    else {
       if (invert) {
          for (d = 0; d < box->depth; d++) {
             uint32_t myoffset = offset + d * src_layer_stride;
             for (h = bh - 1; h >= 0; h--) {
                void *ptr = data + (h * bwx) + d * (bh * bwx);
-               vrend_read_from_iovec(iov, num_iovs, myoffset, ptr, bwx);
+               virgl_read_from_iovec(iov, num_iovs, myoffset, ptr, bwx);
                myoffset += src_stride;
             }
          }
@@ -9231,7 +9248,7 @@ static void read_transfer_data(const struct iovec *iov,
             uint32_t myoffset = offset + d * src_layer_stride;
             for (h = 0; h < bh; h++) {
                void *ptr = data + (h * bwx) + d * (bh * bwx);
-               vrend_read_from_iovec(iov, num_iovs, myoffset, ptr, bwx);
+               virgl_read_from_iovec(iov, num_iovs, myoffset, ptr, bwx);
                myoffset += src_stride;
             }
          }
@@ -9250,7 +9267,7 @@ static void write_transfer_data(struct pipe_resource *res,
                                 bool invert)
 {
    int blsize = util_format_get_blocksize(res->format);
-   uint32_t size = vrend_get_iovec_size(iov, num_iovs);
+   uint32_t size = virgl_get_iovec_size(iov, num_iovs);
    uint32_t send_size = util_format_get_nblocks(res->format, box->width,
                                                 box->height) * blsize * box->depth;
    uint32_t bwx = util_format_get_nblocksx(res->format, box->width) * blsize;
@@ -9259,13 +9276,13 @@ static void write_transfer_data(struct pipe_resource *res,
    uint32_t stride = dst_stride ? dst_stride : util_format_get_nblocksx(res->format, u_minify(res->width0, level)) * blsize;
 
    if ((send_size == size || bh == 1) && !invert && box->depth == 1) {
-      vrend_write_to_iovec(iov, num_iovs, offset, data, send_size);
+      virgl_write_to_iovec(iov, num_iovs, offset, data, send_size);
    } else if (invert) {
       for (d = 0; d < box->depth; d++) {
          uint32_t myoffset = offset + d * stride * u_minify(res->height0, level);
          for (h = bh - 1; h >= 0; h--) {
             void *ptr = data + (h * bwx) + d * (bh * bwx);
-            vrend_write_to_iovec(iov, num_iovs, myoffset, ptr, bwx);
+            virgl_write_to_iovec(iov, num_iovs, myoffset, ptr, bwx);
             myoffset += stride;
          }
       }
@@ -9274,7 +9291,7 @@ static void write_transfer_data(struct pipe_resource *res,
          uint32_t myoffset = offset + d * stride * u_minify(res->height0, level);
          for (h = 0; h < bh; h++) {
             void *ptr = data + (h * bwx) + d * (bh * bwx);
-            vrend_write_to_iovec(iov, num_iovs, myoffset, ptr, bwx);
+            virgl_write_to_iovec(iov, num_iovs, myoffset, ptr, bwx);
             myoffset += stride;
          }
       }
@@ -9378,7 +9395,7 @@ static bool check_iov_bounds(struct vrend_resource *res,
                              const struct iovec *iov, int num_iovs)
 {
    GLuint transfer_size;
-   GLuint iovsize = vrend_get_iovec_size(iov, num_iovs);
+   GLuint iovsize = virgl_get_iovec_size(iov, num_iovs);
    GLuint valid_stride, valid_layer_stride;
 
    /* If the transfer specifies a stride, verify that it's at least as large as
@@ -9517,14 +9534,14 @@ static int vrend_renderer_transfer_write_iov(struct vrend_context *ctx,
 
    if ((is_only_bit(res->storage_bits, VREND_STORAGE_GUEST_MEMORY) ||
        has_bit(res->storage_bits, VREND_STORAGE_HOST_SYSTEM_MEMORY)) && res->iov) {
-      return vrend_copy_iovec(iov, num_iovs, info->offset,
+      return virgl_copy_iovec(iov, num_iovs, info->offset,
                               res->iov, res->num_iovs, info->box->x,
                               info->box->width, res->ptr);
    }
 
    if (has_bit(res->storage_bits, VREND_STORAGE_HOST_SYSTEM_MEMORY)) {
       assert(!res->iov);
-      vrend_read_from_iovec(iov, num_iovs, info->offset,
+      virgl_read_from_iovec(iov, num_iovs, info->offset,
                             res->ptr + info->box->x, info->box->width);
       return 0;
    }
@@ -9542,9 +9559,9 @@ static int vrend_renderer_transfer_write_iov(struct vrend_context *ctx,
       data = glMapBufferRange(res->target, info->box->x, info->box->width, map_flags);
       if (data == NULL) {
          virgl_error("Map failed for element buffer\n");
-         vrend_read_from_iovec_cb(iov, num_iovs, info->offset, info->box->width, &iov_buffer_upload, &d);
+         virgl_read_from_iovec_cb(iov, num_iovs, info->offset, info->box->width, &iov_buffer_upload, &d);
       } else {
-         vrend_read_from_iovec(iov, num_iovs, info->offset, data, info->box->width);
+         virgl_read_from_iovec(iov, num_iovs, info->offset, data, info->box->width);
          glUnmapBuffer(res->target);
       }
       glBindBufferARB(res->target, 0);
@@ -9837,7 +9854,7 @@ static int vrend_transfer_send_getteximage(struct vrend_resource *res,
    char *data;
    int elsize = util_format_get_blocksize(res->base.format);
    int compressed = util_format_is_compressed(res->base.format);
-   uint32_t iov_size = vrend_get_iovec_size(iov, num_iovs);
+   uint32_t iov_size = virgl_get_iovec_size(iov, num_iovs);
    GLenum target;
    uint32_t send_offset = 0;
    format = tex_conv_table[res->base.format].glformat;
@@ -10192,14 +10209,14 @@ static int vrend_renderer_transfer_send_iov(struct vrend_context *ctx,
 {
    if ((is_only_bit(res->storage_bits, VREND_STORAGE_GUEST_MEMORY) ||
        has_bit(res->storage_bits, VREND_STORAGE_HOST_SYSTEM_MEMORY)) && res->iov) {
-      return vrend_copy_iovec(res->iov, res->num_iovs, info->box->x,
+      return virgl_copy_iovec(res->iov, res->num_iovs, info->box->x,
                               iov, num_iovs, info->offset,
                               info->box->width, res->ptr);
    }
 
    if (has_bit(res->storage_bits, VREND_STORAGE_HOST_SYSTEM_MEMORY)) {
       assert(!res->iov);
-      vrend_write_to_iovec(iov, num_iovs, info->offset,
+      virgl_write_to_iovec(iov, num_iovs, info->offset,
                            res->ptr + info->box->x, info->box->width);
       return 0;
    }
@@ -10210,7 +10227,7 @@ static int vrend_renderer_transfer_send_iov(struct vrend_context *ctx,
       if (!data)
          virgl_error("Unable to open buffer for reading %d\n", res->target);
       else
-         vrend_write_to_iovec(iov, num_iovs, info->offset, data, info->box->width);
+         virgl_write_to_iovec(iov, num_iovs, info->offset, data, info->box->width);
       glUnmapBuffer(res->target);
       glBindBufferARB(res->target, 0);
    } else {
@@ -10265,7 +10282,8 @@ static int vrend_renderer_transfer_internal(struct vrend_context *ctx,
    }
 
 #if defined(HAVE_EPOXY_EGL_H) && defined(ENABLE_GBM_ALLOCATION)
-   if (res->gbm_bo && (transfer_mode == VIRGL_TRANSFER_TO_HOST ||
+   if (res->gbm_direct_transfer &&
+       (transfer_mode == VIRGL_TRANSFER_TO_HOST ||
                        !has_bit(res->storage_bits, VREND_STORAGE_EGL_IMAGE))) {
       const bool success = virgl_gbm_transfer(res->gbm_bo, transfer_mode, iov, num_iovs, info) == 0;
       if (success)
@@ -10358,7 +10376,7 @@ int vrend_transfer_inline_write(struct vrend_context *ctx,
    }
 
 #if defined(HAVE_EPOXY_EGL_H) && defined(ENABLE_GBM_ALLOCATION)
-   if (res->gbm_bo) {
+   if (res->gbm_direct_transfer) {
       assert(!info->synchronized);
       return virgl_gbm_transfer(res->gbm_bo,
                                 VIRGL_TRANSFER_TO_HOST,
@@ -10516,7 +10534,7 @@ int vrend_renderer_copy_transfer3d(struct vrend_context *ctx,
    }
 
 #if defined(HAVE_EPOXY_EGL_H) && defined(ENABLE_GBM_ALLOCATION)
-   if (dst_res->gbm_bo && !TRANSFER_NO_GBM_MAPPING(info)) {
+   if (dst_res->gbm_direct_transfer && !TRANSFER_NO_GBM_MAPPING(info)) {
       bool use_gbm = true;
 
       /* The guest uses copy transfers against busy resources to avoid
@@ -10581,7 +10599,7 @@ int vrend_renderer_copy_transfer3d_from_host(struct vrend_context *ctx,
    }
 
 #if defined(HAVE_EPOXY_EGL_H) && defined(ENABLE_GBM_ALLOCATION)
-   if (src_res->gbm_bo && !TRANSFER_NO_GBM_MAPPING(info)) {
+   if (src_res->gbm_direct_transfer && !TRANSFER_NO_GBM_MAPPING(info)) {
       bool use_gbm = true;
 
       /* The guest uses copy transfers against busy resources to avoid
@@ -11817,6 +11835,17 @@ int vrend_renderer_create_fence(struct vrend_context *ctx,
    if (fence->glsyncobj == NULL)
       goto fail;
 
+#ifdef HAVE_EPOXY_EGL_H
+   if (vrend_state.use_egl_fence) {
+      int fence_fd = -1;
+      if (virgl_egl_export_fence(egl, fence->eglsyncobj, &fence_fd) &&
+          virgl_fence_set_fd(fence_id, fence_fd))
+         virgl_error("failed to export fence sync object\n");
+      if (fence_fd != -1)
+         close(fence_fd);
+   }
+#endif
+
    if (vrend_state.sync_thread) {
       mtx_lock(&vrend_state.fence_mutex);
       list_addtail(&fence->fences, &vrend_state.fence_wait_list);
@@ -11826,14 +11855,6 @@ int vrend_renderer_create_fence(struct vrend_context *ctx,
       list_addtail(&fence->fences, &vrend_state.fence_list);
    }
 
-#ifdef HAVE_EPOXY_EGL_H
-   int fence_fd = -1;
-   if (vrend_renderer_export_ctx0_fence(fence_id, &fence_fd) == 0 &&
-       virgl_fence_set_fd(fence_id, fence_fd))
-      virgl_error("failed to export fence sync object\n");
-   if (fence_fd != -1)
-      close(fence_fd);
-#endif
    return 0;
 
  fail:
@@ -11984,7 +12005,7 @@ static bool vrend_check_query(struct vrend_query *query)
    state.query_state = VIRGL_QUERY_STATE_DONE;
 
    if (query->res->iov) {
-      if (vrend_write_to_iovec(query->res->iov, query->res->num_iovs, 0,
+      if (virgl_write_to_iovec(query->res->iov, query->res->num_iovs, 0,
                                (const void *) &state, sizeof(state)) != sizeof(state))
          virgl_error("Query state does not fit IOV size\n");
    } else {
@@ -13511,8 +13532,8 @@ angle_done:
 #else
    caps->v2.num_video_caps = 0;
 #endif
-   if (vrend_state.gbm_layout_feat)
-      caps->v2.capability_bits_v2 |= VIRGL_CAP_V2_RESOURCE_LAYOUT;
+   if (vrend_has_venus_interop())
+      caps->v2.capability_bits_v2 |= VIRGL_CAP_V2_QUERY_FORMAT_MODIFIER;
 }
 
 void vrend_renderer_fill_caps(uint32_t set, uint32_t version,
@@ -14266,78 +14287,6 @@ int vrend_renderer_create_ctx0_fence(uint32_t fence_id)
          VIRGL_RENDERER_FENCE_FLAG_MERGEABLE, fence_id);
 }
 
-#ifdef HAVE_EPOXY_EGL_H
-static bool find_ctx0_fence_locked(struct list_head *fence_list,
-                                   uint64_t fence_id,
-                                   bool *seen_first,
-                                   struct vrend_fence **fence)
-{
-   list_for_each_entry(struct vrend_fence, iter, fence_list, fences) {
-      /* only consider ctx0 fences */
-      if (iter->ctx != vrend_state.ctx0)
-         continue;
-
-      if (iter->fence_id == fence_id) {
-         *fence = iter;
-         return true;
-      }
-
-      if (!*seen_first) {
-         if (fence_id < iter->fence_id)
-            return true;
-         *seen_first = true;
-      }
-   }
-
-   return false;
-}
-#endif
-
-int vrend_renderer_export_ctx0_fence(uint32_t fence_id, int* out_fd) {
-#ifdef HAVE_EPOXY_EGL_H
-   int ret = 0;
-
-   if (!vrend_state.use_egl_fence) {
-      return -EINVAL;
-   }
-
-   if (vrend_state.sync_thread)
-      mtx_lock(&vrend_state.fence_mutex);
-
-   bool seen_first = false;
-   struct vrend_fence *fence = NULL;
-   bool found = find_ctx0_fence_locked(&vrend_state.fence_list,
-                                       fence_id,
-                                       &seen_first,
-                                       &fence);
-   if (!found) {
-      found = find_ctx0_fence_locked(&vrend_state.fence_wait_list,
-                                     fence_id,
-                                     &seen_first,
-                                     &fence);
-      /* consider signaled when no active ctx0 fence at all */
-      if (!found && !seen_first)
-         found = true;
-   }
-
-   if (found) {
-      if (fence)
-         ret = virgl_egl_export_fence(egl, fence->eglsyncobj, out_fd) ? 0 : -EINVAL;
-      else
-         ret = virgl_egl_export_signaled_fence(egl, out_fd) ? 0 : -EINVAL;
-   }
-
-   if (vrend_state.sync_thread)
-      mtx_unlock(&vrend_state.fence_mutex);
-
-   return ret;
-#else
-   (void)fence_id;
-   (void)out_fd;
-#endif
-   return -EINVAL;
-}
-
 void vrend_renderer_get_meminfo(struct vrend_context *ctx, uint32_t res_handle)
 {
    struct vrend_resource *res;
@@ -14492,7 +14441,7 @@ vrend_renderer_pipe_resource_get_layout(struct vrend_context *ctx,
    }
 
    if (out_res->iov) {
-      if (vrend_write_to_iovec(out_res->iov, out_res->num_iovs, 0,
+      if (virgl_write_to_iovec(out_res->iov, out_res->num_iovs, 0,
                                (const void *) &layout, sizeof(layout)) != sizeof(layout)) {
          virgl_error("resource layout does not fit IOV size\n");
          vrend_report_context_error(ctx, VIRGL_ERROR_CTX_ILLEGAL_RESOURCE, out_res_id);
@@ -14510,10 +14459,51 @@ vrend_renderer_pipe_resource_get_layout(struct vrend_context *ctx,
 
    return 0;
 }
+
+int
+vrend_renderer_pipe_query_format_modifier(struct vrend_context *ctx, uint32_t res_id)
+{
+   struct virgl_gbm_format_modifier fmt_mod = { 0 };
+   struct vrend_resource *res;
+
+   res = vrend_renderer_ctx_res_lookup(ctx, res_id);
+   if (!res) {
+      vrend_report_context_error(ctx, VIRGL_ERROR_CTX_ILLEGAL_RESOURCE, res_id);
+      return EINVAL;
+   }
+
+   vrend_vk_get_supported_formats(&fmt_mod);
+
+   if (res->iov) {
+      if (virgl_write_to_iovec(res->iov, res->num_iovs, 0,
+                               (const void *) &fmt_mod, sizeof(fmt_mod)) != sizeof(fmt_mod)) {
+         virgl_error("format modifier list does not fit IOV size\n");
+         vrend_report_context_error(ctx, VIRGL_ERROR_CTX_ILLEGAL_RESOURCE, res_id);
+         return EINVAL;
+      }
+   } else {
+      if (res->base.width0 >= sizeof(fmt_mod)) {
+         memcpy(res->ptr, &fmt_mod, sizeof(fmt_mod));
+      } else {
+         virgl_error("format modifier list does not fit buffer size\n");
+         vrend_report_context_error(ctx, VIRGL_ERROR_CTX_ILLEGAL_RESOURCE, res_id);
+         return EINVAL;
+      }
+   }
+
+   return 0;
+}
 #else
 int
 vrend_renderer_pipe_resource_get_layout(UNUSED struct vrend_context *ctx,
                                         UNUSED uint32_t out_res_id, UNUSED uint32_t res_id)
+{
+   return EINVAL;
+}
+
+int
+vrend_renderer_pipe_query_format_modifier(UNUSED struct vrend_context *ctx,
+                                          UNUSED uint32_t res_id)
 {
    return EINVAL;
 }

@@ -85,7 +85,8 @@ prog_python = import('python').find_installation('python3')
 not_found = dependency('', required: false)
 gbm_dep = not_found
 thread_dep = dependency('threads')
-epoxy_dep = dependency('epoxy', version: '>= 1.5.4')
+with_vrend = get_option('vrend')
+epoxy_dep = dependency('epoxy', version: '>= 1.5.4', required: with_vrend)
 m_dep = cc.find_library('m', required : false)
 dl_dep = not_found
 if not with_host_windows and not with_host_darwin
@@ -101,6 +102,10 @@ conf_data.set('_GNU_SOURCE', 1)
 # the lib. It's up to virglrenderer users to decide whether to use these
 # APIs. Unstable APIs may be changed or removed without a notice.
 conf_data.set('VIRGL_RENDERER_UNSTABLE_APIS', 1)
+
+if with_vrend
+  conf_data.set('ENABLE_VREND', 1)
+endif
 
 drm_renderers = get_option('drm-renderers')
 
@@ -292,8 +297,16 @@ require_egl = platforms.contains('egl')
 require_glx = platforms.contains('glx')
 auto_egl_glx = platforms.contains('auto')
 
-with_egl = require_egl or auto_egl_glx
-with_glx = require_glx or auto_egl_glx
+if not with_vrend
+   if require_egl or require_glx
+      error('platforms option requires vrend')
+   endif
+   with_egl = false
+   with_glx = false
+else
+   with_egl = require_egl or auto_egl_glx
+   with_glx = require_glx or auto_egl_glx
+endif
 
 have_egl = false
 have_glx = false
@@ -346,7 +359,7 @@ if with_drm_renderers
 endif
 
 with_check_gl_errors = get_option('check-gl-errors')
-if with_check_gl_errors
+if with_check_gl_errors and with_vrend
    conf_data.set('CHECK_GL_ERRORS', 1)
 endif
 
@@ -369,7 +382,13 @@ if metal_dep.found() and with_host_darwin
 endif
 
 if with_venus
-   venus_dep = []
+   dep_venus_protocol = dependency('venus-protocol',
+     version : '== 1.1.3',
+     fallback : ['venus-protocol', 'dep_vn_protocol_renderer'],
+     required : true
+   )
+
+   venus_dep = [dep_venus_protocol]
    if get_option('vulkan-dload')
       conf_data.set('ENABLE_VULKAN_DLOAD', 1)
    else
@@ -449,6 +468,9 @@ endif
 
 with_video = get_option('video')
 if with_video
+  if not with_vrend
+     error('video requires vrend (EGL)')
+  endif
   if not have_egl
      error('video require EGL, but it is not available')
   endif
@@ -459,7 +481,10 @@ endif
 
 with_tests = get_option('tests')
 if with_tests
- conf_data.set('ENABLE_TESTS', 1)
+  if not with_vrend
+     error('tests require vrend (EGL)')
+  endif
+  conf_data.set('ENABLE_TESTS', 1)
 endif
 
 configure_file(input : 'config.h.meson',
@@ -473,7 +498,7 @@ if metal_dep.found() and with_host_darwin
    add_project_arguments('-DHAVE_CONFIG_H=1', language : 'objc')
 endif
 
-inc_configuration = include_directories(['.', 'src'])
+inc_configuration = include_directories(['.', 'include', 'src'])
 
 with_fuzzer = get_option('fuzzer')
 with_valgrind = get_option('valgrind')
@@ -484,7 +509,7 @@ if with_unstable_apis
 endif
 
 subdir('src')
-with_vtest = get_option('vtest') and not with_host_windows
+with_vtest = get_option('vtest') and with_vrend and not with_host_windows
 if with_vtest
    subdir('vtest')
 endif
@@ -504,6 +529,7 @@ summary({'prefix': get_option('prefix'),
         'libdir': get_option('libdir'),
         }, section: 'Directories')
 summary({'c_args': (' ').join(get_option('c_args')),
+        'vrend': with_vrend,
         'egl': have_egl,
         'glx': have_glx,
         'gbm': gbm_dep.found(),

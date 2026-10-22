@@ -34,7 +34,7 @@
 #include "testvirgl.h"
 
 #include "virgl_hw.h"
-#include "vrend/vrend_iov.h"
+#include "virgl_iov.h"
 #include "virglrenderer.h"
 
 int context_flags = VIRGL_RENDERER_USE_EGL;

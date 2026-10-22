@@ -26,7 +26,7 @@
 #define VIRGL_GBM_H
 
 #include <gbm.h>
-#include "vrend_iov.h"
+#include "virgl_iov.h"
 #include "virglrenderer.h"
 
 #ifdef GBM_MAX_PLANES

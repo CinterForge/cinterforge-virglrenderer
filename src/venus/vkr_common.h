@@ -28,11 +28,11 @@
 #include "util/u_memory.h"
 #include "util/u_pointer.h"
 #include "util/u_thread.h"
-#include "venus-protocol/vulkan.h"
-#include "venus-protocol/vulkan_metal.h"
 #include "virgl_context.h"
 #include "virgl_util.h"
 #include "virglrenderer.h"
+#include "vulkan/vulkan.h"
+#include "vulkan/vulkan_metal.h"
 
 #include "vkr_renderer.h"
 
@@ -221,14 +221,33 @@ object_array_init(struct vkr_context *ctx,
 void
 object_array_fini(struct object_array *arr);
 
-static inline void *
-vkr_find_struct(const void *chain, VkStructureType type)
+static inline VkStructureType
+vkr_pnext_get_stype(const void *s)
 {
-   VkBaseOutStructure *s = (VkBaseOutStructure *)chain;
+   return *(const VkStructureType *)s;
+}
+
+static inline const void *
+vkr_pnext_get_next(const void *s)
+{
+   void *next;
+   memcpy(&next, (const char *)s + offsetof(VkBaseInStructure, pNext), sizeof(next));
+   return next;
+}
+
+static inline void
+vkr_pnext_set_next(void *s, const void *next)
+{
+   memcpy((char *)s + offsetof(VkBaseInStructure, pNext), &next, sizeof(next));
+}
+
+static inline void *
+vkr_find_struct(const void *s, VkStructureType type)
+{
    while (s) {
-      if (s->sType == type)
-         return s;
-      s = s->pNext;
+      if (vkr_pnext_get_stype(s) == type)
+         return (void *)s;
+      s = vkr_pnext_get_next(s);
    }
    return NULL;
 }
@@ -237,13 +256,12 @@ vkr_find_struct(const void *chain, VkStructureType type)
  * Find struct in the pNext of chain and return its previous struct.
  */
 static inline void *
-vkr_find_prev_struct(const void *chain, VkStructureType type)
+vkr_find_prev_struct(const void *s, VkStructureType type)
 {
-   VkBaseOutStructure *prev = (VkBaseOutStructure *)chain;
-   while (prev->pNext) {
-      if (prev->pNext->sType == type)
-         return prev;
-      prev = prev->pNext;
+   while (vkr_pnext_get_next(s)) {
+      if (vkr_pnext_get_stype(vkr_pnext_get_next(s)) == type)
+         return (void *)s;
+      s = vkr_pnext_get_next(s);
    }
    return NULL;
 }

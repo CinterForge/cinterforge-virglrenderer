@@ -16,7 +16,7 @@ This project uses the meson build system:
 
 .. code-block:: sh
 
-  $ meson build
+  $ meson setup build
   $ cd build
   $ ninja install
 

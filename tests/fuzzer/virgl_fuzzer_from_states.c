@@ -18,7 +18,7 @@
 
 #include "../testvirgl_encode.h"
 #include "virgl_protocol.h"
-#include "vrend/vrend_iov.h"
+#include "virgl_iov.h"
 #include "vrend/vrend_debug.h"
 
 int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size);

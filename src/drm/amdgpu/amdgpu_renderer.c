@@ -603,7 +603,7 @@ amdgpu_ccmd_bo_va_op(struct drm_context *dctx, struct vdrm_ccmd_req *hdr)
             "amdgpu_bo_va_op_raw failed: "
                "op: %d res_id: %d offset: 0x%" PRIx64 " "
                "size: 0x%" PRIx64 " va: %" PRIx64 " r=%d",
-            req->op, obj->base.res_id, req->offset, req->vm_map_size, req->va, rsp->ret);
+            req->op, req->res_id, req->offset, req->vm_map_size, req->va, rsp->ret);
 
          /* This is ok. This means the guest closed the GEM already. */
          return -EINVAL;

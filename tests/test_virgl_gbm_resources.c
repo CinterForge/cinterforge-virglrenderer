@@ -33,7 +33,7 @@
 
 #include "util/u_format.h"
 #include "virgl_hw.h"
-#include "vrend/vrend_iov.h"
+#include "virgl_iov.h"
 #include "vrend/vrend_winsys.h"
 #include "virglrenderer.h"
 #include "virgl_protocol.h"

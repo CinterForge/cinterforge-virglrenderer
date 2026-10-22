@@ -111,8 +111,20 @@ i915_ccmd_ioctl_simple(struct drm_context *dctx, struct vdrm_ccmd_req *hdr)
       break;
    }
    case DRM_IOCTL_I915_GEM_VM_CREATE:
-   case DRM_IOCTL_I915_GEM_VM_DESTROY:
+   case DRM_IOCTL_I915_GEM_VM_DESTROY: {
+      const struct drm_i915_gem_vm_control *vm_control =
+         (const void *)req->payload;
+      if (vm_control->extensions != 0) {
+         drm_err("ioctl %08x (0x%x): extensions present", req->cmd, iocnr);
+         return -EINVAL;
+      }
+      if (vm_control->flags != 0) {
+         drm_err("ioctl %08x (0x%x): flags present", req->cmd, iocnr);
+         return -EINVAL;
+      }
+      /* XXX check that the VM ID is valid */
       break;
+   }
    default:
       drm_err("invalid ioctl: %08x (0x%x)", req->cmd, iocnr);
       return -EINVAL;
@@ -354,7 +366,6 @@ static int
 i915_ccmd_gem_context_create(struct drm_context *dctx, struct vdrm_ccmd_req *hdr)
 {
    struct i915_ccmd_gem_context_create_req *req = to_i915_ccmd_gem_context_create_req(hdr);
-   struct drm_i915_gem_context_create_ext_setparam *setparam = (void *)req->payload;
    uintptr_t ptr = (uintptr_t)req->payload;
    int64_t params_size = req->params_size;
    size_t req_len;
@@ -374,18 +385,42 @@ i915_ccmd_gem_context_create(struct drm_context *dctx, struct vdrm_ccmd_req *hdr
 
    struct drm_i915_gem_context_create_ext create = {
       .flags = req->flags,
-      .extensions = (uintptr_t)setparam,
    };
 
-   while (params_size > 0) {
-      if (params_size < (int)sizeof(*setparam)) {
-         drm_err("invalid params_size");
+   /* known flags are 1 and 2 */
+   if (req->flags > 3) {
+      drm_err("unknown flag");
+      return -EINVAL;
+   }
+
+   if ((req->flags & I915_CONTEXT_CREATE_FLAGS_USE_EXTENSIONS) == 0)
+      goto no_extensions;
+
+   create.extensions = ptr;
+   for (;;) {
+      struct {
+         struct drm_i915_gem_context_create_ext_setparam p;
+      } DRM_ALIGN_4 *setparam;
+
+      if (params_size < (int64_t)sizeof(*setparam)) {
+         drm_err("invalid params_size %" PRIu64, params_size);
          return -EINVAL;
       }
 
-      switch (setparam->param.param) {
+      setparam = (void *)ptr;
+      ptr += sizeof(*setparam);
+      params_size -= (int64_t)sizeof(*setparam);
+
+      if (setparam->p.param.size > params_size ||
+          (setparam->p.param.size % 4) || setparam->p.param.size > 128)
+      {
+         drm_err("invalid setparam->p.param.size");
+         return -EINVAL;
+      }
+
+      switch (setparam->p.param.param) {
       case I915_CONTEXT_PARAM_PRIORITY:
-         if (setparam->param.value > I915_CONTEXT_DEFAULT_PRIORITY) {
+         if (setparam->p.param.value > I915_CONTEXT_DEFAULT_PRIORITY) {
             rsp->ret = EPERM;
             return 0;
          }
@@ -395,38 +430,53 @@ i915_ccmd_gem_context_create(struct drm_context *dctx, struct vdrm_ccmd_req *hdr
       case I915_CONTEXT_PARAM_SSEU:
       case I915_CONTEXT_PARAM_RECOVERABLE:
       case I915_CONTEXT_PARAM_VM:
-      case I915_CONTEXT_PARAM_ENGINES:
       case I915_CONTEXT_PARAM_PERSISTENCE:
       case I915_CONTEXT_PARAM_PROTECTED_CONTENT:
          break;
 
+      case I915_CONTEXT_PARAM_ENGINES: {
+         /*
+          * This struct starts with a __u64 extensions, which must be 0
+          * (null pointer).  Don't cast to 'struct i915_context_param_engines *'
+          * as that requires 8-byte alignment.
+          */
+         struct {
+            __u64 extensions;
+         } DRM_ALIGN_4 *param;
+         if (setparam->p.param.size < sizeof(*param)) {
+            drm_err("wrong size paramter for I915_CONTEXT_PARAM_ENGINES: %" PRIu32 "<  %zu",
+                    setparam->p.param.size, sizeof(*param));
+            return -EINVAL;
+         }
+         param = (void *)ptr;
+         if (param->extensions != 0) {
+            drm_err("extensions set for I915_CONTEXT_PARAM_ENGINES");
+            return -EINVAL;
+         }
+         break;
+      }
+
       default:
-         drm_err("invalid param %llu", setparam->param.param);
+         drm_err("invalid param %llu", setparam->p.param.param);
          return -EINVAL;
       }
 
-      ptr += sizeof(*setparam);
-
-      if ((setparam->param.size % 4) || setparam->param.size > 128) {
-         drm_err("invalid setparam->param.size");
-         return -EINVAL;
+      if (setparam->p.param.size) {
+         setparam->p.param.value = ptr;
+         ptr += setparam->p.param.size;
       }
 
-      if (setparam->param.size) {
-         setparam->param.value = ptr;
-         ptr += setparam->param.size;
-      }
-
-      params_size -= sizeof(*setparam) + setparam->param.size;
+      params_size -= setparam->p.param.size;
 
       if (params_size > 0) {
-         setparam->base.next_extension = ptr;
-         setparam = (void*)ptr;
+         setparam->p.base.next_extension = ptr;
       } else {
-         setparam->base.next_extension = 0;
+         setparam->p.base.next_extension = 0;
+         break;
       }
    }
 
+no_extensions:
    if (params_size) {
       drm_err("invalid params_size");
       return -EINVAL;
@@ -511,12 +561,6 @@ i915_ccmd_gem_execbuffer2(struct drm_context *dctx, struct vdrm_ccmd_req *hdr)
 
    struct drm_i915_gem_execbuffer2 exec = {0};
 
-   /*
-    * Assume there is one actively used context at a time.
-    *
-    * If this ever changes, guest kernel VirtIO-GPU UAPI will need to be extended
-    * to support logical sub-contexts. VirtIO-GPU supports one context per DRM FD.
-    */
    exec.rsvd1 = req->context_id;
    exec.buffers_ptr = (uintptr_t)buffers;
    exec.buffer_count = req->buffer_count;
@@ -524,7 +568,24 @@ i915_ccmd_gem_execbuffer2(struct drm_context *dctx, struct vdrm_ccmd_req *hdr)
    exec.batch_len = req->batch_len;
    exec.flags = req->flags;
 
+   if (!req->context_id || req->context_id > 8) {
+      drm_err("invalid context_id");
+      free(payload);
+      return -EINVAL;
+   }
+
    int ring_idx = 1 + (exec.flags & I915_EXEC_RING_MASK);
+
+   /*
+    * Android build of ANV driver uses 2 sub-contexts on same render ring
+    * for graphics and compute queues. In all other cases i915 driver has one
+    * sub-context per DRM context. First protocol version reserved 64 rings
+    * (fence contexts) per DRM context, i915 driver doesn't need that many rings.
+    * Split reserved 64 rings by 8 HW engines per sub-context, this makes each
+    * sub-context have own fence contexts needed for correct multi-queue syncing.
+    */
+   if (hdr->cmd == I915_CCMD_GEM_EXECBUFFER2_V2)
+      ring_idx += (req->context_id - 1) * 8;
 
    if (ring_idx >= (int)ARRAY_SIZE(ictx->timelines)) {
       free(payload);
@@ -667,6 +728,7 @@ const struct drm_ccmd i915_ccmd_dispatch[] = {
    HANDLER(GEM_EXECBUFFER2, gem_execbuffer2),
    HANDLER(GEM_SET_MMAP_MODE, gem_set_mmap_mode),
    HANDLER(GEM_BUSY, gem_busy),
+   HANDLER(GEM_EXECBUFFER2_V2, gem_execbuffer2),
 };
 
 const unsigned int i915_ccmd_dispatch_size = ARRAY_SIZE(i915_ccmd_dispatch);

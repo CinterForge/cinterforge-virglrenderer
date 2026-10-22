@@ -13,8 +13,6 @@
 #include <stdint.h>
 #include <time.h>
 
-#include "pipe/p_defines.h"
-
 #include "amdgpu_drm.h"
 #include "drm_hw.h"
 

@@ -27,7 +27,7 @@
 #include <errno.h>
 #include <virglrenderer.h>
 #include "virgl_hw.h"
-#include "vrend/vrend_iov.h"
+#include "virgl_iov.h"
 #include "util/u_formats.h"
 #include "testvirgl_encode.h"
 #include "virgl_protocol.h"
@@ -1146,6 +1146,7 @@ START_TEST(virgl_test_set_viewport_state)
 
    testvirgl_fini_ctx_cmdbuf(&ctx);
 }
+END_TEST
 
 START_TEST(virgl_decode_set_scissor_state)
 {

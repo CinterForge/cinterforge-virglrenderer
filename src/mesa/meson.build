@@ -11,6 +11,7 @@ files_mesa = files(
   'util/ralloc.c',
   'util/u_cpu_detect.c',
   'util/u_debug.c',
+  'util/u_hash_table.c',
   'util/u_math.c',
 )
 

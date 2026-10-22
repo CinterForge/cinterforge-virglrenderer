@@ -13,8 +13,6 @@
 #include <stdint.h>
 #include <time.h>
 
-#include "pipe/p_defines.h"
-
 #include "drm_util.h"
 #include "msm_drm.h"
 

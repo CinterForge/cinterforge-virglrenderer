@@ -115,5 +115,6 @@ bool virgl_egl_metal_create_texture_from_shm(struct virgl_egl *egl, int fd, size
                                              MTLTexture_id *tex);
 EGLImageKHR virgl_egl_metal_image_from_texture(struct virgl_egl *egl, MTLTexture_id tex);
 #endif
+int virgl_egl_open_drm_fd(struct virgl_egl *egl);
 
 #endif

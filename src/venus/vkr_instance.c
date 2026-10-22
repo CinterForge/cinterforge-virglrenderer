@@ -5,7 +5,7 @@
 
 #include "vkr_instance.h"
 
-#include "venus-protocol/vn_protocol_renderer_instance.h"
+#include "vn_protocol_renderer_instance.h"
 
 #include "vkr_context.h"
 #include "vkr_physical_device.h"
@@ -58,7 +58,7 @@ vkr_dispatch_vkEnumerateInstanceExtensionProperties(
    args->ret = count == ARRAY_SIZE(private_extensions) ? VK_SUCCESS : VK_INCOMPLETE;
 }
 
-static VkBool32
+static VkBool32 VKAPI_ATTR
 vkr_validation_callback(UNUSED VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
                         UNUSED VkDebugUtilsMessageTypeFlagsEXT messageTypes,
                         const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData,
@@ -66,6 +66,26 @@ vkr_validation_callback(UNUSED VkDebugUtilsMessageSeverityFlagBitsEXT messageSev
 {
    struct vkr_context *ctx = pUserData;
 
+   const char *skips[] = {
+      "VUID-vkBindBufferMemory-memory-02726",
+      "VUID-vkBindBufferMemory-memory-02985",
+      "VUID-VkBindBufferMemoryInfo-memory-02726",
+      "VUID-VkBindBufferMemoryInfo-memory-02985",
+      "VUID-vkBindImageMemory-memory-02728",
+      "VUID-vkBindImageMemory-memory-02989",
+      "VUID-VkBindImageMemoryInfo-memory-02728",
+      "VUID-VkBindImageMemoryInfo-memory-02989",
+      "VUID-VkSparseMemoryBind-memory-02730",
+      "VUID-VkSparseMemoryBind-memory-02731",
+      "VUID-VkSparseImageMemoryBind-memory-02732",
+      "VUID-VkSparseImageMemoryBind-memory-02733",
+   };
+   for (uint32_t i = 0; i < ARRAY_SIZE(skips); i++) {
+      if (!strcmp(pCallbackData->pMessageIdName, skips[i]))
+         return false;
+   }
+
+   vkr_log(pCallbackData->pMessageIdName);
    vkr_log(pCallbackData->pMessage);
 
    if (!ctx->validate_fatal)

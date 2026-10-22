@@ -32,6 +32,13 @@ option(
 )
 
 option(
+  'vrend',
+  type : 'boolean',
+  value : true,
+  description : 'enable vrend OpenGL renderer'
+)
+
+option(
   'minigbm_allocation',
   type : 'boolean',
   value : false,

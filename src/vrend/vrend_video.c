@@ -323,7 +323,7 @@ static void vrend_video_encode_completed(
                     data_size < cdc->dest_res->base.width0; i++) {
             size = MIN2(cdc->dest_res->base.width0 - data_size, coded_sizes[i]);
             memcpy((uint8_t *)buf + data_size, coded_bufs[i], size);
-            vrend_write_to_iovec(cdc->dest_res->iov, cdc->dest_res->num_iovs,
+            virgl_write_to_iovec(cdc->dest_res->iov, cdc->dest_res->num_iovs,
                                  data_size, coded_bufs[i], size);
             data_size += size;
         }
@@ -338,7 +338,7 @@ static void vrend_video_encode_completed(
     }
 
     /* send feedback */
-    vrend_write_to_iovec(cdc->feed_res->iov, cdc->feed_res->num_iovs,
+    virgl_write_to_iovec(cdc->feed_res->iov, cdc->feed_res->num_iovs,
                          0, (char *)(&feedback),
                          MIN2(cdc->feed_res->base.width0, sizeof(feedback)));
 
@@ -771,7 +771,7 @@ int vrend_video_decode_bitstream(struct vrend_video_context *ctx,
             continue;
         }
 
-        vrend_read_from_iovec(res->iov, res->num_iovs, 0,
+        virgl_read_from_iovec(res->iov, res->num_iovs, 0,
                               res->ptr, buffer_sizes[i]);
         bs_buffers[num_bs] = res->ptr;
         bs_sizes[num_bs] = buffer_sizes[i];
@@ -784,7 +784,7 @@ int vrend_video_decode_bitstream(struct vrend_video_context *ctx,
         goto err;
     }
     memset(&desc, 0, sizeof(desc));
-    vrend_read_from_iovec(res->iov, res->num_iovs, 0, (char *)(&desc),
+    virgl_read_from_iovec(res->iov, res->num_iovs, 0, (char *)(&desc),
                           MIN2(res->base.width0, sizeof(desc)));
     modify_picture_desc(cdc, tgt, &desc);
 
@@ -827,7 +827,7 @@ int vrend_video_encode_bitstream(struct vrend_video_context *ctx,
         return -1;
     }
     memset(&desc, 0, sizeof(desc));
-    vrend_read_from_iovec(desc_res->iov, desc_res->num_iovs, 0, (char *)(&desc),
+    virgl_read_from_iovec(desc_res->iov, desc_res->num_iovs, 0, (char *)(&desc),
                           MIN2(desc_res->base.width0, sizeof(desc)));
 
     /* Destination buffer resource. */

@@ -31,7 +31,7 @@
 #include "virgl_protocol.h"
 #include "vrend_debug.h"
 #include "vrend_tweaks.h"
-#include "vrend_iov.h"
+#include "virgl_iov.h"
 #ifdef ENABLE_GBM
 #include "vrend_winsys_gbm.h"
 #else
@@ -107,6 +107,7 @@ struct vrend_resource {
    uint64_t mipmap_offsets[VR_MAX_TEXTURE_2D_LEVELS];
    void *gbm_bo, *egl_image;
    void *aux_plane_egl_image[VIRGL_GBM_MAX_PLANES];
+   bool gbm_direct_transfer;
 #ifdef WIN32
    ID3D11Texture2D *d3d_tex2d;
 #endif
@@ -473,7 +474,6 @@ int vrend_renderer_create_fence(struct vrend_context *ctx,
 void vrend_renderer_check_fences(void);
 
 int vrend_renderer_create_ctx0_fence(uint32_t fence_id);
-int vrend_renderer_export_ctx0_fence(uint32_t fence_id, int* out_fd);
 
 bool vrend_hw_switch_context(struct vrend_context *ctx, bool now);
 uint32_t vrend_renderer_object_insert(struct vrend_context *ctx, void *data,
@@ -662,5 +662,8 @@ vrend_renderer_pipe_resource_get_layout(struct vrend_context *ctx,
 MTLTexture_id
 vrend_renderer_resource_metal_texture(struct pipe_resource *pres);
 #endif
+
+int
+vrend_renderer_pipe_query_format_modifier(struct vrend_context *ctx, uint32_t res_id);
 
 #endif

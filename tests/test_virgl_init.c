@@ -38,7 +38,7 @@
 #endif
 #include "testvirgl.h"
 #include "virgl_hw.h"
-#include "vrend/vrend_iov.h"
+#include "virgl_iov.h"
 struct myinfo_struct {
   uint32_t test;
 };

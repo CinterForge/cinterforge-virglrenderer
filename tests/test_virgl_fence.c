@@ -156,8 +156,12 @@ START_TEST(virgl_fence_export)
    int fd;
    int ret;
 
-   ret = testvirgl_init_single_ctx(context_flags);
+   ret = testvirgl_init_single_ctx(context_flags |
+                                   (_i ? VIRGL_RENDERER_THREAD_SYNC : 0));
    ck_assert_int_eq(ret, 0);
+
+   ret = virgl_renderer_export_fence(target_seqno, &fd);
+   ck_assert_int_eq(ret, -EINVAL);
 
    testvirgl_reset_fence();
    ret = virgl_renderer_create_fence(target_seqno, 0);
@@ -168,6 +172,13 @@ START_TEST(virgl_fence_export)
 
    ret = wait_sync_fd(fd, -1);
    ck_assert_int_eq(ret, 0);
+
+   int poll_fd = virgl_renderer_get_poll_fd();
+   if (poll_fd >= 0) {
+      /* Wait until the sync thread has queued the completion callback. */
+      ret = wait_sync_fd(poll_fd, -1);
+      ck_assert_int_eq(ret, 0);
+   }
 
    virgl_renderer_poll();
    ck_assert_int_eq(testvirgl_get_last_fence(), target_seqno);
@@ -180,71 +191,33 @@ END_TEST
 
 START_TEST(virgl_fence_export_signaled)
 {
-   const int target_seqno = 50;
-   const int test_range = 10;
-   int fd;
-   int ret;
-   int i;
-
-   ret = testvirgl_init_single_ctx(context_flags);
-   ck_assert_int_eq(ret, 0);
-
-   /* when there is no active fence, a signaled fd is always returned */
-   for (i = 0; i < test_range; i++) {
-      ret = virgl_renderer_export_fence(target_seqno + 1 + i, &fd);
-      ck_assert_int_eq(ret, 0);
-
-      ret = wait_sync_fd(fd, 0);
-      ck_assert_int_eq(ret, 0);
-
-      close(fd);
-   }
-
-   ret = virgl_renderer_create_fence(target_seqno, 0);
-   ck_assert_int_eq(ret, 0);
-
-   /* when there is any active fence, a signaled fd is returned when the
-    * requested seqno is smaller than the first active fence
-    */
-   for (i = 0; i < test_range; i++) {
-      ret = virgl_renderer_export_fence(target_seqno - 1 - i, &fd);
-      ck_assert_int_eq(ret, 0);
-
-      ret = wait_sync_fd(fd, 0);
-      ck_assert_int_eq(ret, 0);
-
-      close(fd);
-   }
-
-   testvirgl_fini_single_ctx();
-}
-END_TEST
-
-START_TEST(virgl_fence_export_invalid)
-{
-   const int target_seqno = 50;
-   const int target_seqno2 = 55;
-   int seqno;
    int fd;
    int ret;
 
-   ret = testvirgl_init_single_ctx(context_flags);
+   ret = testvirgl_init_single_ctx(context_flags |
+                                   (_i ? VIRGL_RENDERER_THREAD_SYNC : 0));
    ck_assert_int_eq(ret, 0);
+   ck_assert_int_eq(virgl_renderer_export_signalled_fence(), -1);
 
-   ret = virgl_renderer_create_fence(target_seqno, 0);
+   ret = virgl_renderer_create_fence(50, 0);
    ck_assert_int_eq(ret, 0);
-   ret = virgl_renderer_create_fence(target_seqno2, 0);
+   ret = virgl_renderer_export_fence(50, &fd);
    ck_assert_int_eq(ret, 0);
+   ret = wait_sync_fd(fd, -1);
+   ck_assert_int_eq(ret, 0);
+   close(fd);
 
-   for (seqno = target_seqno; seqno <= target_seqno2 + 1; seqno++) {
-      ret = virgl_renderer_export_fence(seqno, &fd);
-      if (seqno == target_seqno || seqno == target_seqno2) {
-         ck_assert_int_eq(ret, 0);
-         close(fd);
-      } else {
-         ck_assert_int_eq(ret, -EINVAL);
-      }
-   }
+   /* Inserting a new fence retires the completed fence. */
+   ret = virgl_renderer_create_fence(51, 0);
+   ck_assert_int_eq(ret, 0);
+   ret = virgl_renderer_export_fence(50, &fd);
+   ck_assert_int_eq(ret, -EINVAL);
+
+   fd = virgl_renderer_export_signalled_fence();
+   ck_assert_int_ge(fd, 0);
+   ret = wait_sync_fd(fd, 0);
+   ck_assert_int_eq(ret, 0);
+   close(fd);
 
    testvirgl_fini_single_ctx();
 }
@@ -265,9 +238,8 @@ static Suite *virgl_init_suite(bool include_fence_export)
 
    if (include_fence_export) {
 #ifndef _WIN32
-      tcase_add_test(tc_core, virgl_fence_export);
-      tcase_add_test(tc_core, virgl_fence_export_signaled);
-      tcase_add_test(tc_core, virgl_fence_export_invalid);
+      tcase_add_loop_test(tc_core, virgl_fence_export, 0, 2);
+      tcase_add_loop_test(tc_core, virgl_fence_export_signaled, 0, 2);
 #endif
    }
 
@@ -290,7 +262,9 @@ static bool detect_fence_export_support(void)
    if (ret)
       return false;
 
-   ret = virgl_renderer_export_fence(0, &fd);
+   ret = virgl_renderer_create_fence(1, 0);
+   if (!ret)
+      ret = virgl_renderer_export_fence(1, &fd);
    if (ret) {
       virgl_renderer_cleanup(&dummy_cookie);
       return false;
