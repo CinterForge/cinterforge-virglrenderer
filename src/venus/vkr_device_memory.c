@@ -10,24 +10,22 @@
 #include "vn_protocol_renderer_transport.h"
 
 #include "vkr_device_memory_gen.h"
+#include <strings.h>
 #include <sys/mman.h>
+#include <sys/stat.h>
+#include <time.h>
 #include <unistd.h>
 
 #include "util/anon_file.h"
+#include "vkr_device.h"
 #include "vkr_physical_device.h"
+#include "vkr_queue.h"
 
 static bool
-vkr_get_fd_info_from_resource_info(struct vkr_context *ctx,
+vkr_get_fd_info_from_resource_info(const struct vkr_resource *res,
                                    const VkImportMemoryResourceInfoMESA *res_info,
                                    VkImportMemoryFdInfoKHR *out)
 {
-   struct vkr_resource *res = vkr_context_get_resource(ctx, res_info->resourceId);
-   if (!res) {
-      vkr_log("failed to import resource: invalid res_id %u", res_info->resourceId);
-      vkr_context_set_fatal(ctx);
-      return false;
-   }
-
    VkExternalMemoryHandleTypeFlagBits handle_type;
    switch (res->fd_type) {
    case VIRGL_RESOURCE_FD_DMABUF:
@@ -247,30 +245,93 @@ vkr_gbm_get_fd_info_from_allocation_info(UNUSED struct vkr_physical_device *phys
 
 #endif /* ENABLE_GBM_ALLOCATION */
 
-static struct vkr_shm *
-vkr_shm_alloc(uint64_t size)
+static VkResult
+vkr_shm_alloc(uint64_t size, struct vkr_shm **out_shm)
 {
    const size_t page_size = getpagesize();
    const size_t aligned_size = (size + page_size - 1) & ~(page_size - 1);
 
    struct vkr_shm *shm = calloc(1, sizeof(*shm));
    if (!shm)
-      return NULL;
+      return VK_ERROR_OUT_OF_HOST_MEMORY;
 
    shm->fd = os_create_anonymous_file(aligned_size, "vkr-host-mem");
    if (shm->fd < 0) {
+      const int err = errno;
+      vkr_log_errno(err, "creating a %zu-byte shm for host memory", aligned_size);
       free(shm);
-      return NULL;
+      return vkr_result_from_errno(err);
    }
 
    shm->ptr = mmap(NULL, aligned_size, PROT_READ | PROT_WRITE, MAP_SHARED, shm->fd, 0);
    if (shm->ptr == MAP_FAILED) {
+      vkr_log_errno(errno, "mapping a %zu-byte shm for host memory", aligned_size);
+      close(shm->fd);
+      free(shm);
+      return VK_ERROR_OUT_OF_HOST_MEMORY;
+   }
+
+   shm->size = aligned_size;
+   *out_shm = shm;
+   return VK_SUCCESS;
+}
+
+/* Map the shm behind a guest-imported resource so it can be imported into the
+ * driver as host memory.  The mapping and fd are our own, so the memory stays
+ * valid if the resource is destroyed first, and exporting the memory again
+ * hands out the same shm.
+ */
+static struct vkr_shm *
+vkr_shm_import(const struct vkr_physical_device *physical_dev,
+               const struct vkr_resource *res,
+               uint64_t size)
+{
+   if (res->shm_fd < 0) {
+      vkr_log("shm resource %u has no fd to import", res->res_id);
+      return NULL;
+   }
+
+   const uint64_t alignment =
+      MAX2((uint64_t)getpagesize(), physical_dev->min_imported_host_pointer_alignment);
+   const uint64_t aligned_size = (size + alignment - 1) / alignment * alignment;
+   struct stat st;
+   if (fstat(res->shm_fd, &st) || st.st_size < 0 || (uint64_t)st.st_size < aligned_size) {
+      vkr_log("shm resource %u (%lld bytes) is too small to import %" PRIu64
+              " bytes with alignment %" PRIu64,
+              res->res_id, (long long)st.st_size, size, alignment);
+      return NULL;
+   }
+
+   struct vkr_shm *shm = calloc(1, sizeof(*shm));
+   if (!shm)
+      return NULL;
+
+   shm->fd = os_dupfd_cloexec(res->shm_fd);
+   if (shm->fd < 0) {
+      vkr_log_errno(errno, "duplicating the fd of shm resource %u", res->res_id);
+      free(shm);
+      return NULL;
+   }
+
+   shm->ptr =
+      mmap(NULL, aligned_size, PROT_READ | PROT_WRITE, MAP_SHARED, shm->fd, 0);
+   if (shm->ptr == MAP_FAILED) {
+      vkr_log("failed to map shm resource %u (%s)", res->res_id, strerror(errno));
+      close(shm->fd);
+      free(shm);
+      return NULL;
+   }
+   shm->size = aligned_size;
+
+   if ((uintptr_t)shm->ptr % alignment) {
+      vkr_log("shm resource %u mapped at %p, not aligned to %" PRIu64, res->res_id,
+              shm->ptr, alignment);
+      munmap(shm->ptr, shm->size);
       close(shm->fd);
       free(shm);
       return NULL;
    }
 
-   shm->size = aligned_size;
    return shm;
 }
 
@@ -285,11 +346,39 @@ vkr_shm_free(struct vkr_shm *shm)
    free(shm);
 }
 
-static void
-vkr_dispatch_vkAllocateMemory(struct vn_dispatch_context *dispatch,
-                              struct vn_command_vkAllocateMemory *args)
+static VkResult
+vkr_get_host_pointer_memory_type_bits(struct vkr_device *dev,
+                                      void *ptr,
+                                      uint32_t *out_bits)
 {
-   TRACE_FUNC();
+   VkMemoryHostPointerPropertiesEXT host_props = {
+      .sType = VK_STRUCTURE_TYPE_MEMORY_HOST_POINTER_PROPERTIES_EXT,
+   };
+   const VkResult ret = dev->GetMemoryHostPointerPropertiesEXT(
+      dev->base.handle.device, VK_EXTERNAL_MEMORY_HANDLE_TYPE_HOST_ALLOCATION_BIT_EXT,
+      ptr, &host_props);
+   *out_bits = host_props.memoryTypeBits;
+   return ret;
+}
+
+static const char *
+vkr_device_memory_import_kind(const VkMemoryAllocateInfo *alloc_info)
+{
+   for (const VkBaseInStructure *s = alloc_info->pNext; s; s = s->pNext) {
+      if (s->sType == VK_STRUCTURE_TYPE_IMPORT_MEMORY_RESOURCE_INFO_MESA)
+         return "resource";
+      if (s->sType == VK_STRUCTURE_TYPE_IMPORT_MEMORY_FD_INFO_KHR)
+         return "fd";
+      if (s->sType == VK_STRUCTURE_TYPE_IMPORT_MEMORY_HOST_POINTER_INFO_EXT)
+         return "host pointer";
+   }
+   return "none";
+}
+
+static void
+vkr_device_memory_allocate(struct vn_dispatch_context *dispatch,
+                           struct vn_command_vkAllocateMemory *args)
+{
    struct vkr_context *ctx = dispatch->data;
    struct vkr_device *dev = vkr_device_from_handle(args->device);
    struct vkr_physical_device *physical_dev = dev->physical_device;
@@ -301,23 +390,86 @@ vkr_dispatch_vkAllocateMemory(struct vn_dispatch_context *dispatch,
       return;
    }
 
-   /* translate VkImportMemoryResourceInfoMESA into VkImportMemoryFdInfoKHR in place */
+   VkExportMemoryAllocateInfo *export_info =
+      vkr_find_struct(alloc_info->pNext, VK_STRUCTURE_TYPE_EXPORT_MEMORY_ALLOCATE_INFO);
+   uint32_t valid_fd_types = 0;
+   struct vkr_shm *shm = NULL;
+   VkImportMemoryHostPointerInfoEXT local_host_import;
+
+   /* translate VkImportMemoryResourceInfoMESA into VkImportMemoryFdInfoKHR, or
+    * into VkImportMemoryHostPointerInfoEXT for shm resources, in place
+    */
    VkImportMemoryFdInfoKHR local_import_info = { .fd = -1 };
    VkImportMemoryResourceInfoMESA *res_info = NULL;
    void *prev_of_res_info = vkr_find_prev_struct(
       alloc_info, VK_STRUCTURE_TYPE_IMPORT_MEMORY_RESOURCE_INFO_MESA);
    if (prev_of_res_info) {
       res_info = (VkImportMemoryResourceInfoMESA *)vkr_pnext_get_next(prev_of_res_info);
-      if (!vkr_get_fd_info_from_resource_info(ctx, res_info, &local_import_info)) {
+      struct vkr_resource *res = vkr_context_get_resource(ctx, res_info->resourceId);
+      if (!res) {
+         vkr_log("failed to import resource: invalid res_id %u", res_info->resourceId);
+         vkr_context_set_fatal(ctx);
          args->ret = VK_ERROR_INVALID_EXTERNAL_HANDLE;
          return;
       }
 
-      vkr_pnext_set_next(prev_of_res_info, &local_import_info);
-   }
+      if (res->fd_type == VIRGL_RESOURCE_FD_SHM && physical_dev->is_dma_buf_emulated) {
+         /* What the guest sees as a dma_buf is shm here (memory exported by
+          * this or another context, or created by the VMM).  The driver
+          * cannot import an fd, so map the shm and import it as host memory.
+          */
+         shm = vkr_shm_import(physical_dev, res, alloc_info->allocationSize);
+         if (!shm) {
+            args->ret = VK_ERROR_INVALID_EXTERNAL_HANDLE;
+            return;
+         }
 
-   VkExportMemoryAllocateInfo *export_info =
-      vkr_find_struct(alloc_info->pNext, VK_STRUCTURE_TYPE_EXPORT_MEMORY_ALLOCATE_INFO);
+         uint32_t type_bits;
+         args->ret = vkr_get_host_pointer_memory_type_bits(dev, shm->ptr, &type_bits);
+         if (args->ret == VK_SUCCESS && !type_bits) {
+            vkr_log("shm resource %u cannot be imported as host memory",
+                    res_info->resourceId);
+            args->ret = VK_ERROR_INVALID_EXTERNAL_HANDLE;
+         }
+         if (args->ret != VK_SUCCESS) {
+            vkr_shm_free(shm);
+            return;
+         }
+         if (!(type_bits & (1u << mem_type_index))) {
+            /* Only the driver memory type changes; the guest keeps seeing the
+             * memory type it asked for.
+             */
+            alloc_info->memoryTypeIndex = ffs(type_bits) - 1;
+            vkr_log("shm resource %u imported with memory type %u instead of %u",
+                    res_info->resourceId, alloc_info->memoryTypeIndex, mem_type_index);
+         }
+
+         local_host_import = (VkImportMemoryHostPointerInfoEXT){
+            .sType = VK_STRUCTURE_TYPE_IMPORT_MEMORY_HOST_POINTER_INFO_EXT,
+            .pNext = res_info->pNext,
+            .handleType = VK_EXTERNAL_MEMORY_HANDLE_TYPE_HOST_ALLOCATION_BIT_EXT,
+            .pHostPointer = shm->ptr,
+         };
+         vkr_pnext_set_next(prev_of_res_info, &local_host_import);
+         alloc_info->allocationSize = shm->size;
+         valid_fd_types = 1 << VIRGL_RESOURCE_FD_SHM;
+
+         if (export_info) {
+            /* the memory is shm-backed; the guest's dma_buf export is emulated */
+            void *prev_of_export_info = vkr_find_prev_struct(
+               alloc_info, VK_STRUCTURE_TYPE_EXPORT_MEMORY_ALLOCATE_INFO);
+            vkr_pnext_set_next(prev_of_export_info, export_info->pNext);
+            export_info = NULL;
+         }
+      } else {
+         if (!vkr_get_fd_info_from_resource_info(res, res_info, &local_import_info)) {
+            args->ret = VK_ERROR_INVALID_EXTERNAL_HANDLE;
+            return;
+         }
+
+         vkr_pnext_set_next(prev_of_res_info, &local_import_info);
+      }
+   }
 
    /* track if driver has requested export allocation */
    const bool might_export = export_info && export_info->handleTypes;
@@ -335,12 +487,9 @@ vkr_dispatch_vkAllocateMemory(struct vn_dispatch_context *dispatch,
     */
    const uint32_t property_flags =
       physical_dev->memory_properties.memoryTypes[mem_type_index].propertyFlags;
-   uint32_t valid_fd_types = 0;
    int udmabuf_fd = -1;
    void *gbm_bo = NULL;
-   struct vkr_shm *shm = NULL;
    VkExportMemoryAllocateInfo local_export_info;
-   VkImportMemoryHostPointerInfoEXT local_host_import;
 
    /* Importing host memory is the only way this host can hand memory out as an
     * fd, so it has to cover everything the guest may want an fd for: host
@@ -368,21 +517,40 @@ vkr_dispatch_vkAllocateMemory(struct vn_dispatch_context *dispatch,
       }
 
       /* Allocate shm and import it as host memory. */
-      shm = vkr_shm_alloc(alloc_info->allocationSize);
-      if (!shm) {
-         args->ret = VK_ERROR_OUT_OF_HOST_MEMORY;
+      args->ret = vkr_shm_alloc(alloc_info->allocationSize, &shm);
+      if (args->ret != VK_SUCCESS)
          return;
-      }
 
-      VkMemoryHostPointerPropertiesEXT host_props = {
-         .sType = VK_STRUCTURE_TYPE_MEMORY_HOST_POINTER_PROPERTIES_EXT,
-      };
-      args->ret = dev->GetMemoryHostPointerPropertiesEXT(
-         dev->base.handle.device, VK_EXTERNAL_MEMORY_HANDLE_TYPE_HOST_ALLOCATION_BIT_EXT,
-         shm->ptr, &host_props);
-      if (args->ret == VK_SUCCESS && !(host_props.memoryTypeBits & (1u << mem_type_index))) {
-         vkr_log("host memory import is unsupported for memory type %u", mem_type_index);
-         args->ret = VK_ERROR_INVALID_EXTERNAL_HANDLE;
+      uint32_t type_bits;
+      args->ret = vkr_get_host_pointer_memory_type_bits(dev, shm->ptr, &type_bits);
+      if (args->ret == VK_SUCCESS && !(type_bits & (1u << mem_type_index))) {
+         /* Some types cannot hold host memory: lazily allocated ones (Metal memoryless),
+          * and every device-local-only type with a MoltenVK lacking PR #2834.  A type
+          * with the same properties (apart from lazy allocation) that can is just as
+          * good.  Only the driver memory type changes; the guest keeps seeing the memory
+          * type it asked for.
+          */
+         const VkMemoryPropertyFlags want =
+            property_flags & ~VK_MEMORY_PROPERTY_LAZILY_ALLOCATED_BIT;
+         const VkPhysicalDeviceMemoryProperties *props = &physical_dev->memory_properties;
+         uint32_t substitute = UINT32_MAX;
+         for (uint32_t i = 0; i < props->memoryTypeCount; i++) {
+            if ((type_bits & (1u << i)) &&
+                (props->memoryTypes[i].propertyFlags & want) == want) {
+               substitute = i;
+               break;
+            }
+         }
+         if (substitute != UINT32_MAX) {
+            alloc_info->memoryTypeIndex = substitute;
+            vkr_log("host memory import is unsupported for memory type %u; allocated "
+                    "with memory type %u",
+                    mem_type_index, substitute);
+         } else {
+            vkr_log("host memory import is unsupported for memory type %u",
+                    mem_type_index);
+            args->ret = VK_ERROR_INVALID_EXTERNAL_HANDLE;
+         }
       }
       if (args->ret != VK_SUCCESS) {
          vkr_shm_free(shm);
@@ -505,6 +673,49 @@ vkr_dispatch_vkAllocateMemory(struct vn_dispatch_context *dispatch,
 }
 
 static void
+vkr_dispatch_vkAllocateMemory(struct vn_dispatch_context *dispatch,
+                              struct vn_command_vkAllocateMemory *args)
+{
+   TRACE_FUNC();
+   struct vkr_context *ctx = dispatch->data;
+
+   /* captured before the allocate info is rewritten */
+   const VkMemoryAllocateInfo *alloc_info = args->pAllocateInfo;
+   const VkDeviceSize size = alloc_info->allocationSize;
+   const uint32_t mem_type_index = alloc_info->memoryTypeIndex;
+   const char *import_kind = vkr_device_memory_import_kind(alloc_info);
+   const VkImportMemoryResourceInfoMESA *res_info =
+      vkr_find_struct(alloc_info->pNext, VK_STRUCTURE_TYPE_IMPORT_MEMORY_RESOURCE_INFO_MESA);
+   const uint32_t res_id = res_info ? res_info->resourceId : 0;
+   const VkExportMemoryAllocateInfo *export_info =
+      vkr_find_struct(alloc_info->pNext, VK_STRUCTURE_TYPE_EXPORT_MEMORY_ALLOCATE_INFO);
+   const VkExternalMemoryHandleTypeFlags export_types =
+      export_info ? export_info->handleTypes : 0;
+
+   args->ret = VK_SUCCESS;
+   vkr_device_memory_allocate(dispatch, args);
+
+   if (args->ret != VK_SUCCESS) {
+      const struct vkr_resource *res = res_id ? vkr_context_get_resource(ctx, res_id) : NULL;
+      /* Venus submits vkAllocateMemory without waiting for the reply (Mesa's
+       * vn_device_memory_alloc_simple; only VN_PERF=no_async_mem_alloc waits): the guest
+       * already handed the memory to the application, and nothing in the protocol tells
+       * it the allocation failed.  Binding, mapping or exporting it references an object
+       * that does not exist, which is fatal; a stand-in object would let the GPU access
+       * memory that is not there.  Only freeing it is tolerated (vkr_dispatch_command).
+       */
+      vkr_log("vkAllocateMemory failed: VkResult %d, size %" PRIu64
+              ", memory type %u, import %s (res %u fd_type %d), export types 0x%x; memory "
+              "%" PRIu64 " does not exist and the guest, which does not wait for the "
+              "result, loses its context when it uses it",
+              args->ret, (uint64_t)size, mem_type_index, import_kind, res_id,
+              res ? (int)res->fd_type : -1, export_types,
+              (uint64_t)vkr_cs_handle_load_id((const void **)args->pMemory,
+                                              VK_OBJECT_TYPE_DEVICE_MEMORY));
+   }
+}
+
+static void
 vkr_dispatch_vkFreeMemory(struct vn_dispatch_context *dispatch,
                           struct vn_command_vkFreeMemory *args)
 {
@@ -564,6 +775,25 @@ vkr_dispatch_vkGetMemoryResourcePropertiesMESA(
       return;
    }
 
+   if (res->fd_type == VIRGL_RESOURCE_FD_SHM && dev->physical_device->is_dma_buf_emulated) {
+      /* imported as host memory by vkAllocateMemory; res->u.data is a page
+       * aligned mapping of the same shm
+       */
+      uint32_t type_bits;
+      args->ret = vkr_get_host_pointer_memory_type_bits(dev, res->u.data, &type_bits);
+      if (args->ret != VK_SUCCESS)
+         return;
+
+      args->pMemoryResourceProperties->memoryTypeBits = type_bits;
+
+      VkMemoryResourceAllocationSizePropertiesMESA *alloc_size_props =
+         vkr_find_struct(args->pMemoryResourceProperties->pNext,
+                         VK_STRUCTURE_TYPE_MEMORY_RESOURCE_ALLOCATION_SIZE_PROPERTIES_MESA);
+      if (alloc_size_props)
+         alloc_size_props->allocationSize = res->size;
+      return;
+   }
+
    if (res->fd_type != VIRGL_RESOURCE_FD_DMABUF) {
       args->ret = VK_ERROR_INVALID_EXTERNAL_HANDLE;
       return;
@@ -611,10 +841,122 @@ vkr_context_init_device_memory_dispatch(struct vkr_context *ctx)
       vkr_dispatch_vkGetMemoryResourcePropertiesMESA;
 }
 
+/* release batching: one marker per queue per batch */
+#define VKR_SHM_RELEASE_BATCH_NS (2 * 1000 * 1000)
+#define VKR_SHM_RELEASE_BATCH_SIZE ((size_t)64 << 20)
+
+static int64_t
+vkr_shm_release_now_ns(void)
+{
+   struct timespec ts;
+   clock_gettime(CLOCK_MONOTONIC, &ts);
+   return (int64_t)ts.tv_sec * 1000000000 + ts.tv_nsec;
+}
+
+static void
+vkr_shm_free_list(struct list_head *shms)
+{
+   list_for_each_entry_safe (struct vkr_shm, shm, shms, head)
+      vkr_shm_free(shm);
+   list_inithead(shms);
+}
+
+/* Hand the pending shm to the queues: each gets a marker after what it has
+ * been submitted so far, and the shm is unmapped when all markers completed.
+ * Unless forced, pending shm is batched for VKR_SHM_RELEASE_BATCH_NS or up to
+ * VKR_SHM_RELEASE_BATCH_SIZE.  Called after frees and submissions.
+ */
+void
+vkr_device_flush_shm_releases(struct vkr_device *dev, bool force)
+{
+   mtx_lock(&dev->shm_release.mutex);
+   if (list_is_empty(&dev->shm_release.pending)) {
+      mtx_unlock(&dev->shm_release.mutex);
+      return;
+   }
+   const int64_t now = vkr_shm_release_now_ns();
+   if (!force && now - dev->shm_release.last_flush_ns < VKR_SHM_RELEASE_BATCH_NS &&
+       dev->shm_release.pending_size < VKR_SHM_RELEASE_BATCH_SIZE) {
+      mtx_unlock(&dev->shm_release.mutex);
+      return;
+   }
+
+   struct vkr_shm_release *release = malloc(sizeof(*release));
+   if (!release) {
+      mtx_unlock(&dev->shm_release.mutex);
+      return;
+   }
+   release->device = dev;
+   list_inithead(&release->shms);
+   list_splicetail(&dev->shm_release.pending, &release->shms);
+   list_inithead(&dev->shm_release.pending);
+   dev->shm_release.pending_size = 0;
+   dev->shm_release.last_flush_ns = now;
+
+   /* one reference for this function, released below */
+   release->pending_queues = 1;
+   list_for_each_entry (struct vkr_queue, queue, &dev->queues, base.track_head)
+      release->pending_queues++;
+   mtx_unlock(&dev->shm_release.mutex);
+
+   /* The markers are submitted outside the lock.  Queues are only removed at
+    * device destruction, which does not race with frees or submissions.
+    */
+   list_for_each_entry (struct vkr_queue, queue, &dev->queues, base.track_head) {
+      if (!vkr_queue_submit_shm_release(queue, release))
+         vkr_shm_release_complete_queue(release);
+   }
+   vkr_shm_release_complete_queue(release);
+}
+
+void
+vkr_shm_release_complete_queue(struct vkr_shm_release *release)
+{
+   struct vkr_device *dev = release->device;
+
+   mtx_lock(&dev->shm_release.mutex);
+   const bool done = !--release->pending_queues;
+   mtx_unlock(&dev->shm_release.mutex);
+
+   if (done) {
+      vkr_shm_free_list(&release->shms);
+      free(release);
+   }
+}
+
+/* The device is idle and about to be destroyed: nothing can use the shm
+ * anymore.  Markers still queued are retired with the queues.
+ */
+void
+vkr_device_fini_shm_releases(struct vkr_device *dev)
+{
+   mtx_lock(&dev->shm_release.mutex);
+   dev->shm_release.immediate = true;
+   vkr_shm_free_list(&dev->shm_release.pending);
+   dev->shm_release.pending_size = 0;
+   mtx_unlock(&dev->shm_release.mutex);
+}
+
 void
 vkr_device_memory_release(struct vkr_device_memory *mem)
 {
-   vkr_shm_free(mem->shm);
+   if (mem->shm) {
+      struct vkr_device *dev = mem->device;
+
+      mtx_lock(&dev->shm_release.mutex);
+      const bool immediate = dev->shm_release.immediate;
+      if (!immediate) {
+         list_addtail(&mem->shm->head, &dev->shm_release.pending);
+         dev->shm_release.pending_size += mem->shm->size;
+      }
+      mtx_unlock(&dev->shm_release.mutex);
+
+      if (immediate)
+         vkr_shm_free(mem->shm);
+      else
+         vkr_device_flush_shm_releases(dev, false);
+      mem->shm = NULL;
+   }
    if (mem->gbm_bo)
       vkr_gbm_bo_destroy(mem->gbm_bo);
    if (mem->udmabuf_fd >= 0)
@@ -653,13 +995,19 @@ vkr_device_memory_export_blob(struct vkr_device_memory *mem,
    }
 
    if (mem->shm) {
+      const int fd = os_dupfd_cloexec(mem->shm->fd);
+      if (fd < 0) {
+         vkr_log_errno(errno, "exporting memory %" PRIu64 " as a blob (dup of its shm fd)",
+                       (uint64_t)mem->base.id);
+         return false;
+      }
       mem->exported = true;
       *out_blob = (struct virgl_context_blob){
          .type = VIRGL_RESOURCE_FD_SHM,
-         .u.fd = os_dupfd_cloexec(mem->shm->fd),
+         .u.fd = fd,
          .map_info = map_info,
       };
-      return out_blob->u.fd >= 0;
+      return true;
    }
 
    const bool can_export_dma_buf = mem->valid_fd_types & (1 << VIRGL_RESOURCE_FD_DMABUF);

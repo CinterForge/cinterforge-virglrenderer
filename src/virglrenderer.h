@@ -575,4 +575,9 @@ VIRGL_EXPORT int virgl_renderer_get_dev_fd(int ctx_id);
 
 #endif /* VIRGL_RENDERER_UNSTABLE_APIS */
 
+/* steamac: Venus commands dispatched since the library was loaded, all contexts, ring and
+ * direct (SUBMIT_3D) submissions alike; a GPU activity hint for the VMM. Relaxed counter,
+ * cheap to read from any thread. */
+VIRGL_EXPORT uint64_t virgl_steamac_cmd_count(void);
+
 #endif

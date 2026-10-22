@@ -158,11 +158,56 @@ vkr_physical_device_init_id_properties(struct vkr_physical_device *physical_dev)
 
    VkPhysicalDevice handle = physical_dev->base.handle.physical_device;
    physical_dev->id_properties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ID_PROPERTIES;
+   VkPhysicalDeviceExternalMemoryHostPropertiesEXT host_props = {
+      .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTERNAL_MEMORY_HOST_PROPERTIES_EXT,
+   };
+   if (physical_dev->EXT_external_memory_host)
+      physical_dev->id_properties.pNext = &host_props;
    VkPhysicalDeviceProperties2 props2 = {
       .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2,
       .pNext = &physical_dev->id_properties
    };
    vk->GetPhysicalDeviceProperties2(handle, &props2);
+   physical_dev->id_properties.pNext = NULL;
+   physical_dev->min_imported_host_pointer_alignment =
+      host_props.minImportedHostPointerAlignment;
+}
+/* Apple unified RAM also backs guest RAM. Report the launcher's GPU working-set
+ * allowance instead of the entire Mac's RAM, consistently for every Vulkan
+ * consumer (DXVK, vkd3d, zink and native games), not just Steam's launch wrapper.
+ * This is reporting, not an allocation cap: Venus async allocations cannot
+ * deliver an allocation failure back to the application safely.
+ */
+static void
+vkr_physical_device_limit_memory(struct vkr_physical_device *physical_dev)
+{
+   const char *value = getenv("VKR_GPU_BUDGET_MIB");
+   if (!value || !*value)
+      return;
+   char *end;
+   const unsigned long mib = strtoul(value, &end, 10);
+   if (*end || mib < 256 || mib > 16384)
+      return;
+
+   VkPhysicalDeviceMemoryProperties *props = &physical_dev->memory_properties;
+   uint32_t local_heaps = 0;
+   for (uint32_t i = 0; i < props->memoryHeapCount; i++)
+      local_heaps += !!(props->memoryHeaps[i].flags & VK_MEMORY_HEAP_DEVICE_LOCAL_BIT);
+   if (!local_heaps)
+      return;
+   const VkDeviceSize limit = ((VkDeviceSize)mib << 20) / local_heaps;
+   for (uint32_t i = 0; i < props->memoryHeapCount; i++) {
+      VkMemoryHeap *heap = &props->memoryHeaps[i];
+      if (heap->flags & VK_MEMORY_HEAP_DEVICE_LOCAL_BIT && heap->size > limit) {
+         /* Every guest Vulkan instance re-reads the properties: log the clamp once. */
+         static bool logged;
+         if (!logged)
+            vkr_log("GPU budget: heap %u clamped from %" PRIu64 " to %" PRIu64 " bytes",
+                    i, heap->size, limit);
+         logged = true;
+         heap->size = limit;
+      }
+   }
 }
 
 static void
@@ -172,6 +217,7 @@ vkr_physical_device_init_memory_properties(struct vkr_physical_device *physical_
 
    VkPhysicalDevice handle = physical_dev->base.handle.physical_device;
    vk->GetPhysicalDeviceMemoryProperties(handle, &physical_dev->memory_properties);
+   vkr_physical_device_limit_memory(physical_dev);
 
    /* XXX When a VkMemoryType has VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, we
     * assume any VkDeviceMemory with the memory type can be made external and
@@ -395,19 +441,37 @@ vkr_physical_device_init_queue_family_properties(struct vkr_physical_device *phy
    physical_dev->queue_family_properties = props;
 }
 
+/* The only modifier emulated is DRM_FORMAT_MOD_LINEAR, and an image created with it is a
+ * host VK_IMAGE_TILING_LINEAR image (vkr_image_fix_drm_format), so it supports exactly the
+ * host's linear tiling features.  Report those: a compositor such as gamescope picks its
+ * scanout formats by the features of their modifiers (sampled, storage, transfer src).
+ */
 static void
-vkr_physical_device_emulate_drm_props(VkDrmFormatModifierPropertiesListEXT *drm_props_list)
+vkr_physical_device_emulate_drm_props(VkDrmFormatModifierPropertiesListEXT *drm_props_list,
+                                      VkFormatFeatureFlags linear_features)
 {
-    drm_props_list->drmFormatModifierCount = 1;
-    if (drm_props_list->pDrmFormatModifierProperties) {
+   drm_props_list->drmFormatModifierCount = linear_features ? 1 : 0;
+   if (linear_features && drm_props_list->pDrmFormatModifierProperties) {
       drm_props_list->pDrmFormatModifierProperties[0] = (VkDrmFormatModifierPropertiesEXT){
          .drmFormatModifier = DRM_FORMAT_MOD_LINEAR,
          .drmFormatModifierPlaneCount = 1,
-         .drmFormatModifierTilingFeatures = VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT |
-                                            VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT |
-                                            VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT,
+         .drmFormatModifierTilingFeatures = linear_features,
       };
-    };
+   }
+}
+
+static void
+vkr_physical_device_emulate_drm_props2(VkDrmFormatModifierPropertiesList2EXT *drm_props_list,
+                                       VkFormatFeatureFlags2 linear_features)
+{
+   drm_props_list->drmFormatModifierCount = linear_features ? 1 : 0;
+   if (linear_features && drm_props_list->pDrmFormatModifierProperties) {
+      drm_props_list->pDrmFormatModifierProperties[0] = (VkDrmFormatModifierProperties2EXT){
+         .drmFormatModifier = DRM_FORMAT_MOD_LINEAR,
+         .drmFormatModifierPlaneCount = 1,
+         .drmFormatModifierTilingFeatures = linear_features,
+      };
+   }
 }
 
 static void
@@ -751,6 +815,20 @@ vkr_dispatch_vkGetPhysicalDeviceMemoryProperties2(
       vk->GetPhysicalDeviceMemoryProperties2(args->physicalDevice,
                                              args->pMemoryProperties);
    }
+   /* The live query above must not restore the unclamped host heap. Budget
+    * usage remains the driver's real estimate (it may exceed its budget).
+    */
+   args->pMemoryProperties->memoryProperties = physical_dev->memory_properties;
+   for (VkBaseOutStructure *p = args->pMemoryProperties->pNext; p; p = p->pNext) {
+      if (p->sType == VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MEMORY_BUDGET_PROPERTIES_EXT) {
+         VkPhysicalDeviceMemoryBudgetPropertiesEXT *budget = (void *)p;
+         for (uint32_t i = 0; i < physical_dev->memory_properties.memoryHeapCount; i++) {
+            const VkDeviceSize size = physical_dev->memory_properties.memoryHeaps[i].size;
+            if (budget->heapBudget[i] > size)
+               budget->heapBudget[i] = size;
+         }
+      }
+   }
 }
 
 static void
@@ -768,10 +846,32 @@ vkr_dispatch_vkGetPhysicalDeviceFormatProperties2(
 
    /* emulate support for drm format modifiers */
    if (!physical_dev->EXT_image_drm_format_modifier) {
-      VkDrmFormatModifierPropertiesListEXT* drm_props_list =
-         vkr_find_struct(args->pFormatProperties, VK_STRUCTURE_TYPE_DRM_FORMAT_MODIFIER_PROPERTIES_LIST_EXT);
+      VkDrmFormatModifierPropertiesListEXT *drm_props_list = vkr_find_struct(
+         args->pFormatProperties, VK_STRUCTURE_TYPE_DRM_FORMAT_MODIFIER_PROPERTIES_LIST_EXT);
       if (drm_props_list) {
-         vkr_physical_device_emulate_drm_props(drm_props_list);
+         vkr_physical_device_emulate_drm_props(
+            drm_props_list, args->pFormatProperties->formatProperties.linearTilingFeatures);
+      }
+
+      VkDrmFormatModifierPropertiesList2EXT *drm_props_list2 = vkr_find_struct(
+         args->pFormatProperties, VK_STRUCTURE_TYPE_DRM_FORMAT_MODIFIER_PROPERTIES_LIST_2_EXT);
+      if (drm_props_list2) {
+         /* the 64-bit features, from the guest's VkFormatProperties3 if it chained one */
+         VkFormatProperties3 local_props3 = {
+            .sType = VK_STRUCTURE_TYPE_FORMAT_PROPERTIES_3,
+         };
+         const VkFormatProperties3 *props3 =
+            vkr_find_struct(args->pFormatProperties, VK_STRUCTURE_TYPE_FORMAT_PROPERTIES_3);
+         if (!props3) {
+            VkFormatProperties2 local_props2 = {
+               .sType = VK_STRUCTURE_TYPE_FORMAT_PROPERTIES_2,
+               .pNext = &local_props3,
+            };
+            vk->GetPhysicalDeviceFormatProperties2(args->physicalDevice, args->format,
+                                                   &local_props2);
+            props3 = &local_props3;
+         }
+         vkr_physical_device_emulate_drm_props2(drm_props_list2, props3->linearTilingFeatures);
       }
    }
 }
@@ -808,12 +908,11 @@ vkr_dispatch_vkGetPhysicalDeviceImageFormatProperties2(
          const VkPhysicalDeviceImageDrmFormatModifierInfoEXT *drm_format_mod =
             (const VkPhysicalDeviceImageDrmFormatModifierInfoEXT *)prev_struct->pNext;
          if (drm_format_mod->drmFormatModifier == DRM_FORMAT_MOD_LINEAR) {
-            /* Remove the struct from the list */
+            /* Remove the struct from the list: the image will be a host linear
+             * image, so the host's answer for linear tiling is the answer.
+             */
             prev_struct->pNext = drm_format_mod->pNext;
-            vkr_log("emulating DRM_FORMAT_MOD_LINEAR with VK_IMAGE_TILING_LINEAR");
             pImageFormatInfo->tiling = VK_IMAGE_TILING_LINEAR;
-            pImageFormatInfo->usage &=
-               ~(VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT);
          } else {
             vkr_log("only DRM_FORMAT_MOD_LINEAR is supported");
             args->ret = VK_ERROR_FORMAT_NOT_SUPPORTED;
@@ -849,15 +948,6 @@ vkr_dispatch_vkGetPhysicalDeviceImageFormatProperties2(
                          VK_STRUCTURE_TYPE_EXTERNAL_IMAGE_FORMAT_PROPERTIES);
       if (img_props && args->ret == VK_SUCCESS)
          vkr_emulate_dma_buf_memory_properties(&img_props->externalMemoryProperties);
-   }
-
-   /* emulate support for drm format modifiers */
-   if (!physical_dev->EXT_image_drm_format_modifier) {
-      VkDrmFormatModifierPropertiesListEXT* drm_props_list =
-         vkr_find_struct(args->pImageFormatProperties, VK_STRUCTURE_TYPE_DRM_FORMAT_MODIFIER_PROPERTIES_LIST_EXT);
-      if (drm_props_list) {
-         vkr_physical_device_emulate_drm_props(drm_props_list);
-      }
    }
 }
 

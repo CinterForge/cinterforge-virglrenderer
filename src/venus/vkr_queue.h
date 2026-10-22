@@ -12,6 +12,9 @@ struct vkr_queue_sync {
    VkFence fence;
    bool device_lost;
 
+   /* a shm release marker rather than a client fence */
+   struct vkr_shm_release *shm_release;
+
    uint32_t flags;
    uint32_t ring_idx;
    uint64_t fence_id;
@@ -94,5 +97,10 @@ vkr_queue_sync_submit(struct vkr_queue *queue,
                       uint32_t flags,
                       uint32_t ring_idx,
                       uint64_t fence_id);
+
+struct vkr_shm_release;
+
+bool
+vkr_queue_submit_shm_release(struct vkr_queue *queue, struct vkr_shm_release *release);
 
 #endif /* VKR_QUEUE_H */

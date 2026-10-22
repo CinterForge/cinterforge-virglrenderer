@@ -28,6 +28,20 @@ static struct virgl_fence last_signalled_fence = { .fd = -1 };
 static struct hash_table_u64 *virgl_fence_table;
 static mtx_t virgl_fence_table_lock;
 
+/* The table is process global but has two owners when the render server runs
+ * in threads inside the VMM: the proxy side (virgl_renderer_init) and the
+ * render server (render_state_init, while it has contexts).  Each owner holds
+ * a reference; the lock lives for the whole process so that neither owner
+ * re-initializes it under the other.
+ */
+static once_flag virgl_fence_table_lock_once = ONCE_FLAG_INIT;
+static uint32_t virgl_fence_table_refs;
+
+static void virgl_fence_table_lock_init(void)
+{
+   mtx_init(&virgl_fence_table_lock, mtx_plain);
+}
+
 static void virgl_fence_table_cleanup_cb(struct hash_entry *entry)
 {
    struct virgl_fence *fence = entry->data;
@@ -39,28 +53,42 @@ static void virgl_fence_table_cleanup_cb(struct hash_entry *entry)
 void
 virgl_fence_table_cleanup(void)
 {
+   call_once(&virgl_fence_table_lock_once, virgl_fence_table_lock_init);
+   mtx_lock(&virgl_fence_table_lock);
+   if (!virgl_fence_table_refs || --virgl_fence_table_refs) {
+      mtx_unlock(&virgl_fence_table_lock);
+      return;
+   }
+
    _mesa_hash_table_u64_destroy(virgl_fence_table,
                                 virgl_fence_table_cleanup_cb);
 
    virgl_fence_table = NULL;
 
-   mtx_destroy(&virgl_fence_table_lock);
-
    if (last_signalled_fence.fd >= 0)
       close(last_signalled_fence.fd);
+   last_signalled_fence.fd = -1;
+   mtx_unlock(&virgl_fence_table_lock);
 }
 
 int
 virgl_fence_table_init(void)
 {
-   virgl_fence_table = _mesa_hash_table_u64_create(NULL);
-   if (!virgl_fence_table)
-      return -ENOMEM;
+   call_once(&virgl_fence_table_lock_once, virgl_fence_table_lock_init);
 
-   mtx_init(&virgl_fence_table_lock, mtx_plain);
+   mtx_lock(&virgl_fence_table_lock);
+   if (!virgl_fence_table_refs) {
+      virgl_fence_table = _mesa_hash_table_u64_create(NULL);
+      if (!virgl_fence_table) {
+         mtx_unlock(&virgl_fence_table_lock);
+         return -ENOMEM;
+      }
 
-   last_signalled_fence.id = 0;
-   last_signalled_fence.fd = -1;
+      last_signalled_fence.id = 0;
+      last_signalled_fence.fd = -1;
+   }
+   virgl_fence_table_refs++;
+   mtx_unlock(&virgl_fence_table_lock);
 
    return 0;
 }

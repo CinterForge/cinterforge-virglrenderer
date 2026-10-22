@@ -31,6 +31,12 @@ struct vkr_resource {
       uint8_t *data;
    } u;
 
+   /* With fd_type shm, the shm fd behind u.data (owned), or -1.  Kept so
+    * the memory can be mapped again and imported into the driver as host
+    * memory, independent of the lifetime of this resource.
+    */
+   int shm_fd;
+
    size_t size;
 };
 
@@ -126,6 +132,12 @@ vkr_context_submit_fence(struct vkr_context *ctx,
 bool
 vkr_context_submit_cmd(struct vkr_context *ctx, const void *buffer, size_t size);
 
+/* Dispatch the next command of dispatch->decoder (every vn_dispatch_command goes
+ * through this).
+ */
+void
+vkr_dispatch_command(struct vn_dispatch_context *dispatch);
+
 bool
 vkr_context_create_resource(struct vkr_context *ctx,
                             uint32_t res_id,
@@ -158,6 +170,7 @@ static inline void
 vkr_context_set_fatal(struct vkr_context *ctx)
 {
    ctx->cs_fatal_error = true;
+   vkr_fatal_raised_here = true;
 }
 
 static inline bool

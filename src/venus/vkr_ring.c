@@ -7,6 +7,9 @@
 
 #include <stdio.h>
 #include <sys/resource.h>
+#ifdef __APPLE__
+#include <pthread/qos.h>
+#endif
 #include <time.h>
 
 #include "vn_protocol_renderer_dispatches.h"
@@ -227,9 +230,11 @@ vkr_ring_submit_cmd(struct vkr_ring *ring,
    vkr_cs_decoder_set_buffer_stream(dec, buffer, size);
 
    while (vkr_cs_decoder_has_command(dec)) {
-      vn_dispatch_command(&ring->dispatch);
+      vkr_dispatch_command(&ring->dispatch);
       if (vkr_cs_decoder_get_fatal(dec)) {
-         vkr_log("ring_submit_cmd: vn_dispatch_command failed");
+         vkr_log(vkr_fatal_raised_here
+                    ? "ring_submit_cmd: vn_dispatch_command failed"
+                    : "ring_submit_cmd: stopping, the context went fatal on another thread");
 
          vkr_cs_decoder_reset(dec);
          return false;
@@ -254,6 +259,17 @@ vkr_ring_thread(void *arg)
 
    snprintf(thread_name, ARRAY_SIZE(thread_name), "vkr-ring-%d", ctx->ctx_id);
    u_thread_setname(thread_name);
+#ifdef __APPLE__
+   /* The priority is the guest thread's nice value. On macOS setpriority(PRIO_PROCESS, 0)
+    * renices the whole VMM process, not this thread, and an unprivileged process can
+    * never lower its nice value again: one nice-19 guest thread (Steam's fossilize_replay
+    * shader pre-caching) left every thread the VMM created afterwards at a low priority.
+    * Map it to this thread's QoS instead: niced guest threads compile and submit at
+    * utility QoS, the rest stay user-interactive (see thrd_create).
+    */
+   if (ring->prio_valid && ring->prio > 0)
+      pthread_set_qos_class_self_np(QOS_CLASS_UTILITY, 0);
+#else
    if (ring->prio_valid && setpriority(PRIO_PROCESS, 0, ring->prio)) {
 #ifdef DEBUG
       /* Currently venus doesn't forward the CAP_SYS_NICE request upon forking, so
@@ -263,6 +279,7 @@ vkr_ring_thread(void *arg)
       vkr_log("failed to set ring thread priority to %d (%d)", ring->prio, errno);
 #endif
    }
+#endif
 
    uint64_t last_submit = vkr_ring_now();
    uint32_t relax_iter = 0;

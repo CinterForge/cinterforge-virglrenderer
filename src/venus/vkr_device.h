@@ -29,6 +29,23 @@ struct vkr_device {
 
    /* set when the physical device emulates dma_buf on top of host memory */
    PFN_vkGetMemoryHostPointerPropertiesEXT GetMemoryHostPointerPropertiesEXT;
+
+   /* Host memory (shm) imported into the driver must stay mapped until the
+    * GPU work submitted before its VkDeviceMemory was freed has completed: the
+    * driver may still reference it (MoltenVK releases its MTLBuffer only then),
+    * and the guest only waits for the work that used it, through a semaphore
+    * the GPU signals before the driver's command buffer completes.  Freed shm
+    * is batched in pending and handed to the queues with a release marker per
+    * queue (see vkr_device_flush_shm_releases).
+    */
+   struct {
+      mtx_t mutex;
+      struct list_head pending;
+      size_t pending_size;
+      int64_t last_flush_ns;
+      /* set once the device is idle for destruction: unmap right away */
+      bool immediate;
+   } shm_release;
 };
 VKR_DEFINE_OBJECT_CAST(device, VK_OBJECT_TYPE_DEVICE, VkDevice)
 

@@ -14,6 +14,21 @@ struct vkr_shm {
    int fd;
    void *ptr;
    size_t size;
+
+   /* in vkr_device::shm_release.pending or vkr_shm_release::shms */
+   struct list_head head;
+};
+
+/* shm whose VkDeviceMemory has been freed, unmapped once the GPU work
+ * submitted before the free has completed on every queue of the device
+ */
+struct vkr_shm_release {
+   struct vkr_device *device;
+   /* queues whose release marker has not completed yet, under
+    * vkr_device::shm_release.mutex
+    */
+   uint32_t pending_queues;
+   struct list_head shms;
 };
 
 struct vkr_device_memory {
@@ -47,6 +62,15 @@ vkr_context_init_device_memory_dispatch(struct vkr_context *ctx);
 
 void
 vkr_device_memory_release(struct vkr_device_memory *mem);
+
+void
+vkr_device_flush_shm_releases(struct vkr_device *dev, bool force);
+
+void
+vkr_shm_release_complete_queue(struct vkr_shm_release *release);
+
+void
+vkr_device_fini_shm_releases(struct vkr_device *dev);
 
 bool
 vkr_device_memory_export_blob(struct vkr_device_memory *mem,

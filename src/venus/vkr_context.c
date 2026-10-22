@@ -68,7 +68,100 @@ vkr_context_remove_instance(struct vkr_context *ctx, struct vkr_instance *instan
 static void
 vkr_dispatch_debug_log(UNUSED struct vn_dispatch_context *dispatch, const char *msg)
 {
-   vkr_log(msg);
+   /* vn_dispatch_command logs "<command> resulted in CS error" whenever the shared fatal
+    * flag is set after the command, also when another thread set it meanwhile (a long
+    * vkCreateGraphicsPipelines is the usual bystander).  Only the thread that made the
+    * context fatal reports a CS error.
+    */
+   static const char cs_error[] = " resulted in CS error";
+   const size_t len = strlen(msg);
+   if (!vkr_fatal_raised_here && len > sizeof(cs_error) - 1 &&
+       !strcmp(msg + len - (sizeof(cs_error) - 1), cs_error)) {
+      vkr_log("%.*s stopped: the context went fatal on another thread",
+              (int)(len - (sizeof(cs_error) - 1)), msg);
+      return;
+   }
+
+   vkr_log("%s", msg);
+}
+
+/* The object type a vkDestroy* / vkFree* command destroys (not the device or instance,
+ * which are never created asynchronously), or VK_OBJECT_TYPE_UNKNOWN.
+ */
+static VkObjectType
+vkr_command_destroy_type(VkCommandTypeEXT cmd_type)
+{
+   switch (cmd_type) {
+   case VK_COMMAND_TYPE_vkFreeMemory_EXT:
+      return VK_OBJECT_TYPE_DEVICE_MEMORY;
+   case VK_COMMAND_TYPE_vkDestroyBuffer_EXT:
+      return VK_OBJECT_TYPE_BUFFER;
+   case VK_COMMAND_TYPE_vkDestroyBufferView_EXT:
+      return VK_OBJECT_TYPE_BUFFER_VIEW;
+   case VK_COMMAND_TYPE_vkDestroyImage_EXT:
+      return VK_OBJECT_TYPE_IMAGE;
+   case VK_COMMAND_TYPE_vkDestroyImageView_EXT:
+      return VK_OBJECT_TYPE_IMAGE_VIEW;
+   case VK_COMMAND_TYPE_vkDestroySampler_EXT:
+      return VK_OBJECT_TYPE_SAMPLER;
+   case VK_COMMAND_TYPE_vkDestroySamplerYcbcrConversion_EXT:
+      return VK_OBJECT_TYPE_SAMPLER_YCBCR_CONVERSION;
+   case VK_COMMAND_TYPE_vkDestroyFence_EXT:
+      return VK_OBJECT_TYPE_FENCE;
+   case VK_COMMAND_TYPE_vkDestroySemaphore_EXT:
+      return VK_OBJECT_TYPE_SEMAPHORE;
+   case VK_COMMAND_TYPE_vkDestroyEvent_EXT:
+      return VK_OBJECT_TYPE_EVENT;
+   case VK_COMMAND_TYPE_vkDestroyQueryPool_EXT:
+      return VK_OBJECT_TYPE_QUERY_POOL;
+   case VK_COMMAND_TYPE_vkDestroyShaderModule_EXT:
+      return VK_OBJECT_TYPE_SHADER_MODULE;
+   case VK_COMMAND_TYPE_vkDestroyPipelineCache_EXT:
+      return VK_OBJECT_TYPE_PIPELINE_CACHE;
+   case VK_COMMAND_TYPE_vkDestroyPipelineLayout_EXT:
+      return VK_OBJECT_TYPE_PIPELINE_LAYOUT;
+   case VK_COMMAND_TYPE_vkDestroyPipeline_EXT:
+      return VK_OBJECT_TYPE_PIPELINE;
+   case VK_COMMAND_TYPE_vkDestroyDescriptorSetLayout_EXT:
+      return VK_OBJECT_TYPE_DESCRIPTOR_SET_LAYOUT;
+   case VK_COMMAND_TYPE_vkDestroyDescriptorPool_EXT:
+      return VK_OBJECT_TYPE_DESCRIPTOR_POOL;
+   case VK_COMMAND_TYPE_vkFreeDescriptorSets_EXT:
+      return VK_OBJECT_TYPE_DESCRIPTOR_SET;
+   case VK_COMMAND_TYPE_vkDestroyDescriptorUpdateTemplate_EXT:
+      return VK_OBJECT_TYPE_DESCRIPTOR_UPDATE_TEMPLATE;
+   case VK_COMMAND_TYPE_vkDestroyFramebuffer_EXT:
+      return VK_OBJECT_TYPE_FRAMEBUFFER;
+   case VK_COMMAND_TYPE_vkDestroyRenderPass_EXT:
+      return VK_OBJECT_TYPE_RENDER_PASS;
+   case VK_COMMAND_TYPE_vkDestroyCommandPool_EXT:
+      return VK_OBJECT_TYPE_COMMAND_POOL;
+   case VK_COMMAND_TYPE_vkFreeCommandBuffers_EXT:
+      return VK_OBJECT_TYPE_COMMAND_BUFFER;
+   case VK_COMMAND_TYPE_vkDestroyAccelerationStructureKHR_EXT:
+      return VK_OBJECT_TYPE_ACCELERATION_STRUCTURE_KHR;
+   default:
+      return VK_OBJECT_TYPE_UNKNOWN;
+   }
+}
+
+void
+vkr_dispatch_command(struct vn_dispatch_context *dispatch)
+{
+   struct vkr_cs_decoder *dec = (struct vkr_cs_decoder *)dispatch->decoder;
+
+   vkr_note_dispatch();
+   vkr_fatal_raised_here = false;
+
+   /* peek the command type; a short stream fails in vn_dispatch_command */
+   int32_t cmd_type = -1;
+   if ((size_t)(dec->end - dec->cur) >= sizeof(cmd_type))
+      memcpy(&cmd_type, dec->cur, sizeof(cmd_type));
+   dec->lenient_type = vkr_command_destroy_type((VkCommandTypeEXT)cmd_type);
+
+   vn_dispatch_command(dispatch);
+
+   dec->lenient_type = VK_OBJECT_TYPE_UNKNOWN;
 }
 
 static void
@@ -172,9 +265,11 @@ vkr_context_submit_cmd(struct vkr_context *ctx, const void *buffer, size_t size)
    vkr_cs_decoder_set_buffer_stream(&ctx->decoder, buffer, size);
 
    while (vkr_cs_decoder_has_command(&ctx->decoder)) {
-      vn_dispatch_command(&ctx->dispatch);
+      vkr_dispatch_command(&ctx->dispatch);
       if (vkr_context_get_fatal(ctx)) {
-         vkr_log("submit_cmd: vn_dispatch_command failed");
+         vkr_log(vkr_fatal_raised_here
+                    ? "submit_cmd: vn_dispatch_command failed"
+                    : "submit_cmd: stopping, the context went fatal on another thread");
 
          vkr_cs_decoder_reset(&ctx->decoder);
          return false;
@@ -189,9 +284,11 @@ static inline void
 vkr_context_free_resource(struct hash_entry *entry)
 {
    struct vkr_resource *res = entry->data;
-   if (res->fd_type == VIRGL_RESOURCE_FD_SHM)
+   if (res->fd_type == VIRGL_RESOURCE_FD_SHM) {
       munmap(res->u.data, res->size);
-   else if (res->u.fd >= 0)
+      if (res->shm_fd >= 0)
+         close(res->shm_fd);
+   } else if (res->u.fd >= 0)
       close(res->u.fd);
    free(res);
 }
@@ -238,12 +335,16 @@ vkr_context_import_resource_internal(struct vkr_context *ctx,
    res->fd_type = fd_type;
    res->size = blob_size;
 
-   /* fd and mmap_ptr cannot be valid at the same time, but allowed to be -1 and NULL */
-   assert(fd < 0 || !mmap_ptr);
-   if (mmap_ptr)
+   /* With mmap_ptr (shm), fd is the shm fd behind it or -1.  Ownership of fd
+    * passes to the resource only on success.
+    */
+   res->shm_fd = -1;
+   if (mmap_ptr) {
       res->u.data = mmap_ptr;
-   else
+      res->shm_fd = fd;
+   } else {
       res->u.fd = fd;
+   }
 
    if (!vkr_context_add_resource(ctx, res)) {
       free(res);
@@ -266,7 +367,7 @@ vkr_context_import_resource_from_shm(struct vkr_context *ctx,
       return false;
 
    if (!vkr_context_import_resource_internal(ctx, res_id, blob_size,
-                                             VIRGL_RESOURCE_FD_SHM, -1, mmap_ptr)) {
+                                             VIRGL_RESOURCE_FD_SHM, fd, mmap_ptr)) {
       munmap(mmap_ptr, blob_size);
       return false;
    }
@@ -289,17 +390,27 @@ vkr_context_create_resource_from_shm(struct vkr_context *ctx,
    const uint64_t alloc_size = (blob_size + page_size - 1) & ~(page_size - 1);
 
    int fd = os_create_anonymous_file(alloc_size, "vkr-shmem");
-   if (fd < 0)
+   if (fd < 0) {
+      vkr_log_errno(errno, "creating a %" PRIu64 "-byte shm for resource %u", alloc_size,
+                    res_id);
       return false;
+   }
 
    void *mmap_ptr = mmap(NULL, alloc_size, PROT_WRITE | PROT_READ, MAP_SHARED, fd, 0);
    if (mmap_ptr == MAP_FAILED) {
+      vkr_log_errno(errno, "mapping the shm of resource %u", res_id);
       close(fd);
       return false;
    }
 
-   if (!vkr_context_import_resource_internal(ctx, res_id, alloc_size,
-                                             VIRGL_RESOURCE_FD_SHM, -1, mmap_ptr)) {
+   const int res_fd = os_dupfd_cloexec(fd);
+   if (res_fd < 0)
+      vkr_log_errno(errno, "duplicating the shm fd of resource %u", res_id);
+   if (res_fd < 0 ||
+       !vkr_context_import_resource_internal(ctx, res_id, alloc_size,
+                                             VIRGL_RESOURCE_FD_SHM, res_fd, mmap_ptr)) {
+      if (res_fd >= 0)
+         close(res_fd);
       munmap(mmap_ptr, alloc_size);
       close(fd);
       return false;
@@ -325,8 +436,11 @@ vkr_context_create_resource_from_device_memory(struct vkr_context *ctx,
    assert(!vkr_context_get_resource(ctx, res_id));
 
    struct vkr_device_memory *mem = vkr_context_get_object(ctx, blob_id);
-   if (!mem || mem->base.type != VK_OBJECT_TYPE_DEVICE_MEMORY)
+   if (!mem || mem->base.type != VK_OBJECT_TYPE_DEVICE_MEMORY) {
+      vkr_log("blob %" PRIu64 " for resource %u: %s", blob_id, res_id,
+              mem ? "not a memory object" : "no such memory (its allocation failed?)");
       return false;
+   }
 
    struct virgl_context_blob blob;
    if (!vkr_device_memory_export_blob(mem, blob_size, blob_flags, &blob))
@@ -335,18 +449,38 @@ vkr_context_create_resource_from_device_memory(struct vkr_context *ctx,
    /* If memory might get exported, store a dup'ed fd in vkr_resource for:
     * - vkAllocateMemory for dma_buf import
     * - vkGetMemoryFdPropertiesKHR for dma_buf fd properties query
+    *
+    * A shm resource always carries a mapping in u.data (it is what every
+    * user of a shm resource expects) and its fd for vkAllocateMemory, which
+    * imports shm as host memory.
     */
    int res_fd = -1;
-   if (mem->might_export) {
+   void *mmap_ptr = NULL;
+   if (blob.type == VIRGL_RESOURCE_FD_SHM) {
+      mmap_ptr = mmap(NULL, blob_size, PROT_WRITE | PROT_READ, MAP_SHARED, blob.u.fd, 0);
+      if (mmap_ptr == MAP_FAILED) {
+         vkr_log_errno(errno, "mapping the blob of memory %" PRIu64 " (resource %u)", blob_id,
+                       res_id);
+         close(blob.u.fd);
+         return false;
+      }
+   }
+   if (mem->might_export || mmap_ptr) {
       res_fd = os_dupfd_cloexec(blob.u.fd);
       if (res_fd < 0) {
+         vkr_log_errno(errno, "duplicating the blob fd of memory %" PRIu64 " (resource %u)",
+                       blob_id, res_id);
+         if (mmap_ptr)
+            munmap(mmap_ptr, blob_size);
          close(blob.u.fd);
          return false;
       }
    }
 
    if (!vkr_context_import_resource_internal(ctx, res_id, blob_size, blob.type, res_fd,
-                                             NULL)) {
+                                             mmap_ptr)) {
+      if (mmap_ptr)
+         munmap(mmap_ptr, blob_size);
       if (res_fd >= 0)
          close(res_fd);
       close(blob.u.fd);
@@ -396,14 +530,21 @@ vkr_context_destroy_resource(struct vkr_context *ctx, uint32_t res_id)
    if (!res)
       return;
 
-   if (!vkr_cs_encoder_check_stream(&ctx->encoder, res))
+   /* these were silent; the fatal flag then surfaced as a CS error of whatever command
+    * a ring happened to be running
+    */
+   if (!vkr_cs_encoder_check_stream(&ctx->encoder, res)) {
+      vkr_log("resource %u destroyed while the context replies into it (CS error)", res_id);
       vkr_context_set_fatal(ctx);
+   }
 
    mtx_lock(&ctx->ring_mutex);
    list_for_each_entry_safe (struct vkr_ring, ring, &ctx->rings, head) {
       if (ring->resource == res ||
           !vkr_cs_decoder_check_stream(&ring->decoder, res) ||
           !vkr_cs_encoder_check_stream(&ring->encoder, res)) {
+         vkr_log("resource %u destroyed while ring %" PRIu64 " uses it (CS error)", res_id,
+                 ring->id);
          vkr_context_set_fatal(ctx);
 
          mtx_unlock(&ctx->ring_mutex);

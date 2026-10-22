@@ -80,6 +80,14 @@ struct vkr_cs_decoder {
 
    const uint8_t *cur;
    const uint8_t *end;
+
+   /* steamac: set by vkr_dispatch_command for vkDestroy* / vkFree* commands to the type
+    * of the object they destroy.  Venus creates most objects asynchronously: the guest
+    * destroys an object whose creation failed on the host (the driver refused it, or the
+    * guest freed it right after a failed export), and that id is unknown here.  Such a
+    * lookup is not fatal: it yields no object, which the destroy dispatchers skip.
+    */
+   VkObjectType lenient_type;
 };
 
 static inline int
@@ -101,6 +109,7 @@ static inline void
 vkr_cs_encoder_set_fatal(const struct vkr_cs_encoder *enc)
 {
    *enc->fatal_error = true;
+   vkr_fatal_raised_here = true;
 }
 
 void
@@ -210,6 +219,7 @@ static inline void
 vkr_cs_decoder_set_fatal(const struct vkr_cs_decoder *dec)
 {
    *((struct vkr_cs_decoder *)dec)->fatal_error = true;
+   vkr_fatal_raised_here = true;
 }
 
 static inline bool
@@ -314,10 +324,16 @@ vkr_cs_decoder_lookup_object(const struct vkr_cs_decoder *dec,
    obj = likely(entry) ? entry->data : NULL;
    mtx_unlock(dec->object_mutex);
    if (unlikely(!obj || obj->type != type)) {
-      if (obj)
+      if (obj) {
          vkr_log("object %" PRIu64 " has type %d, not %d", id, obj->type, type);
-      else
+      } else if (type == dec->lenient_type) {
+         vkr_log("object %" PRIu64 " of type %d to destroy does not exist (its creation "
+                 "failed on the host); ignored",
+                 id, type);
+         return NULL;
+      } else {
          vkr_log("failed to look up object %" PRIu64 " of type %d", id, type);
+      }
       vkr_cs_decoder_set_fatal(dec);
    }
 

@@ -69,7 +69,40 @@ static void
 vkr_dispatch_vkCreatePipelineCache(struct vn_dispatch_context *dispatch,
                                    struct vn_command_vkCreatePipelineCache *args)
 {
-   vkr_pipeline_cache_create_and_add(dispatch->data, args);
+   struct vkr_context *ctx = dispatch->data;
+   struct vkr_device *dev = vkr_device_from_handle(args->device);
+
+   struct vkr_pipeline_cache *obj = vkr_context_alloc_object(
+      ctx, sizeof(*obj), VK_OBJECT_TYPE_PIPELINE_CACHE, args->pPipelineCache);
+   if (!obj) {
+      args->ret = VK_ERROR_OUT_OF_HOST_MEMORY;
+      return;
+   }
+
+   /* Venus creates pipeline caches asynchronously, so a failure here kills the
+    * context at the next use of the cache.  Initial data is only a hint, and
+    * the driver may reject it (MoltenVK fails the cache when cached MSL does
+    * not compile): create the cache empty instead.
+    */
+   if (vkr_pipeline_cache_create_driver_handle(ctx, args, obj) != VK_SUCCESS &&
+       args->pCreateInfo->initialDataSize) {
+      vkr_log("pipeline cache %" PRIu64 ": initial data (%zu bytes) rejected by the "
+              "driver (VkResult %d), creating it empty",
+              obj->base.id, args->pCreateInfo->initialDataSize, args->ret);
+
+      VkPipelineCacheCreateInfo empty_info = *args->pCreateInfo;
+      empty_info.initialDataSize = 0;
+      empty_info.pInitialData = NULL;
+      /* args->device is the driver handle now */
+      args->ret = dev->proc_table.CreatePipelineCache(args->device, &empty_info, NULL,
+                                                      &obj->base.handle.pipeline_cache);
+   }
+   if (args->ret != VK_SUCCESS) {
+      free(obj);
+      return;
+   }
+
+   vkr_device_add_object(ctx, dev, &obj->base);
 }
 
 static void
@@ -105,19 +138,91 @@ vkr_dispatch_vkMergePipelineCaches(UNUSED struct vn_dispatch_context *dispatch,
                                        args->pSrcCaches);
 }
 
+/* Flags with which the guest driver waits for the result of a pipeline
+ * creation.  Otherwise Venus creates pipelines asynchronously: the guest
+ * already uses the handles before the host has created anything.
+ */
+#define VKR_PIPELINE_CREATE_GUEST_WAITS                                              \
+   (VK_PIPELINE_CREATE_2_FAIL_ON_PIPELINE_COMPILE_REQUIRED_BIT |                     \
+    VK_PIPELINE_CREATE_2_EARLY_RETURN_ON_FAILURE_BIT)
+
+static bool
+vkr_pipeline_guest_waits(const void *pnext, VkPipelineCreateFlags flags)
+{
+   const VkPipelineCreateFlags2CreateInfo *flags2 =
+      vkr_find_struct(pnext, VK_STRUCTURE_TYPE_PIPELINE_CREATE_FLAGS_2_CREATE_INFO);
+   return (flags2 ? flags2->flags : flags) & VKR_PIPELINE_CREATE_GUEST_WAITS;
+}
+
+/* Add the vkr_pipeline for one created pipeline, whatever the result of the
+ * creation as a whole (per pipeline, a failure is a VK_NULL_HANDLE).
+ *
+ * A pipeline that failed on the host is still added, as a placeholder with a
+ * VK_NULL_HANDLE driver handle, unless the guest waits for the result: an
+ * asynchronously created pipeline is in use in the guest already, and a
+ * lookup failure on its id would kill the whole context.  Binding the
+ * placeholder is not passed to the driver: draws and dispatches are skipped
+ * while it is bound (vkr_command_buffer.c), and destroying it frees just the
+ * object.
+ *
+ * The reply, if any, reports the failure with VK_NULL_HANDLE.  A guest that
+ * waits only on a secondary ring (no flag says so) drops its pipeline then,
+ * and the placeholder lives until the device is destroyed.
+ */
+static void
+vkr_pipeline_add(struct vkr_context *ctx,
+                 struct vkr_device *dev,
+                 struct vkr_pipeline *obj,
+                 VkPipeline handle,
+                 VkPipeline *args_pipeline,
+                 bool guest_waits)
+{
+   obj->base.handle.pipeline = handle;
+   if (handle == VK_NULL_HANDLE) {
+      *args_pipeline = VK_NULL_HANDLE;
+      if (guest_waits) {
+         free(obj);
+         return;
+      }
+      vkr_log("pipeline %" PRIu64 " creation failed on host; draws using it will be "
+              "skipped",
+              obj->base.id);
+   }
+
+   vkr_device_add_object(ctx, dev, &obj->base);
+}
+
+/* The generated vkr_*_pipeline_create_array drops every vkr_pipeline when the
+ * creation as a whole fails, although the driver still creates the pipelines
+ * it can, and vkr_pipeline_add_array drops the failed ones.  These add each
+ * pipeline with vkr_pipeline_add instead.
+ */
+#define VKR_PIPELINE_CREATE(ctx, args, type)                                         \
+   do {                                                                              \
+      struct vkr_device *_dev = vkr_device_from_handle((args)->device);              \
+      struct object_array _arr;                                                      \
+      if (vkr_##type##_pipeline_init_array((ctx), (args), &_arr) != VK_SUCCESS)      \
+         break;                                                                      \
+      /* failed pipelines must be VK_NULL_HANDLE; do not trust the driver */        \
+      memset(_arr.handle_storage, 0, sizeof(VkPipeline) * _arr.count);               \
+      vkr_##type##_pipeline_create_driver_handles((ctx), (args), &_arr);             \
+      for (uint32_t _i = 0; _i < _arr.count; _i++) {                                 \
+         const bool _waits = vkr_pipeline_guest_waits((args)->pCreateInfos[_i].pNext, \
+                                                      (args)->pCreateInfos[_i].flags); \
+         vkr_pipeline_add((ctx), _dev, _arr.objects[_i],                             \
+                          ((VkPipeline *)_arr.handle_storage)[_i],                   \
+                          &(args)->pPipelines[_i], _waits);                          \
+      }                                                                              \
+      _arr.objects_stolen = true;                                                    \
+      object_array_fini(&_arr);                                                      \
+   } while (0)
+
 static void
 vkr_dispatch_vkCreateGraphicsPipelines(struct vn_dispatch_context *dispatch,
                                        struct vn_command_vkCreateGraphicsPipelines *args)
 {
    TRACE_FUNC();
-   struct vkr_context *ctx = dispatch->data;
-   struct vkr_device *dev = vkr_device_from_handle(args->device);
-   struct object_array arr;
-
-   if (vkr_graphics_pipeline_create_array(ctx, args, &arr) < VK_SUCCESS)
-      return;
-
-   vkr_pipeline_add_array(ctx, dev, &arr, args->pPipelines);
+   VKR_PIPELINE_CREATE(dispatch->data, args, graphics);
 }
 
 static void
@@ -125,20 +230,19 @@ vkr_dispatch_vkCreateComputePipelines(struct vn_dispatch_context *dispatch,
                                       struct vn_command_vkCreateComputePipelines *args)
 {
    TRACE_FUNC();
-   struct vkr_context *ctx = dispatch->data;
-   struct vkr_device *dev = vkr_device_from_handle(args->device);
-   struct object_array arr;
-
-   if (vkr_compute_pipeline_create_array(ctx, args, &arr) < VK_SUCCESS)
-      return;
-
-   vkr_pipeline_add_array(ctx, dev, &arr, args->pPipelines);
+   VKR_PIPELINE_CREATE(dispatch->data, args, compute);
 }
 
 static void
 vkr_dispatch_vkDestroyPipeline(struct vn_dispatch_context *dispatch,
                                struct vn_command_vkDestroyPipeline *args)
 {
+   if (vkr_pipeline_is_placeholder(args->pipeline)) {
+      vkr_device_remove_object(dispatch->data, vkr_device_from_handle(args->device),
+                               &vkr_pipeline_from_handle(args->pipeline)->base);
+      return;
+   }
+
    vkr_pipeline_destroy_and_remove(dispatch->data, args);
 }
 
@@ -148,14 +252,7 @@ vkr_dispatch_vkCreateRayTracingPipelinesKHR(
    struct vn_command_vkCreateRayTracingPipelinesKHR *args)
 {
    TRACE_FUNC();
-   struct vkr_context *ctx = dispatch->data;
-   struct vkr_device *dev = vkr_device_from_handle(args->device);
-   struct object_array arr;
-
-   if (vkr_ray_tracing_pipeline_create_array(ctx, args, &arr) < VK_SUCCESS)
-      return;
-
-   vkr_pipeline_add_array(ctx, dev, &arr, args->pPipelines);
+   VKR_PIPELINE_CREATE(dispatch->data, args, ray_tracing);
 }
 
 static void
@@ -165,6 +262,11 @@ vkr_dispatch_vkGetRayTracingCaptureReplayShaderGroupHandlesKHR(
 {
    struct vkr_device *dev = vkr_device_from_handle(args->device);
    struct vn_device_proc_table *vk = &dev->proc_table;
+
+   if (vkr_pipeline_is_placeholder(args->pipeline)) {
+      args->ret = VK_ERROR_UNKNOWN;
+      return;
+   }
 
    vn_replace_vkGetRayTracingCaptureReplayShaderGroupHandlesKHR_args_handle(args);
    args->ret = vk->GetRayTracingCaptureReplayShaderGroupHandlesKHR(
@@ -180,6 +282,11 @@ vkr_dispatch_vkGetRayTracingShaderGroupHandlesKHR(
    struct vkr_device *dev = vkr_device_from_handle(args->device);
    struct vn_device_proc_table *vk = &dev->proc_table;
 
+   if (vkr_pipeline_is_placeholder(args->pipeline)) {
+      args->ret = VK_ERROR_UNKNOWN;
+      return;
+   }
+
    vn_replace_vkGetRayTracingShaderGroupHandlesKHR_args_handle(args);
    args->ret = vk->GetRayTracingShaderGroupHandlesKHR(args->device, args->pipeline,
                                                       args->firstGroup, args->groupCount,
@@ -193,6 +300,11 @@ vkr_dispatch_vkGetRayTracingShaderGroupStackSizeKHR(
 {
    struct vkr_device *dev = vkr_device_from_handle(args->device);
    struct vn_device_proc_table *vk = &dev->proc_table;
+
+   if (vkr_pipeline_is_placeholder(args->pipeline)) {
+      args->ret = 0;
+      return;
+   }
 
    vn_replace_vkGetRayTracingShaderGroupStackSizeKHR_args_handle(args);
    args->ret = vk->GetRayTracingShaderGroupStackSizeKHR(args->device, args->pipeline,

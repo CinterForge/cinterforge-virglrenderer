@@ -36,6 +36,50 @@ vkr_library_preload_icd(void)
 
 #if defined(ENABLE_VULKAN_DLOAD)
 
+#ifdef __APPLE__
+typedef VkResult(VKAPI_PTR *vkr_PFN_icdNegotiateLoaderICDInterfaceVersion)(
+   uint32_t *pSupportedVersion);
+
+/* The Vulkan driver is chosen at runtime: VKR_VULKAN_DRIVER names its dylib (a
+ * path, or @rpath/... resolved with the rpaths of the VMM and of this
+ * library), MoltenVK by default.  Mesa drivers (KosmicKrisp) export only the
+ * loader-ICD interface; they are used without a loader through
+ * vk_icdGetInstanceProcAddr, after the interface version negotiation a loader
+ * would do.
+ */
+static const char *
+vkr_library_driver_path(void)
+{
+   const char *path = getenv("VKR_VULKAN_DRIVER");
+   return path && *path ? path : "@rpath/libMoltenVK.dylib";
+}
+
+static PFN_vkGetInstanceProcAddr
+vkr_library_icd_get_proc_addr(void *handle)
+{
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpedantic"
+   vkr_PFN_icdNegotiateLoaderICDInterfaceVersion negotiate =
+      (vkr_PFN_icdNegotiateLoaderICDInterfaceVersion)dlsym(
+         handle, "vk_icdNegotiateLoaderICDInterfaceVersion");
+   PFN_vkGetInstanceProcAddr get_proc_addr =
+      (PFN_vkGetInstanceProcAddr)dlsym(handle, "vk_icdGetInstanceProcAddr");
+#pragma GCC diagnostic pop
+   if (!get_proc_addr)
+      return NULL;
+
+   if (negotiate) {
+      uint32_t version = 7;
+      if (negotiate(&version) != VK_SUCCESS || version < 5) {
+         vkr_log("driver ICD interface version negotiation failed (version %u)",
+                 version);
+         return NULL;
+      }
+   }
+   return get_proc_addr;
+}
+#endif
+
 bool
 vkr_library_load(struct vulkan_library *lib)
 {
@@ -43,11 +87,8 @@ vkr_library_load(struct vulkan_library *lib)
       return true;
 
 #ifdef __APPLE__
-   lib->handle = dlopen("libvulkan.dylib", RTLD_NOW | RTLD_LOCAL);
-   if (lib->handle == NULL)
-      lib->handle = dlopen("libvulkan.1.dylib", RTLD_NOW | RTLD_LOCAL);
-   if (lib->handle == NULL)
-      lib->handle = dlopen("libMoltenVK.dylib", RTLD_NOW | RTLD_LOCAL);
+   const char *path = vkr_library_driver_path();
+   lib->handle = dlopen(path, RTLD_NOW | RTLD_LOCAL);
 #else
    lib->handle = dlopen("libvulkan.so.1", RTLD_NOW | RTLD_LOCAL);
    if (lib->handle == NULL)
@@ -68,14 +109,18 @@ vkr_library_load(struct vulkan_library *lib)
       (PFN_vkGetInstanceProcAddr)dlsym(lib->handle, "vkGetInstanceProcAddr");
 #pragma GCC diagnostic pop
 
-   char *error = dlerror();
-   if (error != NULL) {
-      vkr_log("dlerror: %s", error);
-      goto fail;
-   }
+#ifdef __APPLE__
+   if (lib->GetInstanceProcAddr == NULL)
+      lib->GetInstanceProcAddr = vkr_library_icd_get_proc_addr(lib->handle);
+#endif
 
    if (lib->GetInstanceProcAddr == NULL) {
+#ifdef __APPLE__
+      vkr_log("%s exports neither vkGetInstanceProcAddr nor vk_icdGetInstanceProcAddr",
+              path);
+#else
       vkr_log("failed to load vkGetInstanceProcAddr: %s", dlerror());
+#endif
       goto fail;
    }
 

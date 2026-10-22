@@ -36,6 +36,38 @@ vkr_image_fix_drm_format(struct vkr_device *dev,
 
    if (drm_format_info && drm_format_info->drmFormatModifier == DRM_FORMAT_MOD_LINEAR) {
       pCreateInfo->tiling = VK_IMAGE_TILING_LINEAR;
+
+      /* An imported linear buffer (a dma-buf from another device or process) comes
+       * with its own plane layout, but the host decides the layout of a linear
+       * image itself.  Refuse layouts it would not reproduce instead of reading the
+       * buffer with the wrong pitch.
+       */
+      struct vn_device_proc_table *vk = &dev->proc_table;
+      if (drm_format_info->drmFormatModifierPlaneCount != 1)
+         return VK_ERROR_INVALID_DRM_FORMAT_MODIFIER_PLANE_LAYOUT_EXT;
+      if (vk->GetDeviceImageSubresourceLayout) {
+         const VkSubresourceLayout *want = &drm_format_info->pPlaneLayouts[0];
+         const VkImageSubresource2 subres = {
+            .sType = VK_STRUCTURE_TYPE_IMAGE_SUBRESOURCE_2,
+            .imageSubresource = { .aspectMask = VK_IMAGE_ASPECT_COLOR_BIT },
+         };
+         const VkDeviceImageSubresourceInfo info = {
+            .sType = VK_STRUCTURE_TYPE_DEVICE_IMAGE_SUBRESOURCE_INFO,
+            .pCreateInfo = pCreateInfo,
+            .pSubresource = &subres,
+         };
+         VkSubresourceLayout2 have = { .sType = VK_STRUCTURE_TYPE_SUBRESOURCE_LAYOUT_2 };
+         vk->GetDeviceImageSubresourceLayout(dev->base.handle.device, &info, &have);
+         if (want->offset != have.subresourceLayout.offset ||
+             want->rowPitch != have.subresourceLayout.rowPitch) {
+            vkr_log("linear plane layout offset %" PRIu64 " pitch %" PRIu64
+                    " differs from the host's offset %" PRIu64 " pitch %" PRIu64,
+                    (uint64_t)want->offset, (uint64_t)want->rowPitch,
+                    (uint64_t)have.subresourceLayout.offset,
+                    (uint64_t)have.subresourceLayout.rowPitch);
+            return VK_ERROR_INVALID_DRM_FORMAT_MODIFIER_PLANE_LAYOUT_EXT;
+         }
+      }
       return VK_SUCCESS;
    }
 
@@ -59,6 +91,43 @@ vkr_image_emulate_drm_format_modifier_properties(UNUSED struct vkr_device *dev,
    return VK_SUCCESS;
 }
 
+/* Metal asserts (aborting the whole VMM, not just this context) on a texture over its
+ * size limits, and MoltenVK passes the extent through.  An image the device limits do
+ * not allow is invalid usage; refuse it like a failed creation instead.
+ */
+static bool
+vkr_image_within_limits(const struct vkr_device *dev, const VkImageCreateInfo *info)
+{
+   const VkPhysicalDeviceLimits *limits = &dev->physical_device->properties.limits;
+   const VkExtent3D *e = &info->extent;
+   uint32_t max_dim;
+   switch (info->imageType) {
+   case VK_IMAGE_TYPE_1D:
+      max_dim = limits->maxImageDimension1D;
+      break;
+   case VK_IMAGE_TYPE_2D:
+      max_dim = (info->flags & VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT)
+                   ? MIN2(limits->maxImageDimension2D, limits->maxImageDimensionCube)
+                   : limits->maxImageDimension2D;
+      break;
+   default:
+      max_dim = limits->maxImageDimension3D;
+      break;
+   }
+
+   const uint32_t largest = MAX3(e->width, e->height, e->depth);
+   const bool ok = e->width && e->height && e->depth && largest <= max_dim &&
+                   info->arrayLayers && info->arrayLayers <= limits->maxImageArrayLayers &&
+                   info->mipLevels && info->mipLevels <= util_logbase2(largest) + 1;
+   if (!ok) {
+      vkr_log("image %ux%ux%u (type %d, %u layers, %u levels) exceeds the device limits; "
+              "not created",
+              e->width, e->height, e->depth, info->imageType, info->arrayLayers,
+              info->mipLevels);
+   }
+   return ok;
+}
+
 static void
 vkr_dispatch_vkCreateImage(struct vn_dispatch_context *dispatch,
                            struct vn_command_vkCreateImage *args)
@@ -66,6 +135,11 @@ vkr_dispatch_vkCreateImage(struct vn_dispatch_context *dispatch,
    struct vkr_device *dev = vkr_device_from_handle(args->device);
 
    vkr_image_fix_create_info(dev, (VkImageCreateInfo *)args->pCreateInfo);
+
+   if (!vkr_image_within_limits(dev, args->pCreateInfo)) {
+      args->ret = VK_ERROR_OUT_OF_DEVICE_MEMORY;
+      return;
+   }
 
    if (!dev->physical_device->EXT_image_drm_format_modifier) {
       args->ret = vkr_image_fix_drm_format(dev, (VkImageCreateInfo *)args->pCreateInfo);

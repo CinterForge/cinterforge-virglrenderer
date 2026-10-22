@@ -6,6 +6,7 @@
 #include "vkr_command_buffer.h"
 
 #include "vkr_command_buffer_gen.h"
+#include "vkr_pipeline.h"
 
 #ifdef __clang__
 #pragma clang diagnostic ignored "-Wgnu-zero-variadic-macro-arguments"
@@ -20,6 +21,33 @@
       vn_replace_vk##cmd_name##_args_handle(args);                                       \
       _vk->cmd_name(args->commandBuffer, ##__VA_ARGS__);                                 \
    } while (0)
+
+/* Draws, dispatches and ray traces at a bind point where a placeholder pipeline
+ * is bound are dropped: the driver never sees the placeholder's
+ * VK_NULL_HANDLE (Mesa's common code and MoltenVK both dereference it).
+ */
+#define VKR_CMD_DRAW(bind_point, cmd_name, args, ...)                              \
+   do {                                                                         \
+      if (vkr_command_buffer_from_handle(args->commandBuffer)                    \
+             ->placeholder_bound[bind_point])                                   \
+         break;                                                                 \
+      VKR_CMD_CALL(cmd_name, args, ##__VA_ARGS__);                               \
+   } while (0)
+
+static int
+vkr_bind_point_index(VkPipelineBindPoint bind_point)
+{
+   switch (bind_point) {
+   case VK_PIPELINE_BIND_POINT_GRAPHICS:
+      return VKR_BIND_POINT_GRAPHICS;
+   case VK_PIPELINE_BIND_POINT_COMPUTE:
+      return VKR_BIND_POINT_COMPUTE;
+   case VK_PIPELINE_BIND_POINT_RAY_TRACING_KHR:
+      return VKR_BIND_POINT_RAY_TRACING;
+   default:
+      return -1;
+   }
+}
 
 static void
 vkr_dispatch_vkCreateCommandPool(struct vn_dispatch_context *dispatch,
@@ -126,6 +154,7 @@ vkr_dispatch_vkBeginCommandBuffer(UNUSED struct vn_dispatch_context *dispatch,
    struct vn_device_proc_table *vk = &cmd->device->proc_table;
 
    vn_replace_vkBeginCommandBuffer_args_handle(args);
+   memset(cmd->placeholder_bound, 0, sizeof(cmd->placeholder_bound));
    args->ret = vk->BeginCommandBuffer(args->commandBuffer, args->pBeginInfo);
 }
 
@@ -142,9 +171,30 @@ vkr_dispatch_vkEndCommandBuffer(UNUSED struct vn_dispatch_context *dispatch,
 }
 
 static void
-vkr_dispatch_vkCmdBindPipeline(UNUSED struct vn_dispatch_context *dispatch,
+vkr_dispatch_vkCmdBindPipeline(struct vn_dispatch_context *dispatch,
                                struct vn_command_vkCmdBindPipeline *args)
 {
+   /* An unknown pipeline id fails the object lookup and sets the decoder
+    * fatal.  A pipeline whose creation failed on the host is a placeholder
+    * (see vkr_pipeline_add): binding it is not passed to the driver, and the
+    * draws/dispatches at its bind point are dropped until a real pipeline is
+    * bound.  Id 0, though, decodes to no object without an error: the guest
+    * bound VK_NULL_HANDLE itself, which is invalid usage.
+    */
+   if (!args->pipeline) {
+      vkr_log("vkCmdBindPipeline with VK_NULL_HANDLE pipeline");
+      vkr_context_set_fatal(dispatch->data);
+      return;
+   }
+
+   struct vkr_command_buffer *cmd = vkr_command_buffer_from_handle(args->commandBuffer);
+   const bool placeholder = vkr_pipeline_is_placeholder(args->pipeline);
+   const int index = vkr_bind_point_index(args->pipelineBindPoint);
+   if (index >= 0)
+      cmd->placeholder_bound[index] = placeholder;
+   if (placeholder)
+      return;
+
    VKR_CMD_CALL(CmdBindPipeline, args, args->pipelineBindPoint, args->pipeline);
 }
 
@@ -242,7 +292,7 @@ static void
 vkr_dispatch_vkCmdDraw(UNUSED struct vn_dispatch_context *dispatch,
                        struct vn_command_vkCmdDraw *args)
 {
-   VKR_CMD_CALL(CmdDraw, args, args->vertexCount, args->instanceCount, args->firstVertex,
+   VKR_CMD_DRAW(VKR_BIND_POINT_GRAPHICS, CmdDraw, args, args->vertexCount, args->instanceCount, args->firstVertex,
                 args->firstInstance);
 }
 
@@ -250,7 +300,7 @@ static void
 vkr_dispatch_vkCmdDrawIndexed(UNUSED struct vn_dispatch_context *dispatch,
                               struct vn_command_vkCmdDrawIndexed *args)
 {
-   VKR_CMD_CALL(CmdDrawIndexed, args, args->indexCount, args->instanceCount,
+   VKR_CMD_DRAW(VKR_BIND_POINT_GRAPHICS, CmdDrawIndexed, args, args->indexCount, args->instanceCount,
                 args->firstIndex, args->vertexOffset, args->firstInstance);
 }
 
@@ -258,7 +308,7 @@ static void
 vkr_dispatch_vkCmdDrawIndirect(UNUSED struct vn_dispatch_context *dispatch,
                                struct vn_command_vkCmdDrawIndirect *args)
 {
-   VKR_CMD_CALL(CmdDrawIndirect, args, args->buffer, args->offset, args->drawCount,
+   VKR_CMD_DRAW(VKR_BIND_POINT_GRAPHICS, CmdDrawIndirect, args, args->buffer, args->offset, args->drawCount,
                 args->stride);
 }
 
@@ -266,7 +316,7 @@ static void
 vkr_dispatch_vkCmdDrawIndexedIndirect(UNUSED struct vn_dispatch_context *dispatch,
                                       struct vn_command_vkCmdDrawIndexedIndirect *args)
 {
-   VKR_CMD_CALL(CmdDrawIndexedIndirect, args, args->buffer, args->offset, args->drawCount,
+   VKR_CMD_DRAW(VKR_BIND_POINT_GRAPHICS, CmdDrawIndexedIndirect, args, args->buffer, args->offset, args->drawCount,
                 args->stride);
 }
 
@@ -274,7 +324,7 @@ static void
 vkr_dispatch_vkCmdDispatch(UNUSED struct vn_dispatch_context *dispatch,
                            struct vn_command_vkCmdDispatch *args)
 {
-   VKR_CMD_CALL(CmdDispatch, args, args->groupCountX, args->groupCountY,
+   VKR_CMD_DRAW(VKR_BIND_POINT_COMPUTE, CmdDispatch, args, args->groupCountX, args->groupCountY,
                 args->groupCountZ);
 }
 
@@ -282,7 +332,7 @@ static void
 vkr_dispatch_vkCmdDispatchIndirect(UNUSED struct vn_dispatch_context *dispatch,
                                    struct vn_command_vkCmdDispatchIndirect *args)
 {
-   VKR_CMD_CALL(CmdDispatchIndirect, args, args->buffer, args->offset);
+   VKR_CMD_DRAW(VKR_BIND_POINT_COMPUTE, CmdDispatchIndirect, args, args->buffer, args->offset);
 }
 
 static void
@@ -537,7 +587,7 @@ static void
 vkr_dispatch_vkCmdDispatchBase(UNUSED struct vn_dispatch_context *dispatch,
                                struct vn_command_vkCmdDispatchBase *args)
 {
-   VKR_CMD_CALL(CmdDispatchBase, args, args->baseGroupX, args->baseGroupY,
+   VKR_CMD_DRAW(VKR_BIND_POINT_COMPUTE, CmdDispatchBase, args, args->baseGroupX, args->baseGroupY,
                 args->baseGroupZ, args->groupCountX, args->groupCountY,
                 args->groupCountZ);
 }
@@ -568,7 +618,7 @@ static void
 vkr_dispatch_vkCmdDrawIndirectCount(UNUSED struct vn_dispatch_context *dispatch,
                                     struct vn_command_vkCmdDrawIndirectCount *args)
 {
-   VKR_CMD_CALL(CmdDrawIndirectCount, args, args->buffer, args->offset, args->countBuffer,
+   VKR_CMD_DRAW(VKR_BIND_POINT_GRAPHICS, CmdDrawIndirectCount, args, args->buffer, args->offset, args->countBuffer,
                 args->countBufferOffset, args->maxDrawCount, args->stride);
 }
 
@@ -577,7 +627,7 @@ vkr_dispatch_vkCmdDrawIndexedIndirectCount(
    UNUSED struct vn_dispatch_context *dispatch,
    struct vn_command_vkCmdDrawIndexedIndirectCount *args)
 {
-   VKR_CMD_CALL(CmdDrawIndexedIndirectCount, args, args->buffer, args->offset,
+   VKR_CMD_DRAW(VKR_BIND_POINT_GRAPHICS, CmdDrawIndexedIndirectCount, args, args->buffer, args->offset,
                 args->countBuffer, args->countBufferOffset, args->maxDrawCount,
                 args->stride);
 }
@@ -639,7 +689,7 @@ vkr_dispatch_vkCmdDrawIndirectByteCountEXT(
    UNUSED struct vn_dispatch_context *dispatch,
    struct vn_command_vkCmdDrawIndirectByteCountEXT *args)
 {
-   VKR_CMD_CALL(CmdDrawIndirectByteCountEXT, args, args->instanceCount,
+   VKR_CMD_DRAW(VKR_BIND_POINT_GRAPHICS, CmdDrawIndirectByteCountEXT, args, args->instanceCount,
                 args->firstInstance, args->counterBuffer, args->counterBufferOffset,
                 args->counterOffset, args->vertexStride);
 }
@@ -847,7 +897,7 @@ static void
 vkr_dispatch_vkCmdDrawMultiEXT(UNUSED struct vn_dispatch_context *dispatch,
                                struct vn_command_vkCmdDrawMultiEXT *args)
 {
-   VKR_CMD_CALL(CmdDrawMultiEXT, args, args->drawCount, args->pVertexInfo,
+   VKR_CMD_DRAW(VKR_BIND_POINT_GRAPHICS, CmdDrawMultiEXT, args, args->drawCount, args->pVertexInfo,
                 args->instanceCount, args->firstInstance, args->stride);
 }
 
@@ -855,7 +905,7 @@ static void
 vkr_dispatch_vkCmdDrawMultiIndexedEXT(UNUSED struct vn_dispatch_context *dispatch,
                                       struct vn_command_vkCmdDrawMultiIndexedEXT *args)
 {
-   VKR_CMD_CALL(CmdDrawMultiIndexedEXT, args, args->drawCount, args->pIndexInfo,
+   VKR_CMD_DRAW(VKR_BIND_POINT_GRAPHICS, CmdDrawMultiIndexedEXT, args, args->drawCount, args->pIndexInfo,
                 args->instanceCount, args->firstInstance, args->stride,
                 args->pVertexOffset);
 }
@@ -1174,7 +1224,7 @@ static void
 vkr_dispatch_vkCmdTraceRaysIndirectKHR(UNUSED struct vn_dispatch_context *dispatch,
                                        struct vn_command_vkCmdTraceRaysIndirectKHR *args)
 {
-   VKR_CMD_CALL(CmdTraceRaysIndirectKHR, args, args->pRaygenShaderBindingTable,
+   VKR_CMD_DRAW(VKR_BIND_POINT_RAY_TRACING, CmdTraceRaysIndirectKHR, args, args->pRaygenShaderBindingTable,
                 args->pMissShaderBindingTable, args->pHitShaderBindingTable,
                 args->pCallableShaderBindingTable, args->indirectDeviceAddress);
 }
@@ -1183,7 +1233,7 @@ static void
 vkr_dispatch_vkCmdTraceRaysKHR(UNUSED struct vn_dispatch_context *dispatch,
                                struct vn_command_vkCmdTraceRaysKHR *args)
 {
-   VKR_CMD_CALL(CmdTraceRaysKHR, args, args->pRaygenShaderBindingTable,
+   VKR_CMD_DRAW(VKR_BIND_POINT_RAY_TRACING, CmdTraceRaysKHR, args, args->pRaygenShaderBindingTable,
                 args->pMissShaderBindingTable, args->pHitShaderBindingTable,
                 args->pCallableShaderBindingTable, args->width, args->height,
                 args->depth);
@@ -1193,7 +1243,7 @@ static void
 vkr_dispatch_vkCmdTraceRaysIndirect2KHR(UNUSED struct vn_dispatch_context *dispatch,
                                         struct vn_command_vkCmdTraceRaysIndirect2KHR *args)
 {
-   VKR_CMD_CALL(CmdTraceRaysIndirect2KHR, args, args->indirectDeviceAddress);
+   VKR_CMD_DRAW(VKR_BIND_POINT_RAY_TRACING, CmdTraceRaysIndirect2KHR, args, args->indirectDeviceAddress);
 }
 
 static void
@@ -1223,7 +1273,7 @@ static void
 vkr_dispatch_vkCmdDrawMeshTasksEXT(UNUSED struct vn_dispatch_context *dispatch,
                                    struct vn_command_vkCmdDrawMeshTasksEXT *args)
 {
-   VKR_CMD_CALL(CmdDrawMeshTasksEXT, args, args->groupCountX, args->groupCountY,
+   VKR_CMD_DRAW(VKR_BIND_POINT_GRAPHICS, CmdDrawMeshTasksEXT, args, args->groupCountX, args->groupCountY,
                 args->groupCountZ);
 }
 
@@ -1232,7 +1282,7 @@ vkr_dispatch_vkCmdDrawMeshTasksIndirectEXT(
    UNUSED struct vn_dispatch_context *dispatch,
    struct vn_command_vkCmdDrawMeshTasksIndirectEXT *args)
 {
-   VKR_CMD_CALL(CmdDrawMeshTasksIndirectEXT, args, args->buffer, args->offset,
+   VKR_CMD_DRAW(VKR_BIND_POINT_GRAPHICS, CmdDrawMeshTasksIndirectEXT, args, args->buffer, args->offset,
                 args->drawCount, args->stride);
 }
 
@@ -1241,7 +1291,7 @@ vkr_dispatch_vkCmdDrawMeshTasksIndirectCountEXT(
    UNUSED struct vn_dispatch_context *dispatch,
    struct vn_command_vkCmdDrawMeshTasksIndirectCountEXT *args)
 {
-   VKR_CMD_CALL(CmdDrawMeshTasksIndirectCountEXT, args, args->buffer, args->offset,
+   VKR_CMD_DRAW(VKR_BIND_POINT_GRAPHICS, CmdDrawMeshTasksIndirectCountEXT, args, args->buffer, args->offset,
                 args->countBuffer, args->countBufferOffset, args->maxDrawCount,
                 args->stride);
 }

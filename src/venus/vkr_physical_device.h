@@ -30,6 +30,8 @@ struct vkr_physical_device {
    bool KHR_external_fence_fd;
 
    bool EXT_external_memory_host;
+   /* VkPhysicalDeviceExternalMemoryHostPropertiesEXT, 0 without the extension */
+   VkDeviceSize min_imported_host_pointer_alignment;
 
    VkPhysicalDeviceMemoryProperties memory_properties;
    VkPhysicalDeviceIDProperties id_properties;

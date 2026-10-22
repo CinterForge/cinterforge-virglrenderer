@@ -28,6 +28,16 @@ struct vkr_pipeline {
 };
 VKR_DEFINE_OBJECT_CAST(pipeline, VK_OBJECT_TYPE_PIPELINE, VkPipeline)
 
+/* A pipeline the driver failed to create (see vkr_pipeline_add): the object
+ * exists for the guest, its driver handle is VK_NULL_HANDLE.
+ */
+static inline bool
+vkr_pipeline_is_placeholder(VkPipeline pipeline)
+{
+   const struct vkr_pipeline *obj = vkr_pipeline_from_handle(pipeline);
+   return obj && obj->base.handle.pipeline == VK_NULL_HANDLE;
+}
+
 void
 vkr_context_init_shader_module_dispatch(struct vkr_context *ctx);
 

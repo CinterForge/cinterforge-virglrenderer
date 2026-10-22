@@ -228,6 +228,12 @@ vkr_dispatch_vkCreateDevice(struct vn_dispatch_context *dispatch,
    mtx_init(&dev->free_sync_mutex, mtx_plain);
    list_inithead(&dev->free_syncs);
 
+   mtx_init(&dev->shm_release.mutex, mtx_plain);
+   list_inithead(&dev->shm_release.pending);
+   dev->shm_release.pending_size = 0;
+   dev->shm_release.last_flush_ns = 0;
+   dev->shm_release.immediate = false;
+
    mtx_init(&dev->object_mutex, mtx_plain);
    list_inithead(&dev->objects);
 
@@ -363,6 +369,9 @@ vkr_device_destroy(struct vkr_context *ctx, struct vkr_device *dev, bool destroy
 
    mtx_destroy(&dev->object_mutex);
 
+   /* idle now: freed shm can be unmapped right away */
+   vkr_device_fini_shm_releases(dev);
+
    if (!list_is_empty(&dev->objects)) {
       list_for_each_entry_safe (struct vkr_object, obj, &dev->objects, track_head)
          vkr_device_object_destroy(ctx, dev, obj);
@@ -370,6 +379,8 @@ vkr_device_destroy(struct vkr_context *ctx, struct vkr_device *dev, bool destroy
 
    list_for_each_entry_safe (struct vkr_queue, queue, &dev->queues, base.track_head)
       vkr_queue_destroy(ctx, queue);
+
+   mtx_destroy(&dev->shm_release.mutex);
 
    list_for_each_entry_safe (struct vkr_queue_sync, sync, &dev->free_syncs, head) {
       vk->DestroyFence(dev->base.handle.device, sync->fence, NULL);

@@ -20,6 +20,15 @@ struct vkr_renderer_state {
 
 struct vkr_renderer_state vkr_state;
 
+atomic_uint_fast64_t vkr_dispatch_count;
+_Thread_local bool vkr_fatal_raised_here;
+
+VIRGL_EXPORT uint64_t
+virgl_steamac_cmd_count(void)
+{
+   return atomic_load_explicit(&vkr_dispatch_count, memory_order_relaxed);
+}
+
 size_t
 vkr_get_capset(void *capset, uint32_t flags)
 {

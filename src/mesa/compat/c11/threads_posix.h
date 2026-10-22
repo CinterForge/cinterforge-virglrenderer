@@ -35,6 +35,9 @@
 #include <unistd.h>
 #include <sched.h>
 #include <stdint.h> /* for intptr_t */
+#ifdef __APPLE__
+#include <pthread/qos.h>
+#endif
 
 /*
 Configuration macro:
@@ -290,7 +293,21 @@ thrd_create(thrd_t *thr, thrd_start_t func, void *arg)
     if (!pack) return thrd_nomem;
     pack->func = func;
     pack->arg = arg;
-    if (pthread_create(thr, NULL, impl_thrd_routine, pack) != 0) {
+    pthread_attr_t *pattr = NULL;
+#ifdef __APPLE__
+    pthread_attr_t attr;
+    /* macOS threads do not inherit their creator's QoS and start at the default
+     * class. Every virglrenderer thread (Venus rings, queue sync, fences) is on
+     * the guest's frame path and its Metal shader compiles: user-interactive.
+     */
+    if (pthread_attr_init(&attr) == 0) {
+        pthread_attr_set_qos_class_np(&attr, QOS_CLASS_USER_INTERACTIVE, 0);
+        pattr = &attr;
+    }
+#endif
+    int ret = pthread_create(thr, pattr, impl_thrd_routine, pack);
+    if (pattr) pthread_attr_destroy(pattr);
+    if (ret != 0) {
         free(pack);
         return thrd_error;
     }

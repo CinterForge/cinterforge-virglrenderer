@@ -7,6 +7,7 @@
 
 #include <stdarg.h>
 #include <stdio.h>
+#include <sys/resource.h>
 
 #include "util/u_debug.h"
 #include "vn_protocol_renderer_info.h"
@@ -250,6 +251,24 @@ vkr_log(const char *fmt, ...)
    va_start(va, fmt);
    virgl_prefixed_logv("vkr", VIRGL_LOG_LEVEL_INFO, fmt, va);
    va_end(va);
+}
+
+void
+vkr_log_errno(int err, const char *what_fmt, ...)
+{
+   char what[256];
+   va_list va;
+
+   va_start(va, what_fmt);
+   vsnprintf(what, sizeof(what), what_fmt, va);
+   va_end(va);
+
+   struct rlimit rl;
+   if (err == EMFILE && !getrlimit(RLIMIT_NOFILE, &rl))
+      vkr_log("%s failed: %s (RLIMIT_NOFILE %llu)", what, strerror(err),
+              (unsigned long long)rl.rlim_cur);
+   else
+      vkr_log("%s failed: %s", what, strerror(err));
 }
 
 void

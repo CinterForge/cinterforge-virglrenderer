@@ -7,11 +7,27 @@
 
 #include "vkr_query_pool_gen.h"
 
+/* Venus creates query pools asynchronously: when the driver refuses one, the guest still
+ * holds its id and the first command buffer resetting, beginning or copying it is a fatal
+ * CS error ("failed to look up object N of type 12") that kills the application's GPU
+ * context. Name the refused pool so that report says why.
+ */
 static void
 vkr_dispatch_vkCreateQueryPool(struct vn_dispatch_context *dispatch,
                                struct vn_command_vkCreateQueryPool *args)
 {
-   vkr_query_pool_create_and_add(dispatch->data, args);
+   if (vkr_query_pool_create_and_add(dispatch->data, args) || !args->pCreateInfo ||
+       !args->pQueryPool)
+      return;
+
+   const VkQueryPoolCreateInfo *info = args->pCreateInfo;
+   vkr_log("vkCreateQueryPool failed on the host (VkResult %d): query pool %" PRIu64
+           " (type %d, %u queries, statistics 0x%x, flags 0x%x%s) is unknown, commands using "
+           "it are CS errors",
+           args->ret,
+           vkr_cs_handle_load_id((const void **)args->pQueryPool, VK_OBJECT_TYPE_QUERY_POOL),
+           info->queryType, info->queryCount, info->pipelineStatistics, info->flags,
+           info->pNext ? ", with pNext" : "");
 }
 
 static void

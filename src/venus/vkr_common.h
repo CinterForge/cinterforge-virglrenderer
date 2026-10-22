@@ -41,6 +41,24 @@
 
 #define VKR_DEBUG(category) (unlikely(vkr_debug_flags & VKR_DEBUG_##category))
 
+/* steamac: Venus commands dispatched (virgl_steamac_cmd_count), counted as each command is
+ * decoded (before it runs, so a command that blocks still shows up). */
+extern atomic_uint_fast64_t vkr_dispatch_count;
+
+static inline void
+vkr_note_dispatch(void)
+{
+   atomic_fetch_add_explicit(&vkr_dispatch_count, 1, memory_order_relaxed);
+}
+
+/* steamac: whether this thread made the context fatal during the command it is
+ * dispatching (see vkr_dispatch_command).  The fatal flag is shared by the context and
+ * all its rings, so without this every thread that finishes a command after another
+ * thread set it logs "<its command> resulted in CS error", and the first such line
+ * (the one crash reports pick) often names an innocent command.
+ */
+extern _Thread_local bool vkr_fatal_raised_here;
+
 /* define a type-safe cast function */
 #define VKR_DEFINE_OBJECT_CAST(vkr_type, vk_enum, vk_type)                               \
    static inline struct vkr_##vkr_type *vkr_##vkr_type##_from_handle(vk_type handle)     \
@@ -191,6 +209,22 @@ vkr_debug_init(void);
 
 void
 vkr_log(const char *fmt, ...);
+
+/* steamac: log "<what> failed: <strerror(err)>", with the soft RLIMIT_NOFILE when err is
+ * EMFILE.  Every host-visible guest allocation holds file descriptors of this process
+ * (render server and workers are threads of the VMM), so running out of them shows up
+ * as failed allocations and blob exports.
+ */
+void
+vkr_log_errno(int err, const char *what_fmt, ...) PRINTFLIKE(2, 3);
+
+/* steamac: the VkResult of an allocation that failed on a file descriptor operation */
+static inline VkResult
+vkr_result_from_errno(int err)
+{
+   return err == EMFILE || err == ENFILE ? VK_ERROR_TOO_MANY_OBJECTS
+                                         : VK_ERROR_OUT_OF_HOST_MEMORY;
+}
 
 static inline uint32_t
 vkr_api_version_cap_minor(uint32_t version, uint32_t cap)

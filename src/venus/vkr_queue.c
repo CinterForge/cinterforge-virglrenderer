@@ -8,6 +8,7 @@
 #include "vn_protocol_renderer_queue.h"
 
 #include "vkr_context.h"
+#include "vkr_device_memory.h"
 #include "vkr_physical_device.h"
 #include "vkr_queue_gen.h"
 
@@ -52,6 +53,7 @@ vkr_device_alloc_queue_sync(struct vkr_device *dev,
    }
 
    sync->device_lost = false;
+   sync->shm_release = NULL;
    sync->flags = fence_flags;
    sync->ring_idx = ring_idx;
    sync->fence_id = fence_id;
@@ -71,7 +73,10 @@ static inline void
 vkr_queue_sync_retire(struct vkr_queue *queue, struct vkr_queue_sync *sync)
 {
    TRACE_FUNC();
-   queue->context->retire_fence(queue->context->ctx_id, sync->ring_idx, sync->fence_id);
+   if (sync->shm_release)
+      vkr_shm_release_complete_queue(sync->shm_release);
+   else
+      queue->context->retire_fence(queue->context->ctx_id, sync->ring_idx, sync->fence_id);
    vkr_device_free_queue_sync(queue->device, sync);
 }
 
@@ -100,6 +105,42 @@ vkr_queue_sync_submit(struct vkr_queue *queue,
    } else if (result != VK_SUCCESS) {
       vkr_device_free_queue_sync(dev, sync);
       vkr_log("sync submit failed (vk ret %d) for fence_id %" PRIu64, result, fence_id);
+      return false;
+   }
+
+   mtx_lock(&queue->sync_thread.mutex);
+   list_addtail(&sync->head, &queue->sync_thread.syncs);
+   cnd_signal(&queue->sync_thread.cond);
+   mtx_unlock(&queue->sync_thread.mutex);
+
+   vkr_device_flush_shm_releases(dev, false);
+
+   return true;
+}
+
+/* Submit a marker after everything already submitted to the queue; release
+ * completes its part for this queue once the marker has completed.
+ */
+bool
+vkr_queue_submit_shm_release(struct vkr_queue *queue, struct vkr_shm_release *release)
+{
+   struct vkr_device *dev = queue->device;
+   struct vn_device_proc_table *vk = &dev->proc_table;
+
+   struct vkr_queue_sync *sync = vkr_device_alloc_queue_sync(dev, 0, 0, 0);
+   if (!sync)
+      return false;
+   sync->shm_release = release;
+
+   mtx_lock(&queue->vk_mutex);
+   VkResult result = vk->QueueSubmit(queue->base.handle.queue, 0, NULL, sync->fence);
+   mtx_unlock(&queue->vk_mutex);
+
+   if (result == VK_ERROR_DEVICE_LOST) {
+      sync->device_lost = true;
+   } else if (result != VK_SUCCESS) {
+      vkr_device_free_queue_sync(dev, sync);
+      vkr_log("shm release marker submit failed (vk ret %d)", result);
       return false;
    }
 
@@ -378,6 +419,8 @@ vkr_dispatch_vkQueueSubmit(UNUSED struct vn_dispatch_context *dispatch,
    args->ret =
       vk->QueueSubmit(args->queue, args->submitCount, args->pSubmits, args->fence);
    mtx_unlock(&queue->vk_mutex);
+
+   vkr_device_flush_shm_releases(queue->device, false);
 }
 
 static void
@@ -394,6 +437,8 @@ vkr_dispatch_vkQueueBindSparse(UNUSED struct vn_dispatch_context *dispatch,
    args->ret =
       vk->QueueBindSparse(args->queue, args->bindInfoCount, args->pBindInfo, args->fence);
    mtx_unlock(&queue->vk_mutex);
+
+   vkr_device_flush_shm_releases(queue->device, false);
 }
 
 static void
@@ -419,6 +464,8 @@ vkr_dispatch_vkQueueSubmit2(UNUSED struct vn_dispatch_context *dispatch,
    args->ret =
       vk->QueueSubmit2(args->queue, args->submitCount, args->pSubmits, args->fence);
    mtx_unlock(&queue->vk_mutex);
+
+   vkr_device_flush_shm_releases(queue->device, false);
 }
 
 static void
