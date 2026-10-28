@@ -1,15 +1,72 @@
 // !$*UTF8*$!
 {
- archiveVersion = 1;
- classes = {};
- objectVersion = 60;
- objects = {
-  D9454669F32689BB3A91E610 /* Live fork source tree */ = {isa = PBXFileSystemSynchronizedRootGroup; name = "src (live)"; path = src; sourceTree = "<group>"; };
-  21C8EF83192D0F51846F42D0 = {isa = PBXGroup; children = (D9454669F32689BB3A91E610, ); sourceTree = "<group>"; };
-  E19FCE967E461B5D6273FAFA = {isa = PBXProject; attributes = { LastUpgradeCheck = 1600; }; buildConfigurationList = 88B1AEC2509AB862828647BA; compatibilityVersion = "Xcode 16.0"; developmentRegion = en; hasScannedForEncodings = 0; knownRegions = (en, ); mainGroup = 21C8EF83192D0F51846F42D0; projectDirPath = ""; projectRoot = ""; targets = (); };
-  FF9F20162B3E3D05B76958DC = {isa = XCBuildConfiguration; buildSettings = {}; name = Debug; };
-  95A0363E989DC0C23F3DEA33 = {isa = XCBuildConfiguration; buildSettings = {}; name = Release; };
-  88B1AEC2509AB862828647BA = {isa = XCConfigurationList; buildConfigurations = (FF9F20162B3E3D05B76958DC, 95A0363E989DC0C23F3DEA33, ); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
- };
- rootObject = E19FCE967E461B5D6273FAFA;
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 71;
+	objects = {
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		D9454669F32689BB3A91E610 /* src (live) */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); name = "src (live)"; path = src; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXGroup section */
+		21C8EF83192D0F51846F42D0 = {
+			isa = PBXGroup;
+			children = (
+				D9454669F32689BB3A91E610 /* src (live) */,
+			);
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXProject section */
+		E19FCE967E461B5D6273FAFA /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1600;
+			};
+			buildConfigurationList = 88B1AEC2509AB862828647BA /* Build configuration list for PBXProject "cinterforge-virglrenderer" */;
+			compatibilityVersion = "Xcode 16.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 21C8EF83192D0F51846F42D0;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+			);
+		};
+/* End PBXProject section */
+
+/* Begin XCBuildConfiguration section */
+		95A0363E989DC0C23F3DEA33 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Release;
+		};
+		FF9F20162B3E3D05B76958DC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		88B1AEC2509AB862828647BA /* Build configuration list for PBXProject "cinterforge-virglrenderer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FF9F20162B3E3D05B76958DC /* Debug */,
+				95A0363E989DC0C23F3DEA33 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = E19FCE967E461B5D6273FAFA /* Project object */;
 }
